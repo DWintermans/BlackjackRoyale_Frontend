@@ -62,9 +62,8 @@ export default function Login() {
 
     return (
         <div>
-            <div className="header-container">
-                <Header />
-            </div>
+            <Header />
+
             <div className="container">
                 <h2>Login</h2>
                 <form onSubmit={handleSubmit}>
@@ -98,6 +97,8 @@ export default function Login() {
                 </form>
             </div>
             <ToastContainer />
+
+            <Footer />
         </div>
     );
 }
