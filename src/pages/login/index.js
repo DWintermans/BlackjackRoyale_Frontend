@@ -10,8 +10,12 @@ import 'react-toastify/dist/ReactToastify.css';
 export default function Login() {
     const [formData, setFormData] = useState({
         username: '',
-        password: ''
+        password: '',
+        email: ''
     });
+
+    const [loading, setLoading] = useState(false);
+    const [isSignUp, setIsSignUp] = useState(false);
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -21,40 +25,43 @@ export default function Login() {
         }));
     };
 
-    const [loading, setLoading] = useState(false);
-
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        const loadingToast = toast.loading("Authenticating...");
+        const loadingToast = toast.loading(isSignUp ? "Signing Up..." : "Authenticating...");
         setLoading(true);
 
         try {
-            const loginResponse = await TryLogin(formData.username, formData.password);
+            let response;
+            if (isSignUp) {
+                //response = await TrySignup(formData.username, formData.password);
 
-            toast.update(loadingToast, {
-                render: loginResponse.message,
-                type: "success",
-                isLoading: false,
-                autoClose: 3000
-            });
+            } else {
+                response = await TryLogin(formData.username, formData.password);
 
-            console.log(loginResponse)
+                toast.update(loadingToast, {
+                    render: response.message,
+                    type: "success",
+                    isLoading: false,
+                    autoClose: 3000
+                });
 
-            localStorage.setItem("jwt", loginResponse.jwt);
+                console.log(response)
 
-            //redirect to /game?
+                localStorage.setItem("jwt", response.jwt);
 
+                window.location.href = '/game';
+            }
         } catch (error) {
-            toast.update(loadingToast, {
+
+            toast.error(loadingToast, {
                 render: error.message,
                 type: "error",
                 isLoading: false,
                 autoClose: 3000
             });
 
-            console.log(error)
-
+            console.log(error);
         } finally {
             setLoading(false);
         }
@@ -65,7 +72,10 @@ export default function Login() {
             <Header />
 
             <div className="container">
-                <h2>Login</h2>
+                <div className="sign">
+                    <span className="signup">Sign Up</span>
+                    <span>Sign In</span>
+                </div>
                 <form onSubmit={handleSubmit}>
                     <div className="formGroup">
                         <label htmlFor="username">Username:</label>
@@ -78,6 +88,20 @@ export default function Login() {
                             required
                         />
                     </div>
+
+                    {isSignUp && (
+                        <div className="formGroup">
+                            <label htmlFor="email">Email:</label>
+                            <input
+                                type="email"
+                                name="email"
+                                id="email"
+                                value={formData.email}
+                                onChange={handleChange}
+                                required={isSignUp}
+                            />
+                        </div>
+                    )}
 
                     <div className="formGroup">
                         <label htmlFor="password">Password:</label>
@@ -92,10 +116,18 @@ export default function Login() {
                     </div>
 
                     <button type="submit" disabled={loading}>
-                        {loading ? "Logging in..." : "Login"}
+                        {loading ? (isSignUp ? "Signing Up..." : "Signing in...") : (isSignUp ? "Sign Up" : "Sign in")}
                     </button>
                 </form>
+
+                <p>
+                    {isSignUp ? (<>Already have an account? <a onClick={() => setIsSignUp(false)}>Sign in</a></>)
+                        :
+                        (<>Don’t have an account? <a onClick={() => setIsSignUp(true)}>Sign Up</a></>)
+                    }
+                </p>
             </div>
+
             <ToastContainer />
 
             <Footer />
