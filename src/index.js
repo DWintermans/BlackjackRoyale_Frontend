@@ -4,6 +4,7 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
+
 import "./index.css";
 import Login from "./pages/login";
 import Game from "./pages/game";

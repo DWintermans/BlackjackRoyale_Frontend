@@ -71,7 +71,7 @@ export default function Login() {
         <div>
             <Header />
 
-            <div className="container">
+            <div className="login-container">
                 <div className="sign">
                     <span className="signup">Sign Up</span>
                     <span>Sign In</span>

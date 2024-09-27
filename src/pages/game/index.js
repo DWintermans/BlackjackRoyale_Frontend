@@ -7,8 +7,10 @@ import { useParams } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import GroupGame from '../../components/game/group.js';
-import GeneralGame from '../../components/game/general.js';
+import Lobby from '../../components/game/center/lobby.js';
+import GeneralGame from '../../components/game/center/generalgame.js';
+import Friends from '../../components/game/left/friends.js';
+import Chat from '../../components/game/right/chat.js';
 
 export default function Game(){
     const { groupID } = useParams();  
@@ -16,7 +18,11 @@ export default function Game(){
     return (
         <div>
             <Header />
-            {groupID ? <GroupGame groupID={groupID} /> : <GeneralGame />}
+                <div className="container">
+                    <div className="section-left"><Friends /></div>
+                    <div className="section-center"> {groupID ? <GeneralGame groupID={groupID} /> : <Lobby />} </div>
+                    <div className="section-right"><Chat /></div>
+                </div>
             <Footer />
         </div>
     );
