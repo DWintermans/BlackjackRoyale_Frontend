@@ -76,10 +76,11 @@ export default function Login() {
                     <span className="signup">Sign Up</span>
                     <span>Sign In</span>
                 </div>
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} className='login-form'>
                     <div className="formGroup">
                         <label htmlFor="username">Username:</label>
                         <input
+                            className='login-input'
                             type="text"
                             name="username"
                             id="username"
@@ -93,6 +94,7 @@ export default function Login() {
                         <div className="formGroup">
                             <label htmlFor="email">Email:</label>
                             <input
+                            className='login-input'
                                 type="email"
                                 name="email"
                                 id="email"
@@ -106,6 +108,7 @@ export default function Login() {
                     <div className="formGroup">
                         <label htmlFor="password">Password:</label>
                         <input
+                        className='login-input'
                             type="password"
                             name="password"
                             id="password"
@@ -115,15 +118,15 @@ export default function Login() {
                         />
                     </div>
 
-                    <button type="submit" disabled={loading}>
+                    <button type="submit" disabled={loading} className='login-button'>
                         {loading ? (isSignUp ? "Signing Up..." : "Signing in...") : (isSignUp ? "Sign Up" : "Sign in")}
                     </button>
                 </form>
 
                 <p>
-                    {isSignUp ? (<>Already have an account? <a onClick={() => setIsSignUp(false)}>Sign in</a></>)
+                    {isSignUp ? (<>Already have an account? <a className='login-a' onClick={() => setIsSignUp(false)}>Sign in</a></>)
                         :
-                        (<>Don’t have an account? <a onClick={() => setIsSignUp(true)}>Sign Up</a></>)
+                        (<>Don’t have an account? <a className='login-a' onClick={() => setIsSignUp(true)}>Sign Up</a></>)
                     }
                 </p>
             </div>

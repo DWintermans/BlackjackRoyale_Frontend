@@ -16,7 +16,7 @@ export default function Game(){
     const { groupID } = useParams();  
 
     return (
-        <div>
+        <div className="page-wrapper">
             <Header />
                 <div className="container">
                     <div className="section-left"><Friends /></div>
