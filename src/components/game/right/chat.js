@@ -4,30 +4,16 @@ import { MessageList } from "react-chat-elements";
 import './chat.css';
 import "react-chat-elements/dist/main.css"
 
-function parseJwt(token) {
-    try {
-        const payload = token.split('.')[1];
-        if (!payload) throw new Error('Invalid token format');
-
-        const base64Url = payload.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(escape(atob(base64Url)));
-
-        return JSON.parse(jsonPayload);
-    } catch (error) {
-        console.error('Error parsing JWT:', error);
-        return null;
-    }
-}
-
 export default function Chat() {
     const [messages, setMessages] = useState([]);
-    const user_id = parseJwt(localStorage.getItem("jwt"))?.user_id;
+    const [members, setMembers] = useState([]);
+    const [groupID, setGroupID] = useState("");
 
     const formatTime = (date) => {
         return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     };
 
-
+    //add message to messagelist
     const addMessage = (text, position, username) => {
         const newMessage = {
             position: position,
@@ -38,8 +24,15 @@ export default function Chat() {
             dateString: formatTime(new Date()),
         };
         setMessages((prevMessages) => [...prevMessages, newMessage]);
+        setTimeout(() => {
+            var chatBox = document.getElementById('chat-box');
+            if (chatBox) {
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+        }, 0);
     };
 
+    //add noti to messagellist
     const addNotification = (text) => {
         const notification = {
             position: "center",
@@ -49,37 +42,52 @@ export default function Chat() {
         setMessages((prevMessages) => [...prevMessages, notification]);
     };
 
-    //console testing
-    //window.addNotification("User x has joined the waiting room and will join at the end of this round.")
-    useEffect(() => {
-        window.addNotification = addNotification;
-    }, []);
-
     useEffect(() => {
         const handleIncomingMessage = (message) => {
-            if (message.Type === 'GROUP') {
-                const position = message.Sender == user_id ? "right" : "left"; // Determine message position
-                addMessage(message.Message, position, message.Sender);
-                console.log(user_id);
-                console.log(message.Sender);
+            if (
+                message.hasOwnProperty("Group_ID") &&
+                message.hasOwnProperty("Members")
+            ) {
+                if (message.Group_ID !== null) {
+                    setMembers(message.Members || []);
+                    setGroupID(message.Group_ID);
+                } else {
+                    setMembers([]);
+                    setGroupID(null);
+                }
+            }
+            else if (message.Type === 'GROUP' && message.ToastType === null) {
+                addNotification(message.Message);
+            } else if (message.Type === 'GROUP' || message.Type === 'GLOBAL') {
+                const position = message.Sender === message.Receiver ? "right" : "left";
+                addMessage(message.Message, position, message.SenderName);
             }
         };
 
-        webSocketService.handleMessage = handleIncomingMessage;
+        webSocketService.addListener(handleIncomingMessage);
 
-
+        return () => {
+            webSocketService.removeListener(handleIncomingMessage);
+        };
     }, []);
+    
+    //clear messages on groupID change (new group/no group)
+    useEffect(() => {
+        setMessages([]);
+    }, [groupID]);
 
     const handleSendMessage = (e) => {
         e.preventDefault();
         const messageText = e.target.message.value.trim();
         if (!messageText) return;
 
+        const receiver = groupID ? "GROUP" : "GLOBAL";
+
         const data = {
             category: "chat",
             action: "send_message",
             token: localStorage.getItem("jwt"),
-            receiver: "GROUP",
+            receiver: receiver,
             message: messageText,
         };
 
@@ -87,25 +95,18 @@ export default function Chat() {
         e.target.message.value = '';
     };
 
-    const btn2 = (e) => {
-        document.getElementById('btn2').addEventListener('click', function () {
-            const data = {
-                category: "group",
-                action: "create_group",
-                token: localStorage.getItem("jwt")
-            };
-            webSocketService.sendMessage(data);
-        });
-    };
-
     return (
         <div className="chat-container">
             <div className="groupinfo-container">
-                <p className="group-title">Group ABCDEFG</p>
-                <p className="member-count"><u>0 member(s)</u></p>
+                <p className="group-title">
+                    {groupID ? `Group ${groupID}` : 'Global Chat'}
+                </p>
+                {groupID && (
+                    <p className="member-count"><u>{members.length} member(s)</u></p>
+                )}
             </div>
 
-            <div className="chat-box">
+            <div className="chat-box" id="chat-box">
                 <MessageList
                     className='message-list'
                     lockable={true}
@@ -113,7 +114,7 @@ export default function Chat() {
                     dataSource={messages}
                 />
             </div>
-            <button id="btn2" onClick={btn2}>create group</button>
+
             <form className="form-container" autocomplete="off" onSubmit={handleSendMessage}>
                 <input
                     type="text"

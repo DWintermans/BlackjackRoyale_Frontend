@@ -1,7 +1,8 @@
 class WebSocketService {
     static instance = null;
     socket = null;
-
+    listeners = [];
+    
     constructor(url) {
         if (WebSocketService.instance) {
             return WebSocketService.instance;
@@ -19,11 +20,10 @@ class WebSocketService {
         };
 
         this.socket.onmessage = (event) => {
-            console.log("Raw message from server:", event.data);
+            console.log(event.data);
             try {
                 const message = JSON.parse(event.data);
-                console.log("Parsed message from server:", message);
-                this.handleMessage(message);
+                this.notifyListeners(message);
             } catch (error) {
                 console.error("Error parsing message:", error);
                 console.error("Received data is not valid JSON:", event.data);
@@ -44,60 +44,24 @@ class WebSocketService {
         WebSocketService.instance = this;
     }
 
-    handleMessage(message) {
-        if (message.Type) {
-            switch (message.Type) {
-                case 'PRIVATE':
-                    this.handlePrivateMessage(message);
-                    break;
-                case 'GLOBAL':
-                    this.handleGlobalMessage(message);
-                    break;
-                case 'GROUP':
-                    this.handleGroupMessage(message);
-                    break;
-                default:
-                    console.warn('Unknown message type:', message.Type);
-            }
-        } else if (message.Action) {
-            switch (message.Action) {
-                case 'CARD_DRAWN':
-                    this.updatePlayerCards(message.User_ID, message.Card, message.Total);
-                    break;
-                case 'BET_PLACED':
-                    this.handleBetPlaced(message);
-                    break;
-                case 'GAME_OVER':
-                    this.handleGameOver(message);
-                    break;
-                default:
-                    console.warn('Unknown game action:', message.Action);
-            }
-        }
-    }
-
-    handlePrivateMessage(message) {
-        console.log("Private message from user:", message.Sender);
-    }
-
-    handleGlobalMessage(message) {
-        console.log("Global message:", message.Message);
-    }
-
-    handleGroupMessage(message) {
-        console.log("Group message:", message.Message);
-    }
-
-    updatePlayerCards(userId, card, total) {
-        console.log(`User ${userId} drew a ${card}. Total: ${total}`);
-    }
-
     sendMessage(message) {
         if (this.socket.readyState === WebSocket.OPEN) {
             this.socket.send(JSON.stringify(message));
         } else {
             console.error('WebSocket is not open.');
         }
+    }
+
+    notifyListeners(message) {
+        this.listeners.forEach((listener) => listener(message));
+    }
+
+    addListener(callback) {
+        this.listeners.push(callback); 
+    }
+
+    removeListener(callback) {
+        this.listeners = this.listeners.filter((listener) => listener !== callback); 
     }
 
     close() {
