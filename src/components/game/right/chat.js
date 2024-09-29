@@ -1,39 +1,38 @@
 import React, { useState, useEffect } from 'react';
+import webSocketService from '../../../lib/api/requests/websocketservice';
+import { MessageList } from "react-chat-elements";
 import './chat.css';
 import "react-chat-elements/dist/main.css"
-import { MessageList } from "react-chat-elements";
+
+function parseJwt(token) {
+    try {
+        const payload = token.split('.')[1];
+        if (!payload) throw new Error('Invalid token format');
+
+        const base64Url = payload.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(escape(atob(base64Url)));
+
+        return JSON.parse(jsonPayload);
+    } catch (error) {
+        console.error('Error parsing JWT:', error);
+        return null;
+    }
+}
 
 export default function Chat() {
+    const [messages, setMessages] = useState([]);
+    const user_id = parseJwt(localStorage.getItem("jwt"))?.user_id;
 
     const formatTime = (date) => {
-        const d = new Date(date);
-        return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     };
 
-    const [messages, setMessages] = useState([
-        {
-            position: "left",
-            type: "text",
-            title: "Kursat",
-            text: "Give me a message list example!",
-            date: new Date("2024-09-28 22:20:12"),
-            dateString: formatTime("2024-09-28 22:20:12"),
-        },
-        {
-            position: "right",
-            type: "text",
-            title: "Emre",
-            text: "That's all.",
-            date: new Date("2024-09-28 22:20:12"),
-            dateString: formatTime("2024-09-28 22:20:12"),
-        },
-    ]);
 
-    const addMessage = (text, type = "text", position = "right") => {
+    const addMessage = (text, position, username) => {
         const newMessage = {
-            position,
-            type,
-            title: "User",
+            position: position,
+            type: "text",
+            title: username,
             text,
             date: new Date(),
             dateString: formatTime(new Date()),
@@ -51,10 +50,53 @@ export default function Chat() {
     };
 
     //console testing
-    //window.addNotification("test")
+    //window.addNotification("User x has joined the waiting room and will join at the end of this round.")
     useEffect(() => {
-        window.addNotification = addNotification; 
+        window.addNotification = addNotification;
     }, []);
+
+    useEffect(() => {
+        const handleIncomingMessage = (message) => {
+            if (message.Type === 'GROUP') {
+                const position = message.Sender == user_id ? "right" : "left"; // Determine message position
+                addMessage(message.Message, position, message.Sender);
+                console.log(user_id);
+                console.log(message.Sender);
+            }
+        };
+
+        webSocketService.handleMessage = handleIncomingMessage;
+
+
+    }, []);
+
+    const handleSendMessage = (e) => {
+        e.preventDefault();
+        const messageText = e.target.message.value.trim();
+        if (!messageText) return;
+
+        const data = {
+            category: "chat",
+            action: "send_message",
+            token: localStorage.getItem("jwt"),
+            receiver: "GROUP",
+            message: messageText,
+        };
+
+        webSocketService.sendMessage(data);
+        e.target.message.value = '';
+    };
+
+    const btn2 = (e) => {
+        document.getElementById('btn2').addEventListener('click', function () {
+            const data = {
+                category: "group",
+                action: "create_group",
+                token: localStorage.getItem("jwt")
+            };
+            webSocketService.sendMessage(data);
+        });
+    };
 
     return (
         <div className="chat-container">
@@ -71,16 +113,8 @@ export default function Chat() {
                     dataSource={messages}
                 />
             </div>
-
-            <form className="form-container" autocomplete="off"
-                onSubmit={(e) => {
-                    e.preventDefault();
-                    const messageText = e.target.message.value.trim();
-                    if (!messageText) return;
-                    addMessage(messageText);
-                    e.target.message.value = '';
-                }}
-            >
+            <button id="btn2" onClick={btn2}>create group</button>
+            <form className="form-container" autocomplete="off" onSubmit={handleSendMessage}>
                 <input
                     type="text"
                     name="message"
