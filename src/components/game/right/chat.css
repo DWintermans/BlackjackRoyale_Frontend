@@ -87,3 +87,40 @@
 .rce-smsg {
     padding: 4px 8px !important;
 }
+
+.members-list {
+    padding: 10px;
+}
+
+.member-item {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #ccc;
+}
+
+.member-name {
+    width: 30%;
+}
+
+.member-status,
+.member-ready {
+    width: 30%;
+    text-align: center; 
+}
+
+.member-name {
+    flex: 1;                         
+    text-align: left;
+}
+
+.member-status {
+    flex: 1;                         
+    text-align: center;
+}
+
+.member-ready {
+    flex: 1;                         
+    text-align: right;
+}

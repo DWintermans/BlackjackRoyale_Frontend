@@ -8,9 +8,14 @@ export default function Chat() {
     const [messages, setMessages] = useState([]);
     const [members, setMembers] = useState([]);
     const [groupID, setGroupID] = useState("");
+    const [showMembersList, setShowMembersList] = useState(false);
 
     const formatTime = (date) => {
         return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    };
+
+    const toggleMembersList = () => {
+        setShowMembersList((prevState) => !prevState);
     };
 
     //add message to messagelist
@@ -40,6 +45,12 @@ export default function Chat() {
             text: text,
         };
         setMessages((prevMessages) => [...prevMessages, notification]);
+        setTimeout(() => {
+            var chatBox = document.getElementById('chat-box');
+            if (chatBox) {
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+        }, 0);
     };
 
     useEffect(() => {
@@ -70,7 +81,7 @@ export default function Chat() {
             webSocketService.removeListener(handleIncomingMessage);
         };
     }, []);
-    
+
     //clear messages on groupID change (new group/no group)
     useEffect(() => {
         setMessages([]);
@@ -102,35 +113,63 @@ export default function Chat() {
                     {groupID ? `Group ${groupID}` : 'Global Chat'}
                 </p>
                 {groupID && (
-                    <p className="member-count"><u>{members.length} member(s)</u></p>
+                    <p className="member-count" onClick={toggleMembersList}
+                        style={{
+                            cursor: 'pointer',
+                            padding: '5px',
+                            border: '1px solid black',
+                            borderRadius: '20px',
+                            backgroundColor: 'darkgray',
+                        }}>
+                        {members.length} member(s)
+                    </p>
                 )}
             </div>
+            {!showMembersList ? (
+                <>
+                    <div className="chat-box" id="chat-box">
+                        <MessageList
+                            className='message-list'
+                            lockable={true}
+                            toBottomHeight={'100%'}
+                            dataSource={messages}
+                        />
+                    </div>
 
-            <div className="chat-box" id="chat-box">
-                <MessageList
-                    className='message-list'
-                    lockable={true}
-                    toBottomHeight={'100%'}
-                    dataSource={messages}
-                />
-            </div>
-
-            <form className="form-container" autocomplete="off" onSubmit={handleSendMessage}>
-                <input
-                    type="text"
-                    name="message"
-                    id="message"
-                    required
-                    placeholder="Type a message..."
-                />
-                <button type="submit">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-send-2" width="25" height="25" viewBox="0 0 24 24" stroke-width="1.5" stroke="#FFFFFF" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                        <path d="M4.698 4.034l16.302 7.966l-16.302 7.966a.503 .503 0 0 1 -.546 -.124a.555 .555 0 0 1 -.12 -.568l2.468 -7.274l-2.468 -7.274a.555 .555 0 0 1 .12 -.568a.503 .503 0 0 1 .546 -.124z" />
-                        <path d="M6.5 12h14.5" />
-                    </svg>
-                </button>
-            </form>
+                    <form className="form-container" autocomplete="off" onSubmit={handleSendMessage}>
+                        <input
+                            type="text"
+                            name="message"
+                            id="message"
+                            required
+                            placeholder="Type a message..."
+                        />
+                        <button type="submit">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-send-2" width="25" height="25" viewBox="0 0 24 24" stroke-width="1.5" stroke="#FFFFFF" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M4.698 4.034l16.302 7.966l-16.302 7.966a.503 .503 0 0 1 -.546 -.124a.555 .555 0 0 1 -.12 -.568l2.468 -7.274l-2.468 -7.274a.555 .555 0 0 1 .12 -.568a.503 .503 0 0 1 .546 -.124z" />
+                                <path d="M6.5 12h14.5" />
+                            </svg>
+                        </button>
+                    </form>
+                </>
+            ) : (
+                <div className="members-list">
+                    <ul>
+                        {members.map((member, index) => (
+                            <li key={index} className="member-item">
+                                <span className="member-name">{member.Name}</span>
+                                <span className="member-status">
+                                    {member.InWaitingRoom ? 'In Waiting Room' : ''}
+                                </span>
+                                <span className="member-ready">
+                                    {member.IsReady ? 'Ready' : 'Not Ready'}
+                                </span>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
         </div>
     );
 };
