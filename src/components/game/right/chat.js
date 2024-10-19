@@ -65,6 +65,7 @@ export default function Chat() {
                 } else {
                     setMembers([]);
                     setGroupID(null);
+                    setShowMembersList(false);
                 }
             }
             else if (message.Type === 'GROUP' && message.ToastType === null) {

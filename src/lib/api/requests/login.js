@@ -12,7 +12,8 @@ export async function TryLogin(username, password) {
 
     if (!response.ok) {
         const errorResponse = await response.json();
-        throw new Error(errorResponse.message);
+        const errorMessage = errorResponse?.message || "Oops, something went wrong!";
+        throw new Error(errorMessage);
     }
     
     return response.json();

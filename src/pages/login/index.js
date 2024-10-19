@@ -49,12 +49,10 @@ export default function Login() {
                 console.log(response)
 
                 localStorage.setItem("jwt", response.jwt);
-
                 window.location.href = '/game';
             }
         } catch (error) {
-
-            toast.error(loadingToast, {
+            toast.update(loadingToast, {
                 render: error.message,
                 type: "error",
                 isLoading: false,
