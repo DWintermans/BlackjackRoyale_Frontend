@@ -2,6 +2,14 @@ import React, { useEffect, useState } from 'react';
 import webSocketService from '../../../lib/api/requests/websocketservice';
 
 export default function GeneralGame() {
+    const [players, setPlayers] = useState([]);
+    const [groupID, setGroupID] = useState(null);
+    const [userID, setUserID] = useState(null);
+    const [gameMessage, setGameMessage] = useState('');
+    const [endgameMessage, setEndgameMessage] = useState('');
+    const [WarnOnRefresh, setWarnOnRefresh] = useState(false);
+    const [cardsInDeck, setCardsInDeck] = useState('');
+
     useEffect(() => {
         const data = {
             category: "group",
@@ -10,6 +18,29 @@ export default function GeneralGame() {
         };
         webSocketService.sendMessage(data);
     }, []);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setEndgameMessage('');
+        }, 5000);
+
+        return () => clearTimeout(timer);
+    }, [endgameMessage]);
+
+    useEffect(() => {
+        const handleBeforeUnload = (event) => {
+            if (WarnOnRefresh) {
+                event.returnValue = '';
+                return '';
+            }
+        };
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+    }, [WarnOnRefresh]);
 
     const btn1 = (e) => {
         const data = {
@@ -84,235 +115,181 @@ export default function GeneralGame() {
         webSocketService.sendMessage(data);
     };
 
-        const [userId, setUserId] = useState(null);
-        const [credits, setCredits] = useState(0);
-        const [cards, setCards] = useState([]); // For current user
-        const [totalCardValue, setTotalCardValue] = useState(0); // For current user
-        const [gameMessage, setGameMessage] = useState('');
-        const [members, setMembers] = useState([]);
-        const [groupID, setGroupID] = useState(null);
-        const [messages, setMessages] = useState([]);
-        const [allPlayerCards, setAllPlayerCards] = useState({}); // To track all players' cards and values
-    
-        useEffect(() => {
-            const handleIncomingMessage = (message) => {
-                if (message.hasOwnProperty("Group_ID") && message.hasOwnProperty("Members")) {
-                    if (message.Group_ID !== null) {
-                        setMembers(message.Members || []);
-                        setGroupID(message.Group_ID);
-    
-                        const currentUser = message.Members.find(member => member.Credits !== null);
-                        if (currentUser) {
-                            setUserId(currentUser.User_ID);
-                            setCredits(currentUser.Credits);
+    useEffect(() => {
+        const handleIncomingMessage = (message) => {
+            if (message.hasOwnProperty("Group_ID") && message.hasOwnProperty("Members")) {
+                if (message.Group_ID !== null) {
+                    setGroupID(message.Group_ID);
+
+                    const existingPlayers = [...players]; 
+
+                    message.Members.forEach(member => {
+                        const existingPlayerIndex = existingPlayers.findIndex(player => player.user_id === member.User_ID);
+
+                        if (existingPlayerIndex !== -1) {
+                            existingPlayers[existingPlayerIndex] = {
+                                ...existingPlayers[existingPlayerIndex], 
+                                name: member.Name, 
+                            };
+                        } else {
+                            existingPlayers.push({
+                                user_id: member.User_ID,
+                                name: member.Name,
+                                cards: [],
+                                totalCardValue: 0,
+                                bet: null,
+                                credits: member.Credits
+                            });
                         }
-                    } else {
-                        setMembers([]);
-                        setGroupID(null);
-                        setCredits(null);
-                        setUserId(null);
-                        setAllPlayerCards({});
+                    });
+
+                    const activeUserIds = new Set(message.Members.map(member => member.User_ID));
+                    const filteredPlayers = existingPlayers.filter(player => activeUserIds.has(player.user_id));
+
+                    filteredPlayers.push({
+                        user_id: 0,
+                        name: 'Dealer',
+                        cards: [], 
+                        totalCardValue: 0,
+                        bet: null,
+                        credits: null,
+                    });
+
+                    setPlayers(filteredPlayers);
+
+                    const user = message.Members.find(member => member.Credits !== null);
+                    if (user) {
+                        setUserID(user.User_ID);
                     }
-                } else if (message.Action === 'GAME_FINISHED') {
-                    setGameMessage(`Game Finished! You ${message.Result}.`);
-                } else if (message.Type === "GAME" && message.Message === "Game is starting now!") {
-                    setCards([]);
-                    setTotalCardValue(0);
-                    setAllPlayerCards({}); // Reset all player cards when a new game starts
-                } else if (message.Action === 'CREDITS_UPDATE') {
-                    setCredits(message.Credits);
-                } else if (message.Action === 'BET_PLACED') {
-                    setGameMessage(`Bet of ${message.Bet} placed.`);
-                    setCredits(credits - message.Bet);
-                } else if (message.Action === 'CARD_DRAWN') {
-                    // Check if the card belongs to the current user or another player
-                    if (message.User_ID === userId) {
-                        setCards(prevCards => [...prevCards, message.Card]);
-                        setTotalCardValue(message.Total_Card_Value);
-                    } else {
-                        // For other players, update their cards and scores in allPlayerCards
-                        setAllPlayerCards(prevState => ({
-                            ...prevState,
-                            [message.User_ID]: {
-                                cards: [...(prevState[message.User_ID]?.cards || []), message.Card],
-                                totalCardValue: message.Total_Card_Value
-                            }
-                        }));
-                    }
-                } else if (message.Action === 'HIT') {
-                    if (message.User_ID === userId) {
-                        setCards(prevCards => [...prevCards, message.Card]);
-                        setTotalCardValue(message.Total_Card_Value);
-                    }
+                } else {
+                    setGroupID(null);
+                    setPlayers([]);
                 }
-            };
-    
-            webSocketService.addListener(handleIncomingMessage);
-    
-            return () => {
-                webSocketService.removeListener(handleIncomingMessage);
-            };
-        }, [userId, credits]);
-    
-        return (
-            <div>
-                <h1>Game for group: {groupID}</h1>
-                <button onClick={btn1}>create_group</button>
-                <button onClick={btn2}>check_group</button>
-                <button onClick={btn3}>leave_group</button>
-                <button onClick={btn5}>ready</button>
-                <button onClick={btn6}>unready</button>
-                <button onClick={btn7}>hit</button>
-                <button onClick={btn8}>stand</button>
-                <button onClick={btn11}>bet 20</button>
-    
-                <div className="game-status">
-                    <h2>Game Status</h2>
-                    <p><strong>User ID:</strong> {userId}</p>
-                    <p><strong>Credits:</strong> {credits}</p>
-                    <p><strong>Cards:</strong></p>
-                    <div className="cards-container">
-                        {cards.length > 0 ? (
-                            cards.map((card, index) => (
-                                <img
-                                    key={index}
-                                    src={`/images/cards/${card}`}
-                                    alt={`Card ${card}`}
-                                    style={{ width: 50, margin: 10 }}
-                                />
-                            ))
-                        ) : (
-                            <p>No cards drawn yet.</p>
-                        )}
-                    </div>
-                    <p><strong>Total Card Value:</strong> {totalCardValue}</p>
-                    {gameMessage && <p><strong>Message:</strong> {gameMessage}</p>}
-                </div>
-    
-                {/* Display other players' cards and scores */}
-                <div className="other-players">
-                    <h2>Other Players</h2>
-                    {members
-                        .filter(member => member.User_ID !== userId) // Exclude the current user
-                        .map((member) => (
-                            <div key={member.User_ID} className="player-info">
-                                <p><strong>Player {member.User_ID} ({member.Name}):</strong></p>
-                                <p><strong>Credits:</strong> {member.Credits || 'N/A'}</p>
-                                <p><strong>Cards:</strong></p>
+            } else 
+            if (message.Action === 'GAME_FINISHED') {
+                setEndgameMessage(`Game Finished! ${message.User_ID} ${message.Result}.`);
+                setWarnOnRefresh(false);
+            } else if (message.Type === "GAME") {
+                setGameMessage(message.Message);
+            } else if (message.Action === 'CREDITS_UPDATE') {
+                setPlayers(prevPlayers => prevPlayers.map(player =>
+                    player.user_id === message.User_ID
+                        ? {
+                            ...player,
+                            credits: message.Credits
+                        }
+                        : player
+                ));
+            } else if (message.Action === 'BET_PLACED') {
+                setPlayers(prevPlayers => prevPlayers.map(player =>
+                    player.user_id === message.User_ID
+                        ? {
+                            ...player,
+                            bet: message.Bet,
+                            //credits: player.User_ID == userID ? player.credits - message.Bet : null,
+                            credits: player.user_id === userID ? (player.credits !== null ? player.credits - message.Bet : null) : player.credits,
+                            totalCardValue: 0
+                        }
+                        : player
+                ));
+
+                setPlayers(prevPlayers => prevPlayers.map(player => ({
+                    ...player,
+                    cards: []
+                })));
+                setWarnOnRefresh(true);
+            } else if (message.Action === 'CARD_DRAWN') {
+                setCardsInDeck(message.Cards_In_Deck);
+                setPlayers(prevPlayers => prevPlayers.map(player => {
+                    if (player.user_id === message.User_ID) {
+                        if (player.user_id === 0) {
+                            if (player.cards.length === 2 && player.cards[1] === 'CardDown.png') {
+                                player.cards.splice(1, 1);
+                                //console.log(`SPLICED --- Player ${player.user_id} cards: ${player.cards.join(', ')}`);
+                            }
+                        }
+
+                        return {
+                            ...player,
+                            cards: [...player.cards, message.Card],
+                            totalCardValue: message.Total_Card_Value
+                        };
+                    }
+
+                    return player;
+                }));
+
+                setPlayers(prevPlayers => prevPlayers.map(player => {
+                    //console.log(`Player ${player.user_id} cards: ${player.cards.join(', ')}`);
+                    return player;
+                }));
+            } else if (message.Action === 'HIT') {
+                setCardsInDeck(message.Cards_In_Deck);
+                setPlayers(prevPlayers => prevPlayers.map(player =>
+                    player.user_id === message.User_ID
+                        ? {
+                            ...player,
+                            cards: [...player.cards, message.Card],
+                            totalCardValue: message.Total_Card_Value
+                        }
+                        : player
+                ));
+            }
+        };
+
+        webSocketService.addListener(handleIncomingMessage);
+
+        return () => {
+            webSocketService.removeListener(handleIncomingMessage);
+        };
+    }, []);
+
+    return (
+        <div>
+            <h4>Game for group: {groupID}</h4>
+            <button onClick={btn1}>create_group</button>
+            <button onClick={btn2}>check_group</button>
+            <button onClick={btn3}>leave_group</button>
+            <button onClick={btn5}>ready</button>
+            <button onClick={btn6}>unready</button>
+            <button onClick={btn7}>hit</button>
+            <button onClick={btn8}>stand</button>
+            <button onClick={btn11}>bet 20</button>
+
+            {gameMessage && <p><strong>Message:</strong> {gameMessage}</p>}
+            {endgameMessage && <p><strong>Message:</strong> {endgameMessage}</p>}
+            {cardsInDeck && <p><strong>Cards:</strong> {cardsInDeck}</p>}
+            <div className="players-list">
+                {players
+                    .sort((a, b) => (a.user_id === 0 ? -1 : b.user_id === 0 ? 1 : 0))
+                    .map((player, index) => (
+                        <div key={index} className="player-info">
+                            <p> <strong>Player {player.user_id} ({player.name}) </strong>
+                                <br />
+                                {player.credits !== null ? 'Credits: ' + player.credits : 'No credits'}
+                                <br />
+                                {player.bet !== null ? 'Bet: ' + player.bet : 'No bet'}
+                                <br />
                                 <div className="cards-container">
-                                    {allPlayerCards[member.User_ID]?.cards?.length > 0 ? (
-                                        allPlayerCards[member.User_ID].cards.map((card, index) => (
+                                    Cards:
+                                    {player.cards.length > 0 ? (
+                                        player.cards.map((card, index) => (
                                             <img
                                                 key={index}
                                                 src={`/images/cards/${card}`}
                                                 alt={`Card ${card}`}
-                                                style={{ width: 50, margin: 10 }}
+                                                style={{ width: 40, margin: 10 }}
                                             />
                                         ))
                                     ) : (
-                                        <p>No cards drawn yet.</p>
+                                        <span> none</span>
                                     )}
                                 </div>
-                                <p><strong>Total Card Value:</strong> {allPlayerCards[member.User_ID]?.totalCardValue || 'N/A'}</p>
-                            </div>
-                        ))}
-                </div>
+                                Total Card Value {player.totalCardValue || ''}
+                            </p>
+                        </div>
+                    ))}
             </div>
-        );
-    }
-    
-    // const [userId, setUserId] = useState(null);
-    // const [credits, setCredits] = useState(0);
-    // const [cards, setCards] = useState([]);
-    // const [totalCardValue, setTotalCardValue] = useState(0);
-    // const [gameMessage, setGameMessage] = useState('');
-    // const [members, setMembers] = useState([]);
-    // const [groupID, setGroupID] = useState(null);
-    // const [messages, setMessages] = useState([]);
-
-    // useEffect(() => {
-    //     const handleIncomingMessage = (message) => {
-    //         if (message.hasOwnProperty("Group_ID") && message.hasOwnProperty("Members")) {
-    //             if (message.Group_ID !== null) {
-    //                 setMembers(message.Members || []);
-    //                 setGroupID(message.Group_ID);
-
-    //                 const currentUser = message.Members.find(member => member.Credits !== null);
-    //                 if (currentUser) {
-    //                     setUserId(currentUser.User_ID);
-    //                     setCredits(currentUser.Credits);
-    //                 }
-    //             } else {
-    //                 setMembers([]);
-    //                 setGroupID(null);
-    //                 setCredits(null);
-    //                 setUserId(null);
-    //             }
-    //         } else if (message.Action === 'GAME_FINISHED') {
-    //             setGameMessage(`Game Finished! You ${message.Result}.`);
-    //         } else if (message.Type === "GAME" && message.Message === "Game is starting now!") {
-    //             setCards([]);
-    //             setTotalCardValue([]);
-    //         } else if (message.Action === 'CREDITS_UPDATE') {
-    //             setCredits(message.Credits);
-    //         } else if (message.Action === 'BET_PLACED') {
-    //             setGameMessage(`Bet of ${message.Bet} placed.`);
-    //             setCredits(credits - message.Bet);
-    //         } else if (message.Action === 'CARD_DRAWN') {
-    //             if (message.User_ID === 6) {
-    //                 setCards(prevCards => [...prevCards, message.Card]);
-    //                 setTotalCardValue(message.Total_Card_Value);
-    //             }
-    //         } else if (message.Action === 'HIT') {
-    //             if (message.User_ID === 6) {
-    //                 setCards(prevCards => [...prevCards, message.Card]);
-    //                 setTotalCardValue(message.Total_Card_Value);
-    //             }
-    //         }
-    //     };
-
-    //     webSocketService.addListener(handleIncomingMessage);
-
-    //     return () => {
-    //         webSocketService.removeListener(handleIncomingMessage);
-    //     };
-    // }, []);
-
-    // return (
-    //     <div>
-    //         <h1>Game for group:</h1>
-    //         <button onClick={btn1}>create_group</button>
-    //         <button onClick={btn2}>check_group</button>
-    //         <button onClick={btn3}>leave_group</button>
-    //         <button onClick={btn5}>ready</button>
-    //         <button onClick={btn6}>unready</button>
-    //         <button onClick={btn7}>hit</button>
-    //         <button onClick={btn8}>stand</button>
-    //         <button onClick={btn11}>bet 20</button>
-
-    //         <div className="game-status">
-    //             <h2>Game Status</h2>
-    //             <p><strong>User ID:</strong> {userId}</p>
-    //             <p><strong>Credits:</strong> {credits}</p>
-    //             <p><strong>Cards:</strong></p>
-    //             <div className="cards-container">
-    //                 {cards.length > 0 ? (
-    //                     cards.map((card, index) => (
-    //                         <img
-    //                             key={index}
-    //                             src={`/images/cards/${card}`}
-    //                             alt={`Card ${card}`}
-    //                             style={{ width: 50, margin: 10 }}
-    //                         />
-    //                     ))
-    //                 ) : (
-    //                     <p>No cards drawn yet.</p>
-    //                 )}
-    //             </div>                <p><strong>Total Card Value:</strong> {totalCardValue}</p>
-    //             {gameMessage && <p><strong>Message:</strong> {gameMessage}</p>}
-    //         </div>
-    //     </div>
-
-    // );
-//};
-
+        </div>
+    );
+}

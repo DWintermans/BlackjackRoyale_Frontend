@@ -13,16 +13,6 @@ import webSocketService from '../../lib/api/requests/websocketservice.js';
 export default function Game() {
     const [groupID, setGroupID] = useState(null)
 
-    //call once on page load to check if in game already
-    useEffect(() => {
-        const data = {
-            category: "group",
-            action: "check_group",
-            token: localStorage.getItem("jwt")
-        };
-        webSocketService.sendMessage(data);
-    }, []);
-
     useEffect(() => {
         const handleIncomingMessage = (message) => {
             if (

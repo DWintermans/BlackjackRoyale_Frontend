@@ -1,4 +1,5 @@
 import React from 'react';
+import webSocketService from '../../lib/api/requests/websocketservice';
 import './Header.css';
 
 export default function Header() {
@@ -6,9 +7,11 @@ export default function Header() {
   const handleLogout = () => {
     localStorage.removeItem('jwt');
     window.location.href = '/';
+    webSocketService.close();
   };
 
   const isLoggedIn = !!localStorage.getItem('jwt');
+
   return (
     <div className="header">
       <div className="logo">

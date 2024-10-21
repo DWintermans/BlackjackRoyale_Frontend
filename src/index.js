@@ -1,5 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom/client";
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   createBrowserRouter,
   RouterProvider,
@@ -8,16 +10,32 @@ import {
 import "./index.css";
 import Login from "./pages/login";
 import Game from "./pages/game";
+import Index from "./pages/index";
 import ProtectedRoute from "./components/ProtectedRoute";
+
+const RedirectIfLoggedIn = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+      if (!!localStorage.getItem('jwt')) {
+          navigate('/'); 
+      }
+  }, [navigate]);
+
+  return null; 
+};
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <div>Hello world!</div>,
+    element: <Index />
   },
   {
     path: "/login",
-    element: <Login />
+    element: (
+      <RedirectIfLoggedIn />,
+      <Login />
+    )
   },
   {
     path: "/game",
