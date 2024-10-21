@@ -121,54 +121,67 @@ export default function GeneralGame() {
                 if (message.Group_ID !== null) {
                     setGroupID(message.Group_ID);
 
-                    const existingPlayers = [...players]; 
+                    setPlayers(prevPlayers => {
+                        const existingPlayers = [...prevPlayers];
 
-                    message.Members.forEach(member => {
-                        const existingPlayerIndex = existingPlayers.findIndex(player => player.user_id === member.User_ID);
+                        const activeUserIds = new Set(message.Members.map(member => member.User_ID));
 
-                        if (existingPlayerIndex !== -1) {
-                            existingPlayers[existingPlayerIndex] = {
-                                ...existingPlayers[existingPlayerIndex], 
-                                name: member.Name, 
-                            };
-                        } else {
-                            existingPlayers.push({
-                                user_id: member.User_ID,
-                                name: member.Name,
+                        const filteredPlayers = existingPlayers.filter(
+                            player => activeUserIds.has(player.user_id) || player.user_id === 0
+                        );
+
+                        message.Members.forEach(member => {
+                            const existingPlayerIndex = filteredPlayers.findIndex(player => player.user_id === member.User_ID);
+
+                            if (existingPlayerIndex !== -1) {
+                                //player already exists
+                                filteredPlayers[existingPlayerIndex] = {
+                                    ...filteredPlayers[existingPlayerIndex],
+                                    name: member.Name,
+                                    credits: member.Credits !== null ? member.Credits : filteredPlayers[existingPlayerIndex].credits,
+                                };
+                            } else {
+                                //add new player
+                                filteredPlayers.push({
+                                    user_id: member.User_ID,
+                                    name: member.Name,
+                                    cards: [],
+                                    totalCardValue: 0,
+                                    bet: null,
+                                    credits: member.Credits,
+                                });
+                            }
+                        });
+
+                        //add dealer if not existing
+                        if (!filteredPlayers.some(player => player.user_id === 0)) {
+                            filteredPlayers.push({
+                                user_id: 0,
+                                name: 'Dealer',
                                 cards: [],
                                 totalCardValue: 0,
                                 bet: null,
-                                credits: member.Credits
+                                credits: null,
                             });
                         }
+
+                        return filteredPlayers;
                     });
 
-                    const activeUserIds = new Set(message.Members.map(member => member.User_ID));
-                    const filteredPlayers = existingPlayers.filter(player => activeUserIds.has(player.user_id));
 
-                    filteredPlayers.push({
-                        user_id: 0,
-                        name: 'Dealer',
-                        cards: [], 
-                        totalCardValue: 0,
-                        bet: null,
-                        credits: null,
-                    });
-
-                    setPlayers(filteredPlayers);
-
-                    const user = message.Members.find(member => member.Credits !== null);
-                    if (user) {
-                        setUserID(user.User_ID);
-                    }
                 } else {
                     setGroupID(null);
                     setPlayers([]);
                 }
-            } else 
-            if (message.Action === 'GAME_FINISHED') {
+            } else if (message.Action === 'GAME_FINISHED') {
                 setEndgameMessage(`Game Finished! ${message.User_ID} ${message.Result}.`);
                 setWarnOnRefresh(false);
+            } else if (message.Action === 'GAME_STARTED') {
+                //remove any cards laying on table
+                setPlayers(prevPlayers => prevPlayers.map(player => ({
+                    ...player,
+                    cards: []
+                })));
             } else if (message.Type === "GAME") {
                 setGameMessage(message.Message);
             } else if (message.Action === 'CREDITS_UPDATE') {
@@ -186,17 +199,22 @@ export default function GeneralGame() {
                         ? {
                             ...player,
                             bet: message.Bet,
-                            //credits: player.User_ID == userID ? player.credits - message.Bet : null,
                             credits: player.user_id === userID ? (player.credits !== null ? player.credits - message.Bet : null) : player.credits,
                             totalCardValue: 0
                         }
                         : player
                 ));
 
-                setPlayers(prevPlayers => prevPlayers.map(player => ({
-                    ...player,
-                    cards: []
-                })));
+                //clear cards for those who placed a new bet
+                setPlayers(prevPlayers => prevPlayers.map(player =>
+                    player.user_id === message.User_ID
+                        ? {
+                            ...player,
+                            cards: []
+                        }
+                        : player
+                ));
+
                 setWarnOnRefresh(true);
             } else if (message.Action === 'CARD_DRAWN') {
                 setCardsInDeck(message.Cards_In_Deck);
@@ -205,7 +223,6 @@ export default function GeneralGame() {
                         if (player.user_id === 0) {
                             if (player.cards.length === 2 && player.cards[1] === 'CardDown.png') {
                                 player.cards.splice(1, 1);
-                                //console.log(`SPLICED --- Player ${player.user_id} cards: ${player.cards.join(', ')}`);
                             }
                         }
 
@@ -220,7 +237,6 @@ export default function GeneralGame() {
                 }));
 
                 setPlayers(prevPlayers => prevPlayers.map(player => {
-                    //console.log(`Player ${player.user_id} cards: ${player.cards.join(', ')}`);
                     return player;
                 }));
             } else if (message.Action === 'HIT') {
@@ -266,12 +282,9 @@ export default function GeneralGame() {
                         <div key={index} className="player-info">
                             <p> <strong>Player {player.user_id} ({player.name}) </strong>
                                 <br />
-                                {player.credits !== null ? 'Credits: ' + player.credits : 'No credits'}
-                                <br />
-                                {player.bet !== null ? 'Bet: ' + player.bet : 'No bet'}
-                                <br />
+                                {player.credits !== null ? <> Credits: {player.credits} <br /> </> : null}
+                                {player.bet !== null ? <> Bet: {player.bet} <br /> </> : null}
                                 <div className="cards-container">
-                                    Cards:
                                     {player.cards.length > 0 ? (
                                         player.cards.map((card, index) => (
                                             <img
@@ -281,11 +294,9 @@ export default function GeneralGame() {
                                                 style={{ width: 40, margin: 10 }}
                                             />
                                         ))
-                                    ) : (
-                                        <span> none</span>
-                                    )}
+                                    ) : (null)}
                                 </div>
-                                Total Card Value {player.totalCardValue || ''}
+                                {<> Card value: {player.totalCardValue} </> || ''}
                             </p>
                         </div>
                     ))}
