@@ -17,12 +17,21 @@ const RedirectIfLoggedIn = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-      if (!!localStorage.getItem('jwt')) {
-          navigate('/'); 
-      }
+    if (localStorage.getItem('jwt')) {
+      navigate('/game');
+    }
   }, [navigate]);
 
-  return null; 
+  return null;
+};
+
+const LoginWrapper = () => {
+  return (
+    <>
+      <RedirectIfLoggedIn />  
+      <Login />              
+    </>
+  );
 };
 
 const router = createBrowserRouter([
@@ -32,19 +41,10 @@ const router = createBrowserRouter([
   },
   {
     path: "/login",
-    element: (
-      <RedirectIfLoggedIn />,
-      <Login />
-    )
+    element: <LoginWrapper />
   },
   {
     path: "/game",
-    element: (
-      <ProtectedRoute element={<Game />} />
-    ),
-  },
-  {
-    path: "/game/:groupID",
     element: (
       <ProtectedRoute element={<Game />} />
     ),

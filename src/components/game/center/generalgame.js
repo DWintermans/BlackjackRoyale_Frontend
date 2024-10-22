@@ -105,12 +105,30 @@ export default function GeneralGame() {
         webSocketService.sendMessage(data);
     };
 
+    const btn9 = (e) => {
+        const data = {
+            category: "game",
+            action: "double",
+            token: localStorage.getItem("jwt")
+        };
+        webSocketService.sendMessage(data);
+    };
+
+    const btn10 = (e) => {
+        const data = {
+            category: "game",
+            action: "surrender",
+            token: localStorage.getItem("jwt")
+        };
+        webSocketService.sendMessage(data);
+    };
+
     const btn11 = (e) => {
         const data = {
             category: "game",
             action: "bet",
             token: localStorage.getItem("jwt"),
-            bet: 20
+            bet: 10
         };
         webSocketService.sendMessage(data);
     };
@@ -250,6 +268,31 @@ export default function GeneralGame() {
                         }
                         : player
                 ));
+            } else if (message.Action === 'DOUBLE') {
+                setCardsInDeck(message.Cards_In_Deck);
+                setPlayers(prevPlayers => prevPlayers.map(player =>
+                    player.user_id === message.User_ID
+                        ? {
+                            ...player,
+                            cards: [...player.cards, message.Card],
+                            bet: message.Bet,
+                            credits: player.user_id === userID ? (player.credits !== null ? player.credits - message.Bet : null) : player.credits,
+                            totalCardValue: message.Total_Card_Value
+                        }
+                        : player
+                ));
+            } else if (message.Action === 'SURRENDER') {
+                setCardsInDeck(message.Cards_In_Deck);
+                setPlayers(prevPlayers => prevPlayers.map(player =>
+                    player.user_id === message.User_ID
+                        ? {
+                            ...player,
+                            cards: [],
+                            credits: player.user_id === userID ? (player.credits !== null ? player.credits - message.Bet : null) : player.credits,
+                            totalCardValue: message.Total_Card_Value
+                        }
+                        : player
+                ));
             }
         };
 
@@ -270,7 +313,9 @@ export default function GeneralGame() {
             <button onClick={btn6}>unready</button>
             <button onClick={btn7}>hit</button>
             <button onClick={btn8}>stand</button>
-            <button onClick={btn11}>bet 20</button>
+            <button onClick={btn9}>double</button>
+            <button onClick={btn10}>surrender</button>
+            <button onClick={btn11}>bet 10</button>
 
             {gameMessage && <p><strong>Message:</strong> {gameMessage}</p>}
             {endgameMessage && <p><strong>Message:</strong> {endgameMessage}</p>}
