@@ -123,6 +123,24 @@ export default function GeneralGame() {
         webSocketService.sendMessage(data);
     };
 
+    const btn12 = (e) => {
+        const data = {
+            category: "game",
+            action: "split",
+            token: localStorage.getItem("jwt"),
+        };
+        webSocketService.sendMessage(data);
+    };
+
+    const btn13 = (e) => {
+        const data = {
+            category: "game",
+            action: "insure",
+            token: localStorage.getItem("jwt"),
+        };
+        webSocketService.sendMessage(data);
+    };
+
     const btn11 = (e) => {
         const data = {
             category: "game",
@@ -198,7 +216,8 @@ export default function GeneralGame() {
                 //remove any cards laying on table
                 setPlayers(prevPlayers => prevPlayers.map(player => ({
                     ...player,
-                    cards: []
+                    cards: [],
+                    hands: []
                 })));
             } else if (message.Type === "GAME") {
                 setGameMessage(message.Message);
@@ -234,53 +253,104 @@ export default function GeneralGame() {
                 ));
 
                 setWarnOnRefresh(true);
-            } else if (message.Action === 'CARD_DRAWN') {
+            } else if (message.Action === 'CARD_DRAWN' || message.Action === 'HIT') {
                 setCardsInDeck(message.Cards_In_Deck);
+
                 setPlayers(prevPlayers => prevPlayers.map(player => {
                     if (player.user_id === message.User_ID) {
+                        const updatedHands = Array.isArray(player.hands) ? [...player.hands] : [];
+
+                        const handIndex = message.Hand || 0;
+
+                        if (!updatedHands[handIndex]) {
+                            updatedHands[handIndex] = { cards: [], totalCardValue: 0 };
+                        }
+
                         if (player.user_id === 0) {
-                            if (player.cards.length === 2 && player.cards[1] === 'CardDown.png') {
-                                player.cards.splice(1, 1);
+                            if (updatedHands[handIndex].cards.length === 2 && updatedHands[handIndex].cards[1] === 'CardDown.png') {
+                                updatedHands[handIndex].cards.splice(1, 1);
                             }
                         }
 
+                        updatedHands[handIndex] = {
+                            ...updatedHands[handIndex],
+                            cards: [...updatedHands[handIndex].cards, message.Card],
+                            totalCardValue: message.Total_Card_Value
+                        };
+
                         return {
                             ...player,
-                            cards: [...player.cards, message.Card],
-                            totalCardValue: message.Total_Card_Value
+                            hands: updatedHands
                         };
                     }
 
                     return player;
                 }));
-
+            } else if (message.Action === 'SPLIT') {
                 setPlayers(prevPlayers => prevPlayers.map(player => {
+                    if (player.user_id === message.User_ID) {
+                        const handIndex = message.Hand || 0;
+
+                        if (player.hands && player.hands.length > handIndex) {
+                            const currentHand = player.hands[handIndex];
+
+                            if (currentHand.cards.length >= 2) {
+                                const firstCard = currentHand.cards[0];
+                                const lastCard = currentHand.cards[1];
+
+                                const newHand1 = {
+                                    cards: [firstCard], 
+                                    totalCardValue: currentHand.totalCardValue / 2 
+                                };
+
+                                const newHand2 = {
+                                    cards: [lastCard],
+                                    totalCardValue: currentHand.totalCardValue / 2 
+                                };
+
+                                const updatedHands = [
+                                    ...player.hands.slice(0, handIndex),
+                                    newHand1,
+                                    newHand2,
+                                    ...player.hands.slice(handIndex + 1)
+                                ];
+
+                                return {
+                                    ...player,
+                                    hands: updatedHands
+                                };
+                            }
+                        }
+                    }
                     return player;
                 }));
-            } else if (message.Action === 'HIT') {
-                setCardsInDeck(message.Cards_In_Deck);
-                setPlayers(prevPlayers => prevPlayers.map(player =>
-                    player.user_id === message.User_ID
-                        ? {
-                            ...player,
-                            cards: [...player.cards, message.Card],
-                            totalCardValue: message.Total_Card_Value
-                        }
-                        : player
-                ));
             } else if (message.Action === 'DOUBLE') {
                 setCardsInDeck(message.Cards_In_Deck);
-                setPlayers(prevPlayers => prevPlayers.map(player =>
-                    player.user_id === message.User_ID
-                        ? {
-                            ...player,
-                            cards: [...player.cards, message.Card],
-                            bet: message.Bet,
-                            credits: player.user_id === userID ? (player.credits !== null ? player.credits - message.Bet : null) : player.credits,
-                            totalCardValue: message.Total_Card_Value
+                setPlayers(prevPlayers => prevPlayers.map(player => {
+                    if (player.user_id === message.User_ID) {
+                        const handIndex = message.Hand || 0; 
+
+                        if (player.hands && player.hands.length > handIndex) {
+                            const updatedHands = [...player.hands]; 
+
+                            const currentHand = updatedHands[handIndex]; 
+
+                            updatedHands[handIndex] = {
+                                ...currentHand,
+                                cards: [...currentHand.cards, message.Card], 
+                                totalCardValue: message.Total_Card_Value 
+                            };
+
+                            return {
+                                ...player,
+                                hands: updatedHands,
+                                bet: message.Bet, 
+                                credits: player.user_id === userID ? (player.credits !== null ? player.credits - message.Bet : null) : player.credits
+                            };
                         }
-                        : player
-                ));
+                    }
+                    return player;
+                }));
             } else if (message.Action === 'SURRENDER') {
                 setCardsInDeck(message.Cards_In_Deck);
                 setPlayers(prevPlayers => prevPlayers.map(player =>
@@ -315,6 +385,11 @@ export default function GeneralGame() {
             <button onClick={btn8}>stand</button>
             <button onClick={btn9}>double</button>
             <button onClick={btn10}>surrender</button>
+
+            <button onClick={btn12}>split</button>
+
+            <button onClick={btn13}>insure</button>
+
             <button onClick={btn11}>bet 10</button>
 
             {gameMessage && <p><strong>Message:</strong> {gameMessage}</p>}
@@ -325,24 +400,34 @@ export default function GeneralGame() {
                     .sort((a, b) => (a.user_id === 0 ? -1 : b.user_id === 0 ? 1 : 0))
                     .map((player, index) => (
                         <div key={index} className="player-info">
-                            <p> <strong>Player {player.user_id} ({player.name}) </strong>
+                            <p>
+                                <strong>Player {player.user_id} ({player.name})</strong>
                                 <br />
-                                {player.credits !== null ? <> Credits: {player.credits} <br /> </> : null}
-                                {player.bet !== null ? <> Bet: {player.bet} <br /> </> : null}
-                                <div className="cards-container">
-                                    {player.cards.length > 0 ? (
-                                        player.cards.map((card, index) => (
-                                            <img
-                                                key={index}
-                                                src={`/images/cards/${card}`}
-                                                alt={`Card ${card}`}
-                                                style={{ width: 40, margin: 10 }}
-                                            />
-                                        ))
-                                    ) : (null)}
-                                </div>
-                                {<> Card value: {player.totalCardValue} </> || ''}
+                                {player.credits !== null && <>Credits: {player.credits}<br /></>}
+                                {player.bet !== null && <>Bet: {player.bet}<br /></>}
                             </p>
+                            {Array.isArray(player.hands) && player.hands.length > 0 ? (
+                                player.hands.map((hand, handIndex) => (
+                                    hand ? (
+                                        <div key={handIndex} className="hand-info">
+                                            <p><strong>Hand {handIndex}</strong></p>
+                                            <div className="cards-container">
+                                                {Array.isArray(hand.cards) && hand.cards.length > 0 ? (
+                                                    hand.cards.map((card, cardIndex) => (
+                                                        <img
+                                                            key={cardIndex}
+                                                            src={`/images/cards/${card}`}
+                                                            alt={`Card ${card}`}
+                                                            style={{ width: 40, margin: 10 }}
+                                                        />
+                                                    ))
+                                                ) : null}
+                                            </div>
+                                            <p>Card value: {hand.totalCardValue || 0}</p>
+                                        </div>
+                                    ) : null 
+                                ))
+                            ) : null}
                         </div>
                     ))}
             </div>
