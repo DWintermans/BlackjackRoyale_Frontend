@@ -226,10 +226,15 @@ export default function GeneralGame() {
                     player.user_id === message.User_ID
                         ? {
                             ...player,
-                            credits: message.Credits
+                            credits: message.Credits,
                         }
                         : player
                 ));
+
+                setPlayers(prevPlayers => prevPlayers.map(player => ({
+                    ...player,
+                    bet: "--",
+                })));
             } else if (message.Action === 'BET_PLACED') {
                 setPlayers(prevPlayers => prevPlayers.map(player =>
                     player.user_id === message.User_ID
@@ -298,15 +303,32 @@ export default function GeneralGame() {
                                 const firstCard = currentHand.cards[0];
                                 const lastCard = currentHand.cards[1];
 
-                                const newHand1 = {
-                                    cards: [firstCard], 
-                                    totalCardValue: currentHand.totalCardValue / 2 
-                                };
+                                let newHand1, newHand2; 
+                                
+                                console.log(currentHand.totalCardValue);
+                                if (currentHand.totalCardValue == "2/11") {
 
-                                const newHand2 = {
-                                    cards: [lastCard],
-                                    totalCardValue: currentHand.totalCardValue / 2 
-                                };
+                                    newHand1 = {
+                                        cards: [firstCard],
+                                        totalCardValue: "1/11"
+                                    };
+
+                                    newHand2 = {
+                                        cards: [lastCard],
+                                        totalCardValue: "1/11"
+                                    };
+                                } else {
+                                    newHand1 = {
+                                        cards: [firstCard],
+                                        totalCardValue: currentHand.totalCardValue / 2
+                                    };
+
+                                    newHand2 = {
+                                        cards: [lastCard],
+                                        totalCardValue: currentHand.totalCardValue / 2
+                                    };
+
+                                }
 
                                 const updatedHands = [
                                     ...player.hands.slice(0, handIndex),
@@ -328,23 +350,23 @@ export default function GeneralGame() {
                 setCardsInDeck(message.Cards_In_Deck);
                 setPlayers(prevPlayers => prevPlayers.map(player => {
                     if (player.user_id === message.User_ID) {
-                        const handIndex = message.Hand || 0; 
+                        const handIndex = message.Hand || 0;
 
                         if (player.hands && player.hands.length > handIndex) {
-                            const updatedHands = [...player.hands]; 
+                            const updatedHands = [...player.hands];
 
-                            const currentHand = updatedHands[handIndex]; 
+                            const currentHand = updatedHands[handIndex];
 
                             updatedHands[handIndex] = {
                                 ...currentHand,
-                                cards: [...currentHand.cards, message.Card], 
-                                totalCardValue: message.Total_Card_Value 
+                                cards: [...currentHand.cards, message.Card],
+                                totalCardValue: message.Total_Card_Value
                             };
 
                             return {
                                 ...player,
                                 hands: updatedHands,
-                                bet: message.Bet, 
+                                bet: message.Bet,
                                 credits: player.user_id === userID ? (player.credits !== null ? player.credits - message.Bet : null) : player.credits
                             };
                         }
@@ -357,9 +379,9 @@ export default function GeneralGame() {
                     player.user_id === message.User_ID
                         ? {
                             ...player,
-                            cards: [],
+                            hands: [],
                             credits: player.user_id === userID ? (player.credits !== null ? player.credits - message.Bet : null) : player.credits,
-                            totalCardValue: message.Total_Card_Value
+                            totalCardValue: 0
                         }
                         : player
                 ));
@@ -425,7 +447,7 @@ export default function GeneralGame() {
                                             </div>
                                             <p>Card value: {hand.totalCardValue || 0}</p>
                                         </div>
-                                    ) : null 
+                                    ) : null
                                 ))
                             ) : null}
                         </div>
