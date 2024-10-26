@@ -201,6 +201,12 @@ export default function GeneralGame() {
                             });
                         }
 
+
+                        const currentUser = message.Members.find(member => member.Credits !== null);
+                        if (currentUser) {
+                            setUserID(currentUser.User_ID);
+                        }
+
                         return filteredPlayers;
                     });
 
@@ -305,7 +311,6 @@ export default function GeneralGame() {
 
                                 let newHand1, newHand2; 
                                 
-                                console.log(currentHand.totalCardValue);
                                 if (currentHand.totalCardValue == "2/11") {
 
                                     newHand1 = {
