@@ -7,9 +7,4 @@ export const CreditsUpdate = (message, setPlayers) => {
             }
             : player
     ));
-
-    setPlayers(prevPlayers => prevPlayers.map(player => ({
-        ...player,
-        bet: "--",
-    })));
 };

@@ -15,7 +15,7 @@ export const handleIncomingMessage = (message, setGroupID, setPlayers, setUserID
             break;
 
         case message.Action === 'GAME_FINISHED':
-            GameFinished(message, setEndgameMessage, setWarnOnRefresh);
+            GameFinished(message, setPlayers, setEndgameMessage, setWarnOnRefresh);
             break;
 
         case message.Action === 'GAME_STARTED':

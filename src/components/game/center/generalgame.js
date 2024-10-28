@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import webSocketService from '../../../lib/api/requests/websocketservice';
 import { handleIncomingMessage } from './handleincomingmessage';
-
+import './generalgame.css';
 
 export default function GeneralGame() {
     const [players, setPlayers] = useState([]);
@@ -44,25 +44,7 @@ export default function GeneralGame() {
         };
     }, [WarnOnRefresh]);
 
-    const btn1 = (e) => {
-        const data = {
-            category: "group",
-            action: "create_group",
-            token: localStorage.getItem("jwt")
-        };
-        webSocketService.sendMessage(data);
-    };
-
-    const btn2 = (e) => {
-        const data = {
-            category: "group",
-            action: "check_group",
-            token: localStorage.getItem("jwt")
-        };
-        webSocketService.sendMessage(data);
-    };
-
-    const btn3 = (e) => {
+    const leave_group = (e) => {
         const data = {
             category: "group",
             action: "leave_group",
@@ -71,7 +53,7 @@ export default function GeneralGame() {
         webSocketService.sendMessage(data);
     };
 
-    const btn5 = (e) => {
+    const ready = (e) => {
         const data = {
             category: "group",
             action: "ready",
@@ -80,7 +62,7 @@ export default function GeneralGame() {
         webSocketService.sendMessage(data);
     };
 
-    const btn6 = (e) => {
+    const unready = (e) => {
         const data = {
             category: "group",
             action: "unready",
@@ -89,16 +71,16 @@ export default function GeneralGame() {
         webSocketService.sendMessage(data);
     };
 
-    const btn7 = (e) => {
+    const hit = (e) => {
         const data = {
             category: "game",
             action: "hit",
             token: localStorage.getItem("jwt")
         };
         webSocketService.sendMessage(data);
-    };
+    }
 
-    const btn8 = (e) => {
+    const stand = (e) => {
         const data = {
             category: "game",
             action: "stand",
@@ -107,7 +89,7 @@ export default function GeneralGame() {
         webSocketService.sendMessage(data);
     };
 
-    const btn9 = (e) => {
+    const double = (e) => {
         const data = {
             category: "game",
             action: "double",
@@ -116,7 +98,7 @@ export default function GeneralGame() {
         webSocketService.sendMessage(data);
     };
 
-    const btn10 = (e) => {
+    const surrender = (e) => {
         const data = {
             category: "game",
             action: "surrender",
@@ -125,7 +107,7 @@ export default function GeneralGame() {
         webSocketService.sendMessage(data);
     };
 
-    const btn12 = (e) => {
+    const split = (e) => {
         const data = {
             category: "game",
             action: "split",
@@ -134,7 +116,7 @@ export default function GeneralGame() {
         webSocketService.sendMessage(data);
     };
 
-    const btn13 = (e) => {
+    const insure = (e) => {
         const data = {
             category: "game",
             action: "insure",
@@ -143,7 +125,7 @@ export default function GeneralGame() {
         webSocketService.sendMessage(data);
     };
 
-    const btn11 = (e) => {
+    const bet = (e) => {
         const data = {
             category: "game",
             action: "bet",
@@ -165,61 +147,155 @@ export default function GeneralGame() {
         };
     }, []);
 
+    const playerPositions = [
+        { top: '100px', left: '345px' }, 
+
+        { top: '300px', left: '638px' }, 
+        { top: '300px', left: '700px' }, 
+        { top: '400px', left: '800px' }, 
+        { top: '500px', left: '900px' }, 
+    ];
+
+
+    const nonDealerNamePositions = [
+        { top: '410px', left: '630px' }, 
+        { top: '300px', left: '700px' }, 
+        { top: '400px', left: '800px' }, 
+        { top: '500px', left: '900px' }, 
+    ];
+
     return (
         <div>
-            <h4>Game for group: {groupID}</h4>
-            <button onClick={btn1}>create_group</button>
-            <button onClick={btn2}>check_group</button>
-            <button onClick={btn3}>leave_group</button>
-            <button onClick={btn5}>ready</button>
-            <button onClick={btn6}>unready</button>
-            <button onClick={btn7}>hit</button>
-            <button onClick={btn8}>stand</button>
-            <button onClick={btn9}>double</button>
-            <button onClick={btn10}>surrender</button>
-            <button onClick={btn12}>split</button>
-            <button onClick={btn13}>insure</button>
-            <button onClick={btn11}>bet 10</button>
+            <div className="board-container">
+                <img src="/images/board.png" alt="board" className="board-img-style" />
 
-            {gameMessage && <p><strong>Message:</strong> {gameMessage}</p>}
-            {endgameMessage && <p><strong>Message:</strong> {endgameMessage}</p>}
-            {cardsInDeck && <p><strong>Cards:</strong> {cardsInDeck}</p>}
-            <div className="players-list">
-                {players
-                    .sort((a, b) => (a.user_id === 0 ? -1 : b.user_id === 0 ? 1 : 0))
-                    .map((player, index) => (
-                        <div key={index} className="player-info">
-                            <p>
-                                <strong>Player {player.user_id} ({player.name})</strong>
-                                <br />
-                                {player.credits !== null && <>Credits: {player.credits}<br /></>}
-                                {player.bet !== null && <>Bet: {player.bet}<br /></>}
-                            </p>
-                            {Array.isArray(player.hands) && player.hands.length > 0 ? (
-                                player.hands.map((hand, handIndex) => (
-                                    hand ? (
-                                        <div key={handIndex} className="hand-info">
-                                            <p><strong>Hand {handIndex}</strong></p>
-                                            <div className="cards-container">
-                                                {Array.isArray(hand.cards) && hand.cards.length > 0 ? (
-                                                    hand.cards.map((card, cardIndex) => (
-                                                        <img
-                                                            key={cardIndex}
-                                                            src={`/images/cards/${card}`}
-                                                            alt={`Card ${card}`}
-                                                            style={{ width: 40, margin: 10 }}
-                                                        />
-                                                    ))
-                                                ) : null}
-                                            </div>
-                                            <p>Card value: {hand.totalCardValue || 0}</p>
-                                        </div>
-                                    ) : null
-                                ))
-                            ) : null}
-                        </div>
-                    ))}
+                <div className="players-list">
+                    {players
+                        .sort((a, b) => (a.user_id === 0 ? -1 : b.user_id === 0 ? 1 : 0))
+                        .map((player, index) => {
+                            const position = playerPositions[index] || { top: '500px', left: '500px' }; 
+                            return (
+                                <div
+                                    key={player.user_id}
+                                    className="player-info"
+                                    style={{
+                                        position: 'absolute',
+                                        top: position.top,
+                                        left: position.left,
+                                        backgroundColor: 'rgba(0, 128, 0, 0.6)',
+                                        border: '1px solid red',
+                                        color: 'white',
+                                        textAlign: 'center',
+                                        transform: 'translateX(-50%)',
+                                        padding: '10px',
+                                    }}
+                                >
+
+                                    {/*hands*/}
+                                    <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                        {Array.isArray(player.hands) && player.hands.length > 0 && (
+                                            player.hands.map((hand, handIndex) => (
+                                                hand && (
+                                                    <div
+                                                        key={handIndex}
+                                                        className="hand-info"
+                                                        style={{
+                                                            position: 'relative',
+                                                            display: 'inline-block',
+                                                            marginRight: handIndex < player.hands.length - 1 ? '35px' : '0',
+                                                        }}
+                                                    >
+
+                                                        <div className="cards-container" style={{ position: 'relative', display: 'flex', justifyContent: 'center' }}>
+                                                            {Array.isArray(hand.cards) && hand.cards.length > 0 ? (
+                                                                hand.cards.map((card, cardIndex) => (
+                                                                    <img
+                                                                        key={cardIndex}
+                                                                        src={`/images/cards/${card}`}
+                                                                        alt={`Card ${card}`}
+                                                                        style={{
+                                                                            width: player.user_id !== 0 ? 35 : 45,
+                                                                            position: 'absolute',
+                                                                            top: player.user_id !== 0 ? `${cardIndex * -20}px` : '0px',
+                                                                            left: player.user_id !== 0 ? `${cardIndex * 10}px` : `${cardIndex * 50}px`,
+                                                                            zIndex: cardIndex,
+                                                                        }}
+                                                                    />
+                                                                ))
+                                                            ) : null}
+                                                        </div>
+
+                                                        {/*card val and result*/}
+                                                        <p style={{ marginTop: player.user_id === 0 ? '80px' : '60px', textAlign: 'center', color: 'white' }}>
+                                                            ({hand.totalCardValue || 0})
+                                                            {hand.credit_result && (
+                                                                <>
+                                                                    <br />
+                                                                    <span
+                                                                        style={{
+                                                                            fontWeight: 'bold',
+                                                                            color: hand.credit_result > 0 ? 'white' : 'darkred'
+                                                                        }}
+                                                                    >
+                                                                        {hand.credit_result > 0 ? `+${hand.credit_result}` : hand.credit_result}
+                                                                    </span>
+                                                                </>
+                                                            )}
+                                                        </p>
+                                                    </div>
+                                                )
+                                            ))
+                                        )}
+                                    </div>
+                                </div>
+                            );
+                        })}
+
+                    <div>
+                        {players
+                            .filter(player => player.user_id !== 0)
+                            .map((player, index) => (
+                                <p key={player.user_id} style={{
+                                    position: 'absolute',
+                                    top: nonDealerNamePositions[index].top,
+                                    left: nonDealerNamePositions[index].left,
+                                    margin: 0,
+                                    color: 'white',
+                                    textAlign: 'center',
+                                }}>
+                                    <strong>{player.name}</strong>
+                                </p>
+                            ))}
+                    </div>
+                </div>
+
+                <div
+                    onClick={() => hit()}
+                    className="clickable-area hit"
+                />
+
+                <div
+                    onClick={() => bet()}
+                    className="clickable-area bet"
+                />
+
+                <div
+                    onClick={() => stand()}
+                    className="clickable-area stand"
+                />
             </div>
+
+            <button onClick={() => ready()}>ready</button>
+            <button onClick={() => unready()}>unready</button>
+            <button onClick={() => hit()}>hit</button>
+            <button onClick={() => stand()}>stand</button>
+            <button onClick={() => double()}>double</button>
+            <button onClick={() => surrender()}>surrender</button>
+            <button onClick={() => split()}>split</button>
+            <button onClick={() => insure()}>insure</button>
+            <button onClick={() => bet()}>bet 10</button>
         </div>
+
+
     );
 }

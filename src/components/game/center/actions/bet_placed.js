@@ -4,7 +4,7 @@ export const BetPlaced = (message, setPlayers, setWarnOnRefresh, userID) => {
             ? {
                 ...player,
                 bet: message.Bet,
-                credits: player.user_id === userID ? (player.credits !== null ? player.credits - message.Bet : null) : player.credits,
+                credits: player.credits,
                 totalCardValue: 0
             }
             : player
