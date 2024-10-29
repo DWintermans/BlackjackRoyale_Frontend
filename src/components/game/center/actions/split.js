@@ -12,7 +12,7 @@ export const Split = (message, setPlayers) => {
 
                     let newHand1, newHand2; 
                     
-                    if (currentHand.totalCardValue == "2/11") {
+                    if (currentHand.totalCardValue == "2/12") {
 
                         newHand1 = {
                             cards: [firstCard],

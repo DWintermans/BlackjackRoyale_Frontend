@@ -11,6 +11,7 @@ export default function GeneralGame() {
     const [endgameMessage, setEndgameMessage] = useState('');
     const [WarnOnRefresh, setWarnOnRefresh] = useState(false);
     const [cardsInDeck, setCardsInDeck] = useState('');
+    const [playerBet, setPlayerBet] = useState(10);
 
     useEffect(() => {
         const data = {
@@ -130,9 +131,24 @@ export default function GeneralGame() {
             category: "game",
             action: "bet",
             token: localStorage.getItem("jwt"),
-            bet: 10
+            bet: playerBet
         };
         webSocketService.sendMessage(data);
+    };
+
+    const clear_bets = (e) => {
+        setPlayerBet(10);
+    };
+
+    //allow betting till max credits is reached, if amount above max go all in.
+    const playingPlayer = players.find(player => player.credits !== null);
+    const maxCredits = playingPlayer ? playingPlayer.credits : 0;
+
+    const updateBet = (amount) => {
+        setPlayerBet(prevBet => {
+            const newBet = prevBet + amount;
+            return newBet > maxCredits ? maxCredits : newBet;
+        });
     };
 
     useEffect(() => {
@@ -184,6 +200,18 @@ export default function GeneralGame() {
                     {cardsInDeck}
                 </div>
 
+                <div
+                    style={{
+                        position: 'absolute',
+                        top: '12px',
+                        left: '400px',
+                        color: 'white',
+                        fontWeight: 'bold',
+                    }}
+                >
+                    {playerBet}
+                </div>
+
                 <div>
                     {players
                         .filter(player => player.credits !== null)
@@ -204,6 +232,7 @@ export default function GeneralGame() {
                             );
                         })}
                 </div>
+
 
                 <div className="players-list">
                     {players
@@ -324,6 +353,11 @@ export default function GeneralGame() {
                 />
 
                 <div
+                    onClick={() => insure()}
+                    className="clickable-area insurance"
+                />
+
+                <div
                     onClick={() => bet()}
                     className="clickable-area bet"
                 />
@@ -332,17 +366,62 @@ export default function GeneralGame() {
                     onClick={() => stand()}
                     className="clickable-area stand"
                 />
-            </div>
 
-            <button onClick={() => ready()}>ready</button>
-            <button onClick={() => unready()}>unready</button>
-            <button onClick={() => hit()}>hit</button>
-            <button onClick={() => stand()}>stand</button>
-            <button onClick={() => double()}>double</button>
-            <button onClick={() => surrender()}>surrender</button>
-            <button onClick={() => split()}>split</button>
-            <button onClick={() => insure()}>insure</button>
-            <button onClick={() => bet()}>bet 10</button>
+                <div
+                    onClick={() => clear_bets()}
+                    className="clickable-area clear_bets"
+                />
+
+                <div
+                    onClick={() => double()}
+                    className="clickable-area double"
+                />
+
+                <div
+                    onClick={() => ready()}
+                    className="clickable-area ready"
+                />
+
+                <div
+                    onClick={() => split()}
+                    className="clickable-area split"
+                />
+
+                <div
+                    onClick={() => unready()}
+                    className="clickable-area unready"
+                />
+
+                <div
+                    onClick={() => surrender()}
+                    className="clickable-area surrender"
+                />
+
+                <div
+                    onClick={() => updateBet(10)}
+                    className="clickable-area bet_10"
+                />
+
+                <div
+                    onClick={() => updateBet(50)}
+                    className="clickable-area bet_50"
+                />
+
+                <div
+                    onClick={() => updateBet(100)}
+                    className="clickable-area bet_100"
+                />
+
+                <div
+                    onClick={() => updateBet(250)}
+                    className="clickable-area bet_250"
+                />
+
+                <div
+                    onClick={() => updateBet(500)}
+                    className="clickable-area bet_500"
+                />
+            </div>
         </div>
 
 

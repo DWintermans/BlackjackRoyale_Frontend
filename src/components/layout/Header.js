@@ -1,8 +1,10 @@
 import React from 'react';
 import webSocketService from '../../lib/api/requests/websocketservice';
+import { useNavigate } from 'react-router-dom';
 import './Header.css';
 
 export default function Header() {
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     localStorage.removeItem('jwt');
@@ -14,8 +16,8 @@ export default function Header() {
 
   return (
     <div className="header">
-      <div className="logo">
-      <img src="/images/logo.png" alt="logo" />
+      <div className="logo" onClick={() => navigate('/')}>
+          <img src="/images/logo.png" alt="logo" />
       </div>
 
       {isLoggedIn && (
