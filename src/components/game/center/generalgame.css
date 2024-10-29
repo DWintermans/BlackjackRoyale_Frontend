@@ -53,3 +53,12 @@
     background-color: rgba(0, 255, 0, 0.5); 
 }
 
+.leave_group {
+    top: 12px;   
+    left: 630px;  
+    width: 75px; 
+    height: 25px; 
+    background-color: rgba(0, 234, 255, 0.5); 
+}
+
+

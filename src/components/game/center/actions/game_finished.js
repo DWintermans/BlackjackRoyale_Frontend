@@ -11,15 +11,15 @@ export const GameFinished = (message, setPlayers, setEndgameMessage, setWarnOnRe
                 updatedHands[handIndex] = { cards: [], totalCardValue: 0, credit_result: 0 };
             }
 
+            const creditResult = (message.Result === "BLACKJACK" || message.Result === "WIN" || message.Result === "PUSH")
+                ? +message.Bet
+                : -message.Bet;
+
             updatedHands[handIndex] = {
                 ...updatedHands[handIndex],
-                credit_result: (message.Result === "BLACKJACK" || message.Result === "WIN")
-                    ? +message.Bet
-                    : (message.Result === "LOSE")
-                        ? -message.Bet
-                        : undefined
+                credit_result: creditResult,
             };
-
+    
             return {
                 ...player,
                 hands: updatedHands

@@ -148,32 +148,68 @@ export default function GeneralGame() {
     }, []);
 
     const playerPositions = [
-        { top: '100px', left: '345px' }, 
+        { top: '100px', left: '345px' },
 
-        { top: '300px', left: '638px' }, 
-        { top: '300px', left: '700px' }, 
-        { top: '400px', left: '800px' }, 
-        { top: '500px', left: '900px' }, 
+        { top: '300px', left: '638px' },
+        { top: '310px', left: '465px' },
+        { top: '310px', left: '282px' },
+        { top: '300px', left: '107px' },
     ];
 
 
     const nonDealerNamePositions = [
-        { top: '410px', left: '630px' }, 
-        { top: '300px', left: '700px' }, 
-        { top: '400px', left: '800px' }, 
-        { top: '500px', left: '900px' }, 
+        { top: '410px', left: '630px' },
+        { top: '420px', left: '457px' },
+        { top: '420px', left: '274px' },
+        { top: '410px', left: '99px' },
     ];
+
+    const leftPos = cardsInDeck >= 100 ? '637px' : '642px';
 
     return (
         <div>
             <div className="board-container">
                 <img src="/images/board.png" alt="board" className="board-img-style" />
 
+                <div
+                    style={{
+                        position: 'absolute',
+                        top: '90px',
+                        left: leftPos,
+                        color: 'black',
+                        fontSize: '14px',
+                        textAlign: 'center',
+                    }}
+                >
+                    {cardsInDeck}
+                </div>
+
+                <div>
+                    {players
+                        .filter(player => player.credits !== null)
+                        .map((player, index) => {
+                            return (
+                                <div
+                                    key={player.user_id}
+                                    style={{
+                                        position: 'absolute',
+                                        top: '12px',
+                                        left: '235px',
+                                        color: 'white',
+                                        fontWeight: 'bold',
+                                    }}
+                                >
+                                    {player.credits}
+                                </div>
+                            );
+                        })}
+                </div>
+
                 <div className="players-list">
                     {players
                         .sort((a, b) => (a.user_id === 0 ? -1 : b.user_id === 0 ? 1 : 0))
                         .map((player, index) => {
-                            const position = playerPositions[index] || { top: '500px', left: '500px' }; 
+                            const position = playerPositions[index] || { top: '500px', left: '500px' };
                             return (
                                 <div
                                     key={player.user_id}
@@ -182,8 +218,8 @@ export default function GeneralGame() {
                                         position: 'absolute',
                                         top: position.top,
                                         left: position.left,
-                                        backgroundColor: 'rgba(0, 128, 0, 0.6)',
-                                        border: '1px solid red',
+                                        // backgroundColor: 'rgba(0, 128, 0, 0.6)',
+                                        // border: '1px solid red',
                                         color: 'white',
                                         textAlign: 'center',
                                         transform: 'translateX(-50%)',
@@ -202,7 +238,7 @@ export default function GeneralGame() {
                                                         style={{
                                                             position: 'relative',
                                                             display: 'inline-block',
-                                                            marginRight: handIndex < player.hands.length - 1 ? '35px' : '0',
+                                                            marginRight: handIndex < player.hands.length - 1 ? '30px' : '0',
                                                         }}
                                                     >
 
@@ -214,10 +250,10 @@ export default function GeneralGame() {
                                                                         src={`/images/cards/${card}`}
                                                                         alt={`Card ${card}`}
                                                                         style={{
-                                                                            width: player.user_id !== 0 ? 35 : 45,
+                                                                            width: player.user_id !== 0 ? 35 : 40,
                                                                             position: 'absolute',
-                                                                            top: player.user_id !== 0 ? `${cardIndex * -20}px` : '0px',
-                                                                            left: player.user_id !== 0 ? `${cardIndex * 10}px` : `${cardIndex * 50}px`,
+                                                                            top: player.user_id !== 0 ? `${cardIndex * -25}px` : '0px',
+                                                                            left: player.user_id !== 0 ? `${cardIndex * 10}px` : `${cardIndex * 45}px`,
                                                                             zIndex: cardIndex,
                                                                         }}
                                                                     />
@@ -226,18 +262,25 @@ export default function GeneralGame() {
                                                         </div>
 
                                                         {/*card val and result*/}
-                                                        <p style={{ marginTop: player.user_id === 0 ? '80px' : '60px', textAlign: 'center', color: 'white' }}>
+                                                        <p style={{
+                                                            marginTop: player.user_id === 0 ? '80px' : '60px',
+                                                            textAlign: 'center',
+                                                            color: 'white',
+                                                            textShadow: '1px 1px 0px black, -1px -1px 0px black, 1px -1px 0px black, -1px 1px 0px black'
+                                                        }}>
+
                                                             ({hand.totalCardValue || 0})
-                                                            {hand.credit_result && (
+
+                                                            {(hand.credit_result !== undefined) && (
                                                                 <>
                                                                     <br />
                                                                     <span
                                                                         style={{
                                                                             fontWeight: 'bold',
-                                                                            color: hand.credit_result > 0 ? 'white' : 'darkred'
+                                                                            color: hand.credit_result >= 0 ? 'white' : 'red'
                                                                         }}
                                                                     >
-                                                                        {hand.credit_result > 0 ? `+${hand.credit_result}` : hand.credit_result}
+                                                                        {hand.credit_result >= 0 ? `+${hand.credit_result}` : hand.credit_result}
                                                                     </span>
                                                                 </>
                                                             )}
@@ -262,12 +305,18 @@ export default function GeneralGame() {
                                     margin: 0,
                                     color: 'white',
                                     textAlign: 'center',
+                                    textShadow: '1px 1px 0px black, -1px -1px 0px black, 1px -1px 0px black, -1px 1px 0px black'
                                 }}>
                                     <strong>{player.name}</strong>
                                 </p>
                             ))}
                     </div>
                 </div>
+
+                <div
+                    onClick={() => leave_group()}
+                    className="clickable-area leave_group"
+                />
 
                 <div
                     onClick={() => hit()}
