@@ -1,4 +1,4 @@
-export const BetPlaced = (message, setPlayers, setWarnOnRefresh, userID) => {
+export const BetPlaced = (message, setPlayers, setWarnOnRefresh) => {
     setPlayers(prevPlayers => prevPlayers.map(player =>
         player.user_id === message.User_ID
             ? {

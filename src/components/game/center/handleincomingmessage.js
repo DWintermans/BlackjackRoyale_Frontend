@@ -15,7 +15,7 @@ export const handleIncomingMessage = (message, setGroupID, setPlayers, setUserID
             break;
 
         case message.Action === 'GAME_FINISHED':
-            GameFinished(message, setPlayers, setEndgameMessage, setWarnOnRefresh);
+            GameFinished(message, setPlayers, setEndgameMessage, setWarnOnRefresh, userID);
             break;
 
         case message.Action === 'GAME_STARTED':
@@ -31,7 +31,7 @@ export const handleIncomingMessage = (message, setGroupID, setPlayers, setUserID
             break;
 
         case message.Action === 'BET_PLACED':
-            BetPlaced(message, setPlayers, setUserID, setWarnOnRefresh, userID);
+            BetPlaced(message, setPlayers, setWarnOnRefresh);
             break;
 
         case message.Action === 'CARD_DRAWN' || message.Action === 'HIT':

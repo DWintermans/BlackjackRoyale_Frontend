@@ -175,8 +175,8 @@ export default function GeneralGame() {
 
     const nonDealerNamePositions = [
         { top: '410px', left: '630px' },
-        { top: '420px', left: '457px' },
-        { top: '420px', left: '274px' },
+        { top: '420px', left: '475px' },
+        { top: '420px', left: '240px' },
         { top: '410px', left: '99px' },
     ];
 
@@ -185,7 +185,7 @@ export default function GeneralGame() {
     return (
         <div>
             <div className="board-container">
-                <img src="/images/board.png" alt="board" className="board-img-style" />
+                <img src="/images/board.png" alt="board" className="board-img-style" draggable="false" />
 
                 <div
                     style={{
@@ -212,22 +212,35 @@ export default function GeneralGame() {
                     {playerBet}
                 </div>
 
+                {/* credits and earnings */}
                 <div>
                     {players
                         .filter(player => player.credits !== null)
                         .map((player, index) => {
                             return (
-                                <div
-                                    key={player.user_id}
-                                    style={{
-                                        position: 'absolute',
-                                        top: '12px',
-                                        left: '235px',
-                                        color: 'white',
-                                        fontWeight: 'bold',
-                                    }}
-                                >
-                                    {player.credits}
+                                <div key={player.user_id}>
+                                    <div
+                                        style={{
+                                            position: 'absolute',
+                                            top: '12px',
+                                            left: '235px',
+                                            color: 'white',
+                                            fontWeight: 'bold',
+                                        }}
+                                    >
+                                        {player.credits}
+                                    </div>
+                                    <div
+                                        style={{
+                                            position: 'absolute',
+                                            top: '12px',
+                                            left: '560px',
+                                            color: 'white',
+                                            fontWeight: 'bold',
+                                        }}
+                                    >
+                                        {player.total_winnings ?? 0}
+                                    </div>
                                 </div>
                             );
                         })}
@@ -277,6 +290,7 @@ export default function GeneralGame() {
                                                                     <img
                                                                         key={cardIndex}
                                                                         src={`/images/cards/${card}`}
+                                                                        draggable="false"
                                                                         alt={`Card ${card}`}
                                                                         style={{
                                                                             width: player.user_id !== 0 ? 35 : 40,
@@ -334,9 +348,29 @@ export default function GeneralGame() {
                                     margin: 0,
                                     color: 'white',
                                     textAlign: 'center',
-                                    textShadow: '1px 1px 0px black, -1px -1px 0px black, 1px -1px 0px black, -1px 1px 0px black'
+                                    textShadow: '1px 1px 0px black, -1px -1px 0px black, 1px -1px 0px black, -1px 1px 0px black',
+                                    display: 'flex', 
+                                    flexDirection: 'column', 
+                                    alignItems: 'center'
                                 }}>
                                     <strong>{player.name}</strong>
+                                    {player.bet !== null && <>
+                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" style={{ filter: 'drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.5))' }}> {/* Adding drop-shadow to SVG */}
+                                                <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+                                                <path d="M12 12m-5 0a5 5 0 1 0 10 0a5 5 0 1 0 -10 0" />
+                                                <path d="M12 3v4" />
+                                                <path d="M12 17v4" />
+                                                <path d="M3 12h4" />
+                                                <path d="M17 12h4" />
+                                                <path d="M18.364 5.636l-2.828 2.828" />
+                                                <path d="M8.464 15.536l-2.828 2.828" />
+                                                <path d="M5.636 5.636l2.828 2.828" />
+                                                <path d="M15.536 15.536l2.828 2.828" />
+                                            </svg>
+                                            <span style={{ marginLeft: '5px', color: 'white' }}>{player.bet}</span>
+                                        </div>
+                                    </>}
                                 </p>
                             ))}
                     </div>
