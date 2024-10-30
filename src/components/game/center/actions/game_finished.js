@@ -1,5 +1,4 @@
-export const GameFinished = (message, setPlayers, setEndgameMessage, setWarnOnRefresh, userID) => {
-    setEndgameMessage(`Game Finished! ${message.User_ID} ${message.Result}.`);
+export const GameFinished = (message, setPlayers, setWarnOnRefresh) => {
     setWarnOnRefresh(false);
 
     //update total player earnings

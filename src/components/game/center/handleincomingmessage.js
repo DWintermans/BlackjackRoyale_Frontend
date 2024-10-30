@@ -7,15 +7,16 @@ import { CardDrawn } from './actions/card_drawn';
 import { Split } from './actions/split';
 import { Double } from './actions/double';
 import { Surrender } from './actions/surrender';
+import { Turn } from './actions/turn';
 
-export const handleIncomingMessage = (message, setGroupID, setPlayers, setUserID, setCardsInDeck, setGameMessage, setEndgameMessage, setWarnOnRefresh, userID) => {
+export const handleIncomingMessage = (message, setGroupID, setPlayers, setUserID, setCardsInDeck, setGameMessage, setWarnOnRefresh, userID, setTurn) => {
     switch (true) {
         case message.hasOwnProperty("Group_ID") && message.hasOwnProperty("Members"):
             GroupUpdate(message, setGroupID, setPlayers, setUserID);
             break;
 
         case message.Action === 'GAME_FINISHED':
-            GameFinished(message, setPlayers, setEndgameMessage, setWarnOnRefresh, userID);
+            GameFinished(message, setPlayers, setWarnOnRefresh);
             break;
 
         case message.Action === 'GAME_STARTED':
@@ -23,7 +24,11 @@ export const handleIncomingMessage = (message, setGroupID, setPlayers, setUserID
             break;
 
         case message.Type === "GAME":
-            setGameMessage(message.Message);
+            if (message.Message === "Setup has ended") {
+                setGameMessage(null);
+            } else {
+                setGameMessage(message.Message);
+            }
             break;
 
         case message.Action === 'CREDITS_UPDATE':
@@ -48,6 +53,10 @@ export const handleIncomingMessage = (message, setGroupID, setPlayers, setUserID
 
         case message.Action === 'SURRENDER':
             Surrender(message, setPlayers, setCardsInDeck, userID);
+            break;
+
+        case message.Action === 'TURN':
+            Turn(message, setTurn);
             break;
     }
 };

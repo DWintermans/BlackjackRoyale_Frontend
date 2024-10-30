@@ -8,10 +8,10 @@ export default function GeneralGame() {
     const [groupID, setGroupID] = useState(null);
     const [userID, setUserID] = useState(null);
     const [gameMessage, setGameMessage] = useState('');
-    const [endgameMessage, setEndgameMessage] = useState('');
     const [WarnOnRefresh, setWarnOnRefresh] = useState(false);
     const [cardsInDeck, setCardsInDeck] = useState('');
     const [playerBet, setPlayerBet] = useState(10);
+    const [turn, setTurn] = useState(null);
 
     useEffect(() => {
         const data = {
@@ -21,14 +21,6 @@ export default function GeneralGame() {
         };
         webSocketService.sendMessage(data);
     }, []);
-
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setEndgameMessage('');
-        }, 5000);
-
-        return () => clearTimeout(timer);
-    }, [endgameMessage]);
 
     useEffect(() => {
         const handleBeforeUnload = (event) => {
@@ -153,7 +145,7 @@ export default function GeneralGame() {
 
     useEffect(() => {
         const handleMessage = (message) => {
-            handleIncomingMessage(message, setGroupID, setPlayers, setUserID, setCardsInDeck, setGameMessage, setEndgameMessage, setWarnOnRefresh, userID);
+            handleIncomingMessage(message, setGroupID, setPlayers, setUserID, setCardsInDeck, setGameMessage, setWarnOnRefresh, userID, setTurn);
         };
 
         webSocketService.addListener(handleMessage);
@@ -187,6 +179,31 @@ export default function GeneralGame() {
             <div className="board-container">
                 <img src="/images/board.png" alt="board" className="board-img-style" draggable="false" />
 
+                {/* place your bets msg */}
+                {gameMessage && (
+                    <div
+                        style={{
+                            position: 'absolute',
+                            top: '45px',
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                            color: 'black',
+                            fontWeight: 'bold',
+                            fontSize: '14px',
+                            padding: '5px 10px',
+                            backgroundColor: '#FBB314',
+                            border: '1px solid black',
+                            borderRadius: '25px',
+                            zIndex: '2000',
+                            textAlign: 'center',
+
+                        }}
+                    >
+                        {gameMessage}
+                    </div>
+                )}
+
+                {/* display cards in deck */}
                 <div
                     style={{
                         position: 'absolute',
@@ -200,6 +217,7 @@ export default function GeneralGame() {
                     {cardsInDeck}
                 </div>
 
+                {/* display players bet in header */}
                 <div
                     style={{
                         position: 'absolute',
@@ -212,13 +230,14 @@ export default function GeneralGame() {
                     {playerBet}
                 </div>
 
-                {/* credits and earnings */}
+                {/* display balance, win and balance changes  */}
                 <div>
                     {players
                         .filter(player => player.credits !== null)
                         .map((player, index) => {
                             return (
                                 <div key={player.user_id}>
+                                    {/* balance/credits */}
                                     <div
                                         style={{
                                             position: 'absolute',
@@ -230,6 +249,7 @@ export default function GeneralGame() {
                                     >
                                         {player.credits}
                                     </div>
+                                    {/* total winnings per lobby */}
                                     <div
                                         style={{
                                             position: 'absolute',
@@ -241,12 +261,44 @@ export default function GeneralGame() {
                                     >
                                         {player.total_winnings ?? 0}
                                     </div>
+                                    {/* earnings per play per hand, visible below balance */}
+                                    <div
+                                        style={{
+                                            position: 'absolute',
+                                            top: '38px',
+                                            left: '224px',
+                                            color: 'white',
+                                            fontWeight: 'bold',
+                                            textAlign: 'right',
+                                        }}
+                                    >
+                                        {Array.isArray(player.hands) && player.hands.length > 0 && (
+                                            player.hands.map((hand, handIndex) => (
+                                                hand && (
+                                                    <div key={handIndex}>
+                                                        {(hand.credit_result !== undefined && hand.credit_result !== 0) && (
+                                                            <>
+                                                                <span
+                                                                    style={{
+                                                                        color: hand.credit_result >= 0 ? 'white' : 'red'
+                                                                    }}
+                                                                >
+                                                                    {hand.credit_result > 0 ? `+${hand.credit_result}` : hand.credit_result}
+                                                                </span>
+                                                            </>
+                                                        )}
+
+                                                    </div>
+                                                )
+                                            ))
+                                        )}
+                                    </div>
                                 </div>
                             );
                         })}
                 </div>
 
-
+                {/* player and dealer hands */}
                 <div className="players-list">
                     {players
                         .sort((a, b) => (a.user_id === 0 ? -1 : b.user_id === 0 ? 1 : 0))
@@ -293,6 +345,7 @@ export default function GeneralGame() {
                                                                         draggable="false"
                                                                         alt={`Card ${card}`}
                                                                         style={{
+                                                                            //handle card size and spacing differenty for dealer and player
                                                                             width: player.user_id !== 0 ? 35 : 40,
                                                                             position: 'absolute',
                                                                             top: player.user_id !== 0 ? `${cardIndex * -25}px` : '0px',
@@ -306,7 +359,7 @@ export default function GeneralGame() {
 
                                                         {/*card val and result*/}
                                                         <p style={{
-                                                            marginTop: player.user_id === 0 ? '80px' : '60px',
+                                                            marginTop: player.user_id === 0 ? '70px' : '60px',
                                                             textAlign: 'center',
                                                             color: 'white',
                                                             textShadow: '1px 1px 0px black, -1px -1px 0px black, 1px -1px 0px black, -1px 1px 0px black'
@@ -323,7 +376,7 @@ export default function GeneralGame() {
                                                                             color: hand.credit_result >= 0 ? 'white' : 'red'
                                                                         }}
                                                                     >
-                                                                        {hand.credit_result >= 0 ? `+${hand.credit_result}` : hand.credit_result}
+                                                                        {hand.credit_result > 0 ? `+${hand.credit_result}` : hand.credit_result}
                                                                     </span>
                                                                 </>
                                                             )}
@@ -349,8 +402,8 @@ export default function GeneralGame() {
                                     color: 'white',
                                     textAlign: 'center',
                                     textShadow: '1px 1px 0px black, -1px -1px 0px black, 1px -1px 0px black, -1px 1px 0px black',
-                                    display: 'flex', 
-                                    flexDirection: 'column', 
+                                    display: 'flex',
+                                    flexDirection: 'column',
                                     alignItems: 'center'
                                 }}>
                                     <strong>{player.name}</strong>

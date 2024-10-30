@@ -1,4 +1,4 @@
-import { React, useEffect } from 'react';
+import { React, useEffect, useState } from 'react';
 import webSocketService from '../../lib/api/requests/websocketservice';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './Header.css';
@@ -8,8 +8,13 @@ import 'react-toastify/dist/ReactToastify.css';
 
 export default function Header() {
   const navigate = useNavigate();
-  // const location = useLocation();
+  const location = useLocation();
+  const [isLoginPage, setIsLoginPage] = useState(false);
   const isLoggedIn = !!localStorage.getItem('jwt');
+
+  useEffect(() => {
+    setIsLoginPage(location.pathname === '/login');
+  }, [location.pathname]);
 
   const handleLogout = () => {
     localStorage.removeItem('jwt');
@@ -19,11 +24,6 @@ export default function Header() {
 
   useEffect(() => {
     const handleIncomingMessage = (message) => {
-
-      // if (location.pathname === '/login/index') {
-      //   console.log("Toast suppressed on login page");
-      //   return;
-      // }
 
       if (message.Type === 'TOAST') {
         showToast(message);
@@ -67,12 +67,14 @@ export default function Header() {
       </div>
       <div>
 
-        {/* {location.pathname !== '/login/index' && ( */}
-          <ToastContainer
-            position="top-right"
-            style={{ top: '75px' }} 
-          />
-        {/* )} */}
+        {/* Different location of toast based on what page youre on. More spacing on non login-pages. */}
+        <ToastContainer
+          position="top-right"
+          style={{
+            top: isLoginPage ? '80px' : '145px',
+            right: isLoginPage ? null : '32px',
+          }}
+        />
       </div>
     </>
   );
