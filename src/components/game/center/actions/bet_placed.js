@@ -5,17 +5,11 @@ export const BetPlaced = (message, setPlayers, setWarnOnRefresh) => {
                 ...player,
                 bet: message.Bet,
                 credits: player.credits,
-                totalCardValue: 0
-            }
-            : player
-    ));
+                totalCardValue: 0,
 
-    //clear cards for those who placed a new bet
-    setPlayers(prevPlayers => prevPlayers.map(player =>
-        player.user_id === message.User_ID
-            ? {
-                ...player,
-                cards: []
+                //clear cards for those who placed a new bet
+                cards: [],
+                hands: []
             }
             : player
     ));
