@@ -517,7 +517,7 @@ export default function GeneralGame() {
                                 const isPlayerTurn = Array.isArray(turn) && turn.length > 0 && player.user_id === turn[0].user_id;
 
                                 return (
-                                    <p
+                                    <div
                                         key={player.user_id}
                                         style={{
                                             position: 'absolute',
@@ -556,7 +556,7 @@ export default function GeneralGame() {
                                                 </span>
                                             </div>
                                         </>}
-                                    </p>
+                                    </div>
                                 )
                             })}
                     </div>
