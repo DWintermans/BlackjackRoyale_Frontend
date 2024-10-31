@@ -31,6 +31,10 @@ jobs:
           echo "REACT_APP_API_URL=https://i532747.luna.fhict.nl" >> .env
           echo "REACT_APP_WS_URL=wss://i532747.luna.fhict.nl/ws/" >> .env
 
+      # Debugging
+      - name: Check .env contents
+        run: cat .env
+        
       # Build the React app, ignore warnings
       - name: Build React app
         run: CI=false npm run build
