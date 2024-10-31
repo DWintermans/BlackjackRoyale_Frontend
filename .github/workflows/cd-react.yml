@@ -34,7 +34,7 @@ jobs:
         uses: SamKirkland/FTP-Deploy-Action@4.1.0
         with:
           protocol: ftps
-          server: hera.fontysict.net
+          server: 145.85.4.158
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           port: 21
