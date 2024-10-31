@@ -69,5 +69,7 @@ class WebSocketService {
     }
 }
 
-const webSocketService = new WebSocketService('ws://localhost:5000/ws/');
+const websocketURL = process.env.REACT_APP_WS_URL;
+
+const webSocketService = new WebSocketService(websocketURL);
 export default webSocketService;
