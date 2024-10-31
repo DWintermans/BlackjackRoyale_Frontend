@@ -1,0 +1,43 @@
+name: Deploy React App
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Step 4: Build the React app
+      - name: Build React app
+        run: npm run build
+
+      # Step 5: Upload the build folder to the FTP server
+      - name: Deploy to FTP Server
+        uses: SamKirkland/FTP-Deploy-Action@4.1.0
+        with:
+          protocol: ftps
+          server: ${{ hera.fontysict.net }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: ${{ '21' }}
+          local-dir: ./build
+          server-dir: /domains/i532747.hera.fontysict.net/public_html
+          dangerous-clean-slate: true
