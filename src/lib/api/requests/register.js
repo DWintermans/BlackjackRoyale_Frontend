@@ -1,7 +1,7 @@
 const apiUrl = process.env.REACT_APP_API_URL;
 
-export async function TryLogin(username, password) {
-  const response = await fetch(`${apiUrl}/User/Login`, {
+export async function TrySignup(username, password) {
+  const response = await fetch(`${apiUrl}/User/Register`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

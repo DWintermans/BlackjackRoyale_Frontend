@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Footer from '../../components/layout/Footer.js';
 import Header from '../../components/layout/Header.js';
 import { TryLogin } from '../../lib/api/requests/login.js';
+import { TrySignup } from '../../lib/api/requests/register.js';
 import './index.css';
 
 import { ToastContainer, toast } from 'react-toastify';
@@ -34,8 +35,18 @@ export default function Login() {
         try {
             let response;
             if (isSignUp) {
-                //response = await TrySignup(formData.username, formData.password);
+                response = await TrySignup(formData.username, formData.password);
+                toast.update(loadingToast, {
+                    render: response.message,
+                    type: "success",
+                    isLoading: false,
+                    autoClose: 3000
+                });
 
+                console.log(response)
+
+                localStorage.setItem("jwt", response.jwt);
+                window.location.href = '/game';
             } else {
                 response = await TryLogin(formData.username, formData.password);
 
