@@ -9,7 +9,7 @@ import { Double } from './actions/double';
 import { Surrender } from './actions/surrender';
 import { Turn } from './actions/turn';
 
-export const handleIncomingMessage = (message, setGroupID, setPlayers, setUserID, setCardsInDeck, setGameMessage, setWarnOnRefresh, userID, setTurn) => {
+export const handleIncomingMessage = (message, setGroupID, setPlayers, setUserID, setCardsInDeck, setGameMessage, setWarnOnRefresh, userID, setTurn, setPlayerAction, setGameFinishedMessage) => {
     switch (true) {
         case message.hasOwnProperty("Group_ID") && message.hasOwnProperty("Members"):
             GroupUpdate(message, setGroupID, setPlayers, setUserID);
@@ -17,6 +17,8 @@ export const handleIncomingMessage = (message, setGroupID, setPlayers, setUserID
 
         case message.Action === 'GAME_FINISHED':
             GameFinished(message, setPlayers, setWarnOnRefresh);
+            setTurn([]);
+            setGameFinishedMessage('Game finished\nThank you for playing!');
             break;
 
         case message.Action === 'GAME_STARTED':
@@ -37,26 +39,47 @@ export const handleIncomingMessage = (message, setGroupID, setPlayers, setUserID
 
         case message.Action === 'BET_PLACED':
             BetPlaced(message, setPlayers, setWarnOnRefresh);
+            setPlayerAction([message.User_ID, 'BET']);
             break;
 
-        case message.Action === 'CARD_DRAWN' || message.Action === 'HIT':
+        case message.Action === 'CARD_DRAWN':
             CardDrawn(message, setPlayers, setCardsInDeck);
+            break;
+
+        case message.Action === 'HIT':
+            CardDrawn(message, setPlayers, setCardsInDeck);
+            setPlayerAction([message.User_ID, 'HIT']);
+            break;
+
+        case message.Action === 'STAND':
+            setPlayerAction([message.User_ID, 'STAND']);
             break;
 
         case message.Action === 'SPLIT':
             Split(message, setPlayers);
+            setPlayerAction([message.User_ID, 'SPLIT']);
             break;
 
         case message.Action === 'DOUBLE':
             Double(message, setPlayers, setCardsInDeck, userID);
+            setPlayerAction([message.User_ID, 'DOUBLE']);
             break;
 
         case message.Action === 'SURRENDER':
             Surrender(message, setPlayers, setCardsInDeck, userID);
+            setPlayerAction([message.User_ID, 'SURRENDER']);
             break;
 
         case message.Action === 'TURN':
             Turn(message, setTurn);
+            break;
+
+        case message.Action === 'PLAYER_FINISHED':
+            setTurn([]);
+            break;
+        
+        case message.Action === 'INSURE':
+            setPlayerAction([message.User_ID, 'INSURANCE']);
             break;
     }
 };

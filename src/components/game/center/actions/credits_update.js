@@ -7,4 +7,10 @@ export const CreditsUpdate = (message, setPlayers) => {
             }
             : player
     ));
+
+    //remove each previous bet from players 
+    setPlayers(prevPlayers => prevPlayers.map(player => ({
+        ...player,
+        bet: "--",
+    })));
 };

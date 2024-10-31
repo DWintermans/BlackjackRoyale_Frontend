@@ -13,10 +13,32 @@
     display: block; 
 }
 
-
 .player-info {
     color: white;
     font-size: 14px;
+}
+
+.card-outline {
+    border: 3px solid #FBB314; 
+    border-radius: 5px; 
+}
+
+/*  */
+.fade-text {
+    animation: fade 1s forwards; 
+}
+
+.fade-main {
+    animation: fade 3s forwards; 
+}
+
+@keyframes fade {
+    0%, 100% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
 }
 
 /*  */

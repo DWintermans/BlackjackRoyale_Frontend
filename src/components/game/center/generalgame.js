@@ -11,7 +11,9 @@ export default function GeneralGame() {
     const [WarnOnRefresh, setWarnOnRefresh] = useState(false);
     const [cardsInDeck, setCardsInDeck] = useState('');
     const [playerBet, setPlayerBet] = useState(10);
-    const [turn, setTurn] = useState(null);
+    const [turn, setTurn] = useState([]);
+    const [playerAction, setPlayerAction] = useState([]);
+    const [gameFinishedMessage, setGameFinishedMessage] = useState('');
 
     useEffect(() => {
         const data = {
@@ -145,7 +147,7 @@ export default function GeneralGame() {
 
     useEffect(() => {
         const handleMessage = (message) => {
-            handleIncomingMessage(message, setGroupID, setPlayers, setUserID, setCardsInDeck, setGameMessage, setWarnOnRefresh, userID, setTurn);
+            handleIncomingMessage(message, setGroupID, setPlayers, setUserID, setCardsInDeck, setGameMessage, setWarnOnRefresh, userID, setTurn, setPlayerAction, setGameFinishedMessage);
         };
 
         webSocketService.addListener(handleMessage);
@@ -156,14 +158,15 @@ export default function GeneralGame() {
     }, []);
 
     const playerPositions = [
-        { top: '100px', left: '345px' },
+        //dealer
+        { top: '100px', left: '375px' },
 
+        //players 1 - 4
         { top: '300px', left: '638px' },
         { top: '310px', left: '465px' },
         { top: '310px', left: '282px' },
         { top: '300px', left: '107px' },
     ];
-
 
     const nonDealerNamePositions = [
         { top: '410px', left: '630px' },
@@ -172,12 +175,101 @@ export default function GeneralGame() {
         { top: '410px', left: '99px' },
     ];
 
-    const leftPos = cardsInDeck >= 100 ? '637px' : '642px';
+    //position of cards value
+    const leftPos = cardsInDeck >= 100 ? '636px' : '641px';
+
+
+    useEffect(() => {
+        if (gameFinishedMessage) {
+            const timer = setTimeout(() => {
+                setGameFinishedMessage('');
+            }, 2500);
+
+            return () => clearTimeout(timer);
+        }
+    }, [gameFinishedMessage]);
+
+
+    const playerActionPositions = [
+        { top: '325px', left: '650px' },
+        { top: '355px', left: '475px' },
+        { top: '355px', left: '292px' },
+        { top: '325px', left: '115px' },
+    ];
+
+    //display action per player, then clear action
+    useEffect(() => {
+        if (playerAction[1]) {
+            const timer = setTimeout(() => {
+                setPlayerAction([]);
+            }, 1000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [playerAction]);
+
+    //get position in array based on userid
+    const getPlayerPosition = (player_id) => {
+        const playerIndex = players.findIndex(players => players.user_id === player_id);
+        if (playerIndex !== -1 && playerActionPositions[playerIndex]) {
+            return playerActionPositions[playerIndex - 1];
+        }
+        return { top: '0px', left: '0px' };
+    };
+
+    const { top, left } = playerAction[0] ? getPlayerPosition(playerAction[0]) : { top: '0px', left: '0px' };
 
     return (
         <div>
             <div className="board-container">
                 <img src="/images/board.png" alt="board" className="board-img-style" draggable="false" />
+
+                {/* show fullscreen message */}
+                {gameFinishedMessage && (
+                    <div
+                        className='fade-main'
+                        style={{
+                            whiteSpace: 'pre-line',
+                            position: 'absolute',
+                            top: '210px',
+                            left: '50%',
+                            color: '#FBB314',
+                            fontWeight: 'bold',
+                            fontSize: '20px',
+                            padding: '5px',
+                            backgroundColor: 'black',
+                            border: '1px solid #FBB314',
+                            borderRadius: '5px',
+                            transform: 'translateX(-50%)',
+                            zIndex: '3000',
+                            textAlign: 'center',
+                        }}
+                    >
+                        {gameFinishedMessage}
+                    </div>
+                )}
+
+                {/* show player actions in circle */}
+                {playerAction[1] && (
+                    <div
+                        className='fade-text'
+                        style={{
+                            position: 'absolute',
+                            top,
+                            left,
+                            color: '#FBB314',
+                            fontWeight: 'bold',
+                            fontSize: '16px',
+                            transform: 'translateX(-50%)',
+                            zIndex: '2000',
+                            textAlign: 'center',
+                            textShadow: '2px 2px 0px black, -2px -2px 0px black, 2px -2px 0px black, -2px 2px 0px black'
+
+                        }}
+                    >
+                        {playerAction[1]}
+                    </div>
+                )}
 
                 {/* place your bets msg */}
                 {gameMessage && (
@@ -212,6 +304,7 @@ export default function GeneralGame() {
                         color: 'black',
                         fontSize: '14px',
                         textAlign: 'center',
+                        fontWeight: 'bold',
                     }}
                 >
                     {cardsInDeck}
@@ -270,6 +363,7 @@ export default function GeneralGame() {
                                             color: 'white',
                                             fontWeight: 'bold',
                                             textAlign: 'right',
+                                            textShadow: '1px 1px 0px black, -1px -1px 0px black, 1px -1px 0px black, -1px 1px 0px black'
                                         }}
                                     >
                                         {Array.isArray(player.hands) && player.hands.length > 0 && (
@@ -324,46 +418,71 @@ export default function GeneralGame() {
                                     {/*hands*/}
                                     <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                                         {Array.isArray(player.hands) && player.hands.length > 0 && (
-                                            player.hands.map((hand, handIndex) => (
-                                                hand && (
+                                            player.hands.map((hand, handIndex) => {
+                                                if (!hand) return null;
+
+                                                const isPlayerTurn = Array.isArray(turn) && turn.length > 0 && player.user_id === turn[0]?.user_id;
+                                                const isHighlighted = isPlayerTurn && turn.length > 0 && turn[0]?.hand === handIndex;
+
+                                                // attempt to center dealer cards
+                                                let marginRight;
+                                                if (player.user_id === 0) {
+                                                    marginRight = hand.cards.length % 2 === 0 ? `${hand.cards.length * 37}px` : `${hand.cards.length * 30}px`;
+                                                } else {
+                                                    marginRight = handIndex < player.hands.length - 1 ? '30px' : '0'
+                                                }
+
+                                                return (
                                                     <div
                                                         key={handIndex}
                                                         className="hand-info"
                                                         style={{
                                                             position: 'relative',
                                                             display: 'inline-block',
-                                                            marginRight: handIndex < player.hands.length - 1 ? '30px' : '0',
+                                                            marginRight: marginRight,
                                                         }}
                                                     >
 
                                                         <div className="cards-container" style={{ position: 'relative', display: 'flex', justifyContent: 'center' }}>
                                                             {Array.isArray(hand.cards) && hand.cards.length > 0 ? (
-                                                                hand.cards.map((card, cardIndex) => (
-                                                                    <img
-                                                                        key={cardIndex}
-                                                                        src={`/images/cards/${card}`}
-                                                                        draggable="false"
-                                                                        alt={`Card ${card}`}
-                                                                        style={{
-                                                                            //handle card size and spacing differenty for dealer and player
-                                                                            width: player.user_id !== 0 ? 35 : 40,
-                                                                            position: 'absolute',
-                                                                            top: player.user_id !== 0 ? `${cardIndex * -25}px` : '0px',
-                                                                            left: player.user_id !== 0 ? `${cardIndex * 10}px` : `${cardIndex * 45}px`,
-                                                                            zIndex: cardIndex,
-                                                                        }}
-                                                                    />
-                                                                ))
+                                                                hand.cards.map((card, cardIndex) => {
+
+                                                                    //highlight cards based on turns
+                                                                    const isHighlightedHand = isPlayerTurn && turn[0].hand === handIndex;
+
+                                                                    return (
+                                                                        <img
+                                                                            key={cardIndex}
+                                                                            src={`/images/cards/${card}`}
+                                                                            draggable="false"
+                                                                            alt={`Card ${card}`}
+                                                                            className={isHighlightedHand ? 'card-outline' : ''}
+                                                                            style={{
+                                                                                width: player.user_id === 0 || isHighlightedHand ? 40 : 35,
+                                                                                position: 'absolute',
+
+                                                                                //add more spacing between score and hand when cards are bigger (highlight makes card bigger)
+                                                                                top: player.user_id !== 0 ? `${(isHighlightedHand ? -10 : 0) + cardIndex * -25}px` : '0px',
+                                                                                left: player.user_id !== 0 ? `${cardIndex * 10}px` : `${cardIndex * 45}px`,
+                                                                                zIndex: cardIndex,
+                                                                            }}
+                                                                        />
+                                                                    );
+                                                                })
                                                             ) : null}
                                                         </div>
 
                                                         {/*card val and result*/}
                                                         <p style={{
                                                             marginTop: player.user_id === 0 ? '70px' : '60px',
+                                                            color: isHighlighted ? '#FBB314' : 'white',
                                                             textAlign: 'center',
-                                                            color: 'white',
-                                                            textShadow: '1px 1px 0px black, -1px -1px 0px black, 1px -1px 0px black, -1px 1px 0px black'
-                                                        }}>
+                                                            textShadow: '1px 1px 0px black, -1px -1px 0px black, 1px -1px 0px black, -1px 1px 0px black',
+
+                                                            position: player.user_id === 0 ? 'absolute' : '',
+                                                            left: player.user_id === 0 && hand.cards.length % 2 === 0 ? `${hand.cards.length * 15}px` : `${hand.cards.length * 12}px`,
+                                                        }}
+                                                        >
 
                                                             ({hand.totalCardValue || 0})
 
@@ -382,50 +501,64 @@ export default function GeneralGame() {
                                                             )}
                                                         </p>
                                                     </div>
-                                                )
-                                            ))
+                                                );
+                                            })
                                         )}
                                     </div>
                                 </div>
                             );
                         })}
 
+                    {/* name and bet */}
                     <div>
                         {players
                             .filter(player => player.user_id !== 0)
-                            .map((player, index) => (
-                                <p key={player.user_id} style={{
-                                    position: 'absolute',
-                                    top: nonDealerNamePositions[index].top,
-                                    left: nonDealerNamePositions[index].left,
-                                    margin: 0,
-                                    color: 'white',
-                                    textAlign: 'center',
-                                    textShadow: '1px 1px 0px black, -1px -1px 0px black, 1px -1px 0px black, -1px 1px 0px black',
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    alignItems: 'center'
-                                }}>
-                                    <strong>{player.name}</strong>
-                                    {player.bet !== null && <>
-                                        <div style={{ display: 'flex', alignItems: 'center' }}>
-                                            <svg xmlns="http://www.w3.org/2000/svg" width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" style={{ filter: 'drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.5))' }}> {/* Adding drop-shadow to SVG */}
-                                                <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
-                                                <path d="M12 12m-5 0a5 5 0 1 0 10 0a5 5 0 1 0 -10 0" />
-                                                <path d="M12 3v4" />
-                                                <path d="M12 17v4" />
-                                                <path d="M3 12h4" />
-                                                <path d="M17 12h4" />
-                                                <path d="M18.364 5.636l-2.828 2.828" />
-                                                <path d="M8.464 15.536l-2.828 2.828" />
-                                                <path d="M5.636 5.636l2.828 2.828" />
-                                                <path d="M15.536 15.536l2.828 2.828" />
-                                            </svg>
-                                            <span style={{ marginLeft: '5px', color: 'white' }}>{player.bet}</span>
-                                        </div>
-                                    </>}
-                                </p>
-                            ))}
+                            .map((player, index) => {
+                                const isPlayerTurn = Array.isArray(turn) && turn.length > 0 && player.user_id === turn[0].user_id;
+
+                                return (
+                                    <p
+                                        key={player.user_id}
+                                        style={{
+                                            position: 'absolute',
+                                            top: nonDealerNamePositions[index].top,
+                                            left: nonDealerNamePositions[index].left,
+                                            margin: 0,
+                                            color: isPlayerTurn ? '#FBB314' : 'white',
+                                            textAlign: 'center',
+                                            textShadow: '1px 1px 0px black, -1px -1px 0px black, 1px -1px 0px black, -1px 1px 0px black',
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            alignItems: 'center'
+                                        }}
+                                    >
+                                        <strong>{player.name}</strong>
+                                        {player.bet !== null && <>
+                                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width={20} height={20} viewBox="0 0 24 24" fill="none" stroke={isPlayerTurn ? '#FBB314' : 'white'} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" style={{ filter: 'drop-shadow(1px 1px 1px black)' }}>
+                                                    <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+                                                    <path d="M12 12m-5 0a5 5 0 1 0 10 0a5 5 0 1 0 -10 0" />
+                                                    <path d="M12 3v4" />
+                                                    <path d="M12 17v4" />
+                                                    <path d="M3 12h4" />
+                                                    <path d="M17 12h4" />
+                                                    <path d="M18.364 5.636l-2.828 2.828" />
+                                                    <path d="M8.464 15.536l-2.828 2.828" />
+                                                    <path d="M5.636 5.636l2.828 2.828" />
+                                                    <path d="M15.536 15.536l2.828 2.828" />
+                                                </svg>
+                                                <span
+                                                    style={{
+                                                        marginLeft: '5px',
+                                                        color: isPlayerTurn ? '#FBB314' : 'white',
+                                                    }}>
+                                                    {player.bet}
+                                                </span>
+                                            </div>
+                                        </>}
+                                    </p>
+                                )
+                            })}
                     </div>
                 </div>
 
