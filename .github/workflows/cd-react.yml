@@ -1,0 +1,47 @@
+name: Deploy React App
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      # Step 3: Install dependencies with legacy peer deps
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
+
+      # Step 4: Build the React app
+      - name: Build React app
+        run: npm run build
+
+      # Debugging: List files in the build directory
+      - name: List build directory
+        run: ls -la ./build
+
+      # Step 5: Upload the build folder to the FTP server
+      - name: Deploy to FTP Server
+        uses: SamKirkland/FTP-Deploy-Action@4.1.0
+        with:
+          protocol: ftps
+          server: 145.85.4.158
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: 21
+          local-dir: ./build
+          server-dir: /domains/i532747.hera.fontysict.net/public_html
+          dangerous-clean-slate: true
