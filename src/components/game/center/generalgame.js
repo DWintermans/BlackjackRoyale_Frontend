@@ -137,7 +137,7 @@ export default function GeneralGame() {
     //allow betting till max credits is reached, if amount above max go all in.
     const playingPlayer = players.find(player => player.credits !== null);
     const maxCredits = playingPlayer ? Math.floor(playingPlayer.credits / 10) * 10 : 0;
-    
+
     const updateBet = (amount) => {
         setPlayerBet(prevBet => {
             const newBet = prevBet + amount;
@@ -211,13 +211,22 @@ export default function GeneralGame() {
     //get position in array based on userid
     const getPlayerPosition = (player_id) => {
         const playerIndex = players.findIndex(players => players.user_id === player_id);
-        if (playerIndex !== -1 && playerActionPositions[playerIndex]) {
+        if (playerIndex !== -1 && playerActionPositions[playerIndex - 1]) {
             return playerActionPositions[playerIndex - 1];
         }
         return { top: '0px', left: '0px' };
     };
 
     const { top, left } = playerAction[0] ? getPlayerPosition(playerAction[0]) : { top: '0px', left: '0px' };
+
+    const insurancePositions = [
+        { top: '200px', left: '520px' },
+        { top: '275px', left: '410px' },
+        { top: '275px', left: '340px' },
+        { top: '200px', left: '220px' },
+    ];
+
+    { { console.log(players) } }
 
     return (
         <div>
@@ -328,6 +337,8 @@ export default function GeneralGame() {
                     {players
                         .filter(player => player.credits !== null)
                         .map((player, index) => {
+                            const gameEnded = Array.isArray(player.hands) && player.hands[1]?.credit_result !== undefined;
+
                             return (
                                 <div key={player.user_id}>
                                     {/* balance/credits */}
@@ -386,9 +397,84 @@ export default function GeneralGame() {
                                                 )
                                             ))
                                         )}
+                                        <div>
+                                            {gameEnded && player.insurance_bet && (
+                                                <span style={{ color: 'red' }}>-{player.insurance_bet}</span>
+                                            )}
+                                            <br />
+                                            {gameEnded && player.insurance_received && (
+                                                <span style={{ color: 'white' }}>+{player.insurance_received}</span>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                             );
+                        })}
+                </div>
+
+                {/* insurance */}
+                <div>
+                    {players
+                        .filter(player => player.user_id !== 0)
+                        .map((player, index) => {
+                            const isPlayerTurn = Array.isArray(turn) && turn.length > 0 && player.user_id === turn[0].user_id;
+                            const gameEnded = Array.isArray(player.hands) && player.hands[1]?.credit_result !== undefined;
+                            console.log(gameEnded);
+                            return (
+                                <div
+                                    key={player.user_id}
+                                    style={{
+                                        position: 'absolute',
+                                        top: insurancePositions[index].top,
+                                        left: insurancePositions[index].left,
+                                        margin: 0,
+                                        color: isPlayerTurn ? '#FBB314' : 'white',
+                                        textAlign: 'center',
+                                        textShadow: '1px 1px 0px black, -1px -1px 0px black, 1px -1px 0px black, -1px 1px 0px black',
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
+                                        fontWeight: 'bold',
+                                    }}
+                                >
+                                    {player.has_insurance === true && player.insurance_bet !== null && <>
+                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width={25} height={25} viewBox="0 0 24 24" fill="none" stroke={isPlayerTurn ? '#FBB314' : 'white'} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" style={{ filter: 'drop-shadow(1px 1px 1px black)' }}>
+                                                <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+                                                <path d="M12 12m-5 0a5 5 0 1 0 10 0a5 5 0 1 0 -10 0" />
+                                                <path d="M12 3v4" />
+                                                <path d="M12 17v4" />
+                                                <path d="M3 12h4" />
+                                                <path d="M17 12h4" />
+                                                <path d="M18.364 5.636l-2.828 2.828" />
+                                                <path d="M8.464 15.536l-2.828 2.828" />
+                                                <path d="M5.636 5.636l2.828 2.828" />
+                                                <path d="M15.536 15.536l2.828 2.828" />
+                                            </svg>
+                                            <span style={{
+                                                marginLeft: '5px',
+                                                color: isPlayerTurn ? '#FBB314' : 'white'
+                                            }}>
+                                                {player.insurance_bet}
+                                            </span>
+                                        </div>
+                                        <div
+                                            style={{
+                                                zIndex: 50,
+                                                textAlign: 'right',
+                                            }}
+                                            >
+                                            {gameEnded && player.insurance_bet && (
+                                                <span style={{ color: 'red', marginLeft: '5px' }}>-{player.insurance_bet}</span>
+                                            )}
+                                            <br />
+                                            {gameEnded && player.insurance_received && (
+                                                <span style={{ color: 'white', marginLeft: '5px' }}>+{player.insurance_received}</span>
+                                            )}
+                                        </div>
+                                    </>}
+                                </div>
+                            )
                         })}
                 </div>
 

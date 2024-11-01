@@ -3,6 +3,9 @@ export const GameStarted = (setPlayers) => {
     setPlayers(prevPlayers => prevPlayers.map(player => ({
         ...player,
         cards: [],
-        hands: []
+        hands: [],
+        has_insurance: false,
+        insurance_bet: null,
+        insurance_received: null,
     })));
 };

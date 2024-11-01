@@ -9,7 +9,8 @@ import { Double } from './actions/double';
 import { Surrender } from './actions/surrender';
 import { Turn } from './actions/turn';
 import { ResetWinnings } from './actions/reset_winnings';
-
+import { Insure } from './actions/insure';
+import { InsuranceReceived } from './actions/insurance_received';
 
 export const handleIncomingMessage = (message, setGroupID, setPlayers, setUserID, setCardsInDeck, setGameMessage, setWarnOnRefresh, userID, setTurn, setPlayerAction, setGameFinishedMessage) => {
     switch (true) {
@@ -86,7 +87,13 @@ export const handleIncomingMessage = (message, setGroupID, setPlayers, setUserID
             break;
         
         case message.Action === 'INSURE':
+            Insure(message, setPlayers);
             setPlayerAction([message.User_ID, 'INSURANCE']);
+            break;
+
+        case message.Action === 'INSURANCE_PAID':
+            InsuranceReceived(message, setPlayers);
+            setPlayerAction([message.User_ID, 'INSURANCE RECEIVED']);
             break;
     }
 };
