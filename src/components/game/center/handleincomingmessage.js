@@ -8,11 +8,18 @@ import { Split } from './actions/split';
 import { Double } from './actions/double';
 import { Surrender } from './actions/surrender';
 import { Turn } from './actions/turn';
+import { ResetWinnings } from './actions/reset_winnings';
+
 
 export const handleIncomingMessage = (message, setGroupID, setPlayers, setUserID, setCardsInDeck, setGameMessage, setWarnOnRefresh, userID, setTurn, setPlayerAction, setGameFinishedMessage) => {
     switch (true) {
         case message.hasOwnProperty("Group_ID") && message.hasOwnProperty("Members"):
             GroupUpdate(message, setGroupID, setPlayers, setUserID);
+            break;
+
+        //reset total winnings (per group) when player goes bankrupt
+        case message.Type === "TOAST" && message.Message.includes("[+100 credits]"):
+            ResetWinnings(setPlayers);
             break;
 
         case message.Action === 'GAME_FINISHED':

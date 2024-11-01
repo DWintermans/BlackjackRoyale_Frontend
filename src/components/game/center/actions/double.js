@@ -12,7 +12,8 @@ export const Double = (message, setPlayers, setCardsInDeck, userID) => {
                 updatedHands[handIndex] = {
                     ...currentHand,
                     cards: [...currentHand.cards, message.Card],
-                    totalCardValue: message.Total_Card_Value
+                    totalCardValue: message.Total_Card_Value,
+                    double: true
                 };
 
                 return {

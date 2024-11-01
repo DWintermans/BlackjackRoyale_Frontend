@@ -136,8 +136,8 @@ export default function GeneralGame() {
 
     //allow betting till max credits is reached, if amount above max go all in.
     const playingPlayer = players.find(player => player.credits !== null);
-    const maxCredits = playingPlayer ? playingPlayer.credits : 0;
-
+    const maxCredits = playingPlayer ? Math.floor(playingPlayer.credits / 10) * 10 : 0;
+    
     const updateBet = (amount) => {
         setPlayerBet(prevBet => {
             const newBet = prevBet + amount;
@@ -446,9 +446,11 @@ export default function GeneralGame() {
                                                         <div className="cards-container" style={{ position: 'relative', display: 'flex', justifyContent: 'center' }}>
                                                             {Array.isArray(hand.cards) && hand.cards.length > 0 ? (
                                                                 hand.cards.map((card, cardIndex) => {
-
                                                                     //highlight cards based on turns
                                                                     const isHighlightedHand = isPlayerTurn && turn[0].hand === handIndex;
+
+                                                                    //add additional offset when player doubles down, moves card more to the left when sideways
+                                                                    const additionalLeftOffset = (cardIndex === hand.cards.length - 1 && hand.double) ? 10 : 0;
 
                                                                     return (
                                                                         <img
@@ -463,8 +465,11 @@ export default function GeneralGame() {
 
                                                                                 //add more spacing between score and hand when cards are bigger (highlight makes card bigger)
                                                                                 top: player.user_id !== 0 ? `${(isHighlightedHand ? -10 : 0) + cardIndex * -25}px` : '0px',
-                                                                                left: player.user_id !== 0 ? `${cardIndex * 10}px` : `${cardIndex * 45}px`,
+                                                                                left: player.user_id !== 0 ? `${cardIndex * 10 + additionalLeftOffset}px` : `${cardIndex * 45}px`,
                                                                                 zIndex: cardIndex,
+
+                                                                                //rotate 90deg when player plays doubble
+                                                                                transform: cardIndex === hand.cards.length - 1 && hand.double ? 'rotate(90deg)' : 'none',
                                                                             }}
                                                                         />
                                                                     );
