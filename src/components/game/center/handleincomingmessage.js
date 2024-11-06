@@ -18,7 +18,7 @@ export const handleIncomingMessage = (message, setGroupID, setPlayers, setUserID
             GroupUpdate(message, setGroupID, setPlayers, setUserID);
             break;
 
-        //reset total winnings (per group) when player goes bankrupt
+        //reset total winnings (in lobby) when player goes bankrupt
         case message.Type === "TOAST" && message.Message.includes("[+100 credits]"):
             ResetWinnings(setPlayers);
             break;
@@ -93,7 +93,7 @@ export const handleIncomingMessage = (message, setGroupID, setPlayers, setUserID
 
         case message.Action === 'INSURANCE_PAID':
             InsuranceReceived(message, setPlayers);
-            setPlayerAction([message.User_ID, 'INSURANCE RECEIVED']);
+            setPlayerAction([message.User_ID, 'INSURANCE\nRECEIVED']);
             break;
     }
 };

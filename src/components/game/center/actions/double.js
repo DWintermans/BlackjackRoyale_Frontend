@@ -13,14 +13,16 @@ export const Double = (message, setPlayers, setCardsInDeck, userID) => {
                     ...currentHand,
                     cards: [...currentHand.cards, message.Card],
                     totalCardValue: message.Total_Card_Value,
-                    double: true
+                    double: true,
+                    handBet: message.Bet,
                 };
 
                 return {
                     ...player,
                     hands: updatedHands,
                     bet: message.Bet,
-                    credits: player.user_id === userID ? (player.credits !== null ? player.credits - message.Bet : null) : player.credits
+                    credits: player.user_id === userID ? (player.credits !== null ? player.credits - message.Bet : null) : player.credits,
+                    Total_Bet_Value: message.Total_Bet_Value
                 };
             }
         }

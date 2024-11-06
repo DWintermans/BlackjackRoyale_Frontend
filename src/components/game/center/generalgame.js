@@ -226,8 +226,6 @@ export default function GeneralGame() {
         { top: '200px', left: '220px' },
     ];
 
-    { { console.log(players) } }
-
     return (
         <div>
             <div className="board-container">
@@ -419,7 +417,7 @@ export default function GeneralGame() {
                         .map((player, index) => {
                             const isPlayerTurn = Array.isArray(turn) && turn.length > 0 && player.user_id === turn[0].user_id;
                             const gameEnded = Array.isArray(player.hands) && player.hands[1]?.credit_result !== undefined;
-                            console.log(gameEnded);
+
                             return (
                                 <div
                                     key={player.user_id}
@@ -463,7 +461,7 @@ export default function GeneralGame() {
                                                 zIndex: 50,
                                                 textAlign: 'right',
                                             }}
-                                            >
+                                        >
                                             {gameEnded && player.insurance_bet && (
                                                 <span style={{ color: 'red', marginLeft: '5px' }}>-{player.insurance_bet}</span>
                                             )}
@@ -552,7 +550,7 @@ export default function GeneralGame() {
                                                                                 //add more spacing between score and hand when cards are bigger (highlight makes card bigger)
                                                                                 top: player.user_id !== 0 ? `${(isHighlightedHand ? -10 : 0) + cardIndex * -25}px` : '0px',
                                                                                 left: player.user_id !== 0 ? `${cardIndex * 10 + additionalLeftOffset}px` : `${cardIndex * 45}px`,
-                                                                                zIndex: cardIndex,
+                                                                                zIndex: (handIndex * hand.cards.length) + cardIndex,
 
                                                                                 //rotate 90deg when player plays doubble
                                                                                 transform: cardIndex === hand.cards.length - 1 && hand.double ? 'rotate(90deg)' : 'none',
@@ -590,6 +588,49 @@ export default function GeneralGame() {
                                                                     </span>
                                                                 </>
                                                             )}
+
+                                                            {/* bet per hand */}
+                                                            {(hand.credit_result === undefined && player.user_id !== 0) && (
+                                                                <>
+                                                                    <br />
+                                                                    <div style={{ display: 'inline-flex', alignItems: 'center' }}>
+                                                                        <svg
+                                                                            xmlns="http://www.w3.org/2000/svg"
+                                                                            width={10}
+                                                                            height={10}
+                                                                            viewBox="0 0 24 24"
+                                                                            fill="none"
+                                                                            stroke={isHighlighted ? '#FBB314' : 'white'}
+                                                                            strokeWidth={2}
+                                                                            strokeLinecap="round"
+                                                                            strokeLinejoin="round"
+                                                                            style={{ filter: 'drop-shadow(1px 1px 1px black)' }}
+                                                                        >
+                                                                            <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+                                                                            <path d="M12 12m-5 0a5 5 0 1 0 10 0a5 5 0 1 0 -10 0" />
+                                                                            <path d="M12 3v4" />
+                                                                            <path d="M12 17v4" />
+                                                                            <path d="M3 12h4" />
+                                                                            <path d="M17 12h4" />
+                                                                            <path d="M18.364 5.636l-2.828 2.828" />
+                                                                            <path d="M8.464 15.536l-2.828 2.828" />
+                                                                            <path d="M5.636 5.636l2.828 2.828" />
+                                                                            <path d="M15.536 15.536l2.828 2.828" />
+                                                                        </svg>
+                                                                        <span
+                                                                            style={{
+                                                                                marginLeft: '2px',
+                                                                                fontWeight: 'bold',
+                                                                                fontSize: '12px',
+                                                                                color: isHighlighted ? '#FBB314' : 'white',
+                                                                            }}
+                                                                        >
+                                                                            {hand.handBet ? hand.handBet : player.Total_Bet_Value}
+                                                                        </span>
+                                                                    </div>
+                                                                </>
+                                                            )}
+
                                                         </p>
                                                     </div>
                                                 );
@@ -624,7 +665,7 @@ export default function GeneralGame() {
                                         }}
                                     >
                                         <strong>{player.name}</strong>
-                                        {player.bet !== null && <>
+                                        {player.Total_Bet_Value !== null && player.Total_Bet_Value !== undefined && <>
                                             <div style={{ display: 'flex', alignItems: 'center' }}>
                                                 <svg xmlns="http://www.w3.org/2000/svg" width={20} height={20} viewBox="0 0 24 24" fill="none" stroke={isPlayerTurn ? '#FBB314' : 'white'} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" style={{ filter: 'drop-shadow(1px 1px 1px black)' }}>
                                                     <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
@@ -643,7 +684,7 @@ export default function GeneralGame() {
                                                         marginLeft: '5px',
                                                         color: isPlayerTurn ? '#FBB314' : 'white',
                                                     }}>
-                                                    {player.bet}
+                                                    {player.Total_Bet_Value}
                                                 </span>
                                             </div>
                                         </>}

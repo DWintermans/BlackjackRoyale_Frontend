@@ -16,22 +16,26 @@ export const Split = (message, setPlayers) => {
 
                         newHand1 = {
                             cards: [firstCard],
-                            totalCardValue: "1/11"
+                            totalCardValue: "1/11",
+                            handBet: message.Bet,
                         };
 
                         newHand2 = {
                             cards: [lastCard],
-                            totalCardValue: "1/11"
+                            totalCardValue: "1/11",
+                            handBet: message.Bet,
                         };
                     } else {
                         newHand1 = {
                             cards: [firstCard],
-                            totalCardValue: currentHand.totalCardValue / 2
+                            totalCardValue: currentHand.totalCardValue / 2,
+                            handBet: message.Bet,
                         };
 
                         newHand2 = {
                             cards: [lastCard],
-                            totalCardValue: currentHand.totalCardValue / 2
+                            totalCardValue: currentHand.totalCardValue / 2,
+                            handBet: message.Bet,
                         };
 
                     }
@@ -45,7 +49,8 @@ export const Split = (message, setPlayers) => {
 
                     return {
                         ...player,
-                        hands: updatedHands
+                        hands: updatedHands,
+                        Total_Bet_Value: message.Total_Bet_Value,
                     };
                 }
             }

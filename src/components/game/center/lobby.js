@@ -76,7 +76,7 @@ export default function Lobby() {
 
     return (
         <div>
-            <h1>Game lobby</h1>
+            <h1 style={{color: 'white'}}>Game lobby</h1>
             <button onClick={btn1}>create_group</button>
             <button onClick={btn2}>check_group</button>
             <button onClick={btn3}>leave_group</button>
@@ -109,7 +109,7 @@ export default function Lobby() {
                         </div>
                     ))
                 ) : (
-                    <p>No groups available</p>
+                    <p style={{color: 'white'}}>No groups available</p>
                 )}
             </div>
 

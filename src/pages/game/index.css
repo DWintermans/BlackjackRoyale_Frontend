@@ -21,7 +21,7 @@
 /* background-color: #001400; */
 .section-center {
   flex: 2; 
-  background-color: #2ecc71; 
+  background-color: #001400; 
   display: flex;
   flex-direction: column;
   height: 100%; 

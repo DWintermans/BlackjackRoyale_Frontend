@@ -26,7 +26,7 @@ export const GroupUpdate = (message, setGroupID, setPlayers, setUserID) => {
                     filteredPlayers.push({
                         user_id: member.User_ID,
                         name: member.Name,
-                        cards: [],
+                        //cards: [],
                         totalCardValue: 0,
                         bet: null,
                         credits: member.Credits,
@@ -39,7 +39,7 @@ export const GroupUpdate = (message, setGroupID, setPlayers, setUserID) => {
                 filteredPlayers.push({
                     user_id: 0,
                     name: 'Dealer',
-                    cards: [],
+                    //cards: [],
                     totalCardValue: 0,
                     bet: null,
                     credits: null,
