@@ -29,8 +29,8 @@ jobs:
       - name: Create .env file
         run: |
           rm -f .env
-          echo "REACT_APP_API_URL=https://i532747.luna.fhict.nl" >> .env
-          echo "REACT_APP_WS_URL=wss://i532747.luna.fhict.nl/ws/" >> .env
+          echo "REACT_APP_API_URL=https://apii532747.luna.fhict.nl" >> .env
+          echo "REACT_APP_WS_URL=wss://wsi532747.luna.fhict.nl/ws/" >> .env
 
       # Debugging
       - name: Check .env contents
