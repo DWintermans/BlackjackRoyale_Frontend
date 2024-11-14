@@ -2,10 +2,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom/client";
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import "./index.css";
 import Login from "./pages/login";
