@@ -98,22 +98,7 @@ export default function Login() {
                             required
                         />
                     </div>
-
-                    {isSignUp && (
-                        <div className="formGroup">
-                            <label htmlFor="email">Email:</label>
-                            <input
-                            className='login-input'
-                                type="email"
-                                name="email"
-                                id="email"
-                                value={formData.email}
-                                onChange={handleChange}
-                                required={isSignUp}
-                            />
-                        </div>
-                    )}
-
+                    
                     <div className="formGroup">
                         <label htmlFor="password">Password:</label>
                         <input
