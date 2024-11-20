@@ -49,6 +49,10 @@ class WebSocketService {
             this.socket.send(JSON.stringify(message));
         } else {
             console.error('WebSocket is not open.');
+            //try reconnect after 5 sec
+            setTimeout(() => {          
+                this.socket = new WebSocket(websocketURL);        
+            }, 5000);
         }
     }
 
