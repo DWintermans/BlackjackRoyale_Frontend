@@ -36,9 +36,6 @@ class WebSocketService {
 
         this.socket.onclose = (event) => {
             console.log("WebSocket connection closed", event);
-            // setTimeout(() => {
-            //     this.socket = new WebSocket(url);
-            // }, 5000);
         };
 
         WebSocketService.instance = this;

@@ -45,7 +45,7 @@ export default function Login() {
 
                 console.log(response)
 
-                localStorage.setItem("jwt", response.jwt);
+                localStorage.setItem("jwt", response.data);
                 window.location.href = '/game';
             } else {
                 response = await TryLogin(formData.username, formData.password);
@@ -59,7 +59,7 @@ export default function Login() {
 
                 console.log(response)
 
-                localStorage.setItem("jwt", response.jwt);
+                localStorage.setItem("jwt", response.data);
                 window.location.href = '/game';
             }
         } catch (error) {
