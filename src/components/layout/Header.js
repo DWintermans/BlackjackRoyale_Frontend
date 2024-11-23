@@ -59,10 +59,19 @@ export default function Header() {
           <img src="/images/logo.png" alt="logo" />
         </div>
 
+
         {isLoggedIn && (
-          <button className="logout-button" onClick={handleLogout}>
-            Logout
-          </button>
+          <div>
+            
+            <button className="logout-button" style={{marginRight: "30px"}}>
+              Statistics
+            </button>
+
+            <button className="logout-button" onClick={handleLogout}>
+              Logout
+            </button>
+
+          </div>
         )}
       </div>
       <div>
