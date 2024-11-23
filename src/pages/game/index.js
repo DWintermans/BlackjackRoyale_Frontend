@@ -35,14 +35,26 @@ export default function Game() {
     }, []);
 
     return (
-        <div className="page-wrapper">
-            <Header />
-            <div className="container">
-                <div className="section-left"><Friends /></div>
-                <div className="section-center"> {groupID ? <GeneralGame /> : <Lobby />} </div>
-                {<div className="section-right"><Chat /></div>}
+        <div className="tailwind-wrapper">
+            <div className="flex flex-col h-screen">
+                <Header />
+
+                <div className="flex flex-1 overflow-hidden">
+                    <div className="w-1/4 bg-blue-500">
+                        <Friends />
+                    </div>
+
+                    <div className="w-1/2 bg-[#001400]">
+                        {groupID ? <GeneralGame /> : <Lobby />}
+                    </div>
+
+                    {<div className="w-1/4 bg-red-500">
+                        <Chat />
+                    </div>}
+                </div>
+
+                <Footer />
             </div>
-            <Footer />
         </div>
     );
 };

@@ -12,7 +12,7 @@ export default function Index() {
             flexDirection: 'column',
             justifyContent: 'center',
             alignItems: 'center',
-            height: '80vh',  // To center vertically
+            height: '80vh',  
         },
         button: {
             margin: '10px',

@@ -1,7 +1,6 @@
 import { React, useEffect, useState } from 'react';
 import webSocketService from '../../lib/api/requests/websocketservice';
 import { useNavigate, useLocation } from 'react-router-dom';
-import './Header.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -54,36 +53,40 @@ export default function Header() {
 
   return (
     <>
-      <div className="header">
-        <div className="logo" onClick={() => navigate('/')}>
-          <img src="/images/logo.png" alt="logo" />
-        </div>
-
-
-        {isLoggedIn && (
-          <div>
-            
-            <button className="logout-button" style={{marginRight: "30px"}}>
-              Statistics
-            </button>
-
-            <button className="logout-button" onClick={handleLogout}>
-              Logout
-            </button>
-
+      <div className="tailwind-wrapper">
+        <div className="flex justify-between items-center bg-black px-[30px] py-[10px] h-[80px] text-white">
+          <div className="cursor-pointer" onClick={() => navigate('/')}>
+            <img src="/images/logo.png" alt="logo" className="h-[50px]"/>
           </div>
-        )}
-      </div>
-      <div>
 
-        {/* Different location of toast based on what page youre on. More spacing on non login-pages. */}
-        <ToastContainer
-          position="top-right"
-          style={{
-            top: isLoginPage ? '80px' : '145px',
-            right: isLoginPage ? null : '32px',
-          }}
-        />
+          {isLoggedIn && (
+            <div className="flex space-x-12">
+
+              <button className="bg-transparent text-white border-2 border-white py-1 px-2.5 cursor-pointer text-base rounded-full hover:bg-gray-600">
+                Replays
+              </button>
+
+              <button className="bg-transparent text-white border-2 border-white py-1 px-2.5 cursor-pointer text-base rounded-full hover:bg-gray-600">
+                Statistics
+              </button>
+
+              <button className="bg-transparent text-white border-2 border-white py-1 px-2.5 cursor-pointer text-base rounded-full hover:bg-gray-600" onClick={handleLogout}>
+                Logout
+              </button>
+            </div>
+          )}
+        </div>
+        <div>
+
+          {/* Dont use tailwind for absolute positioning, move the toast inside the chatbox when not on login page */}
+          <ToastContainer
+            position="top-right"
+            style={{
+              top: isLoginPage ? '80px' : '145px',
+              right: isLoginPage ? null : '32px',
+            }}
+          />
+        </div>
       </div>
     </>
   );
