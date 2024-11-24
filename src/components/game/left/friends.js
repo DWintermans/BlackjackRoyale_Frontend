@@ -21,8 +21,14 @@ export default function Friends() {
     }, []);
 
     return (
-        <div>
-            <h1>Friends component</h1>
+        <div className="p-2.5 m-2.5 bg-lightgray rounded-3xl flex-1 overflow-auto h-[calc(100%-3rem)]">
+            
+            <div className="flex justify-between items-center pb-2.5">
+                <p className="font-bold text-xl p-1.5 m-0">
+                   Friends
+                </p>
+            </div>
+
             {error && <p>Error: {error}</p>}
             {messages ? (
                 <div>

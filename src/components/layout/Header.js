@@ -82,7 +82,7 @@ export default function Header() {
           <ToastContainer
             position="top-right"
             style={{
-              top: isLoginPage ? '80px' : '145px',
+              top: isLoginPage ? '80px' : '153px',
               right: isLoginPage ? null : '32px',
             }}
           />

@@ -6,38 +6,37 @@ import Header from '../../components/layout/Header.js';
 
 export default function Index() {
     const navigate = useNavigate();
-    const styles = {
-        container: {
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: '80vh',  
-        },
-        button: {
-            margin: '10px',
-            padding: '15px 30px',
-            fontSize: '18px',
-            cursor: 'pointer',
-            backgroundColor: '#636363',
-            color: 'white',
-            border: 'none',
-            borderRadius: '5px',
-            width: '200px',
-            height: '50px',
-        }
-    };
 
     return (
-        <div>
+        <div className="tailwind-wrapper">
             <Header />
-
-            <div style={styles.container}>
-                <button style={styles.button} onClick={() => navigate('/login')}>Play</button>
-                <button style={styles.button} onClick={() => navigate('/how-to-play')}>How to Play</button>
-                <button style={styles.button} onClick={() => navigate('/leaderboard')}>Leaderboard</button>
+            <div className="flex flex-col items-center justify-center h-screen">
+                <div className="h-1/2 space-y-6 text-center">
+                    <button
+                        href="/"
+                        className="w-52 h-14 text-lg font-medium text-white bg-[#636363] rounded-lg"
+                        onClick={() => navigate('/login')}
+                    >
+                        Play
+                    </button>
+                    <br />
+                    <button
+                        href="/"
+                        className="w-52 h-14 text-lg font-medium text-white bg-[#636363] rounded-lg"
+                        onClick={() => navigate('/how-to-play')}
+                    >
+                        How to Play
+                    </button>
+                    <br />
+                    <button
+                        href="/"
+                        className="w-52 h-14 text-lg font-medium text-white bg-[#636363] rounded-lg"
+                        onClick={() => navigate('leaderboard')}
+                    >
+                        Leaderboard
+                    </button>
+                </div>
             </div>
-
             <Footer />
         </div>
     );

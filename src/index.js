@@ -8,6 +8,7 @@ import "./index.css";
 import Login from "./pages/login";
 import Game from "./pages/game";
 import Index from "./pages/index";
+import NotFound from "./pages/404/";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 const RedirectIfLoggedIn = () => {
@@ -45,6 +46,10 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute element={<Game />} />
     ),
+  },
+  {
+    path: "*", 
+    element: <NotFound />,
   }
 ]);
 
