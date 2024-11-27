@@ -55,8 +55,11 @@ export default function Header() {
     <>
       <div className="tailwind-wrapper">
         <div className="flex justify-between items-center bg-black px-[30px] py-[10px] h-[80px] text-white">
-          <div className="cursor-pointer" onClick={() => navigate('/')}>
-            <img src="/images/logo.png" alt="logo" className="h-[50px]"/>
+          <div className="cursor-pointer"
+            onClick={() => {
+              window.location.href = '/';
+            }}>
+            <img src="/images/logo.png" alt="logo" className="h-[50px]" />
           </div>
 
           {isLoggedIn && (

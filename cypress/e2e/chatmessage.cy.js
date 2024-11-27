@@ -1,6 +1,6 @@
 describe('Global Chat Message Flow', () => {  
     beforeEach(() => {
-      cy.login('string', 'string');
+      cy.login('string', 'string'); //custom command for logging in
     });
   
     it('should send a message to the global chat', () => {

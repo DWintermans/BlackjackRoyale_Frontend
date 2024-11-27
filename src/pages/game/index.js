@@ -40,7 +40,7 @@ export default function Game() {
                 <Header />
 
                 <div className="flex flex-1 overflow-hidden">
-                    <div className="w-1/4 bg-blue-500">
+                    <div className="w-1/4 bg-[#001400]">
                         <Friends />
                     </div>
 
@@ -48,7 +48,7 @@ export default function Game() {
                         {groupID ? <GeneralGame /> : <Lobby />}
                     </div>
 
-                    {<div className="w-1/4 bg-red-500">
+                    {<div className="w-1/4 bg-[#001400]">
                         <Chat />
                     </div>}
                 </div>
