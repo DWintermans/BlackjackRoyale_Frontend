@@ -5,7 +5,7 @@ import './lobby.css';
 export default function Lobby() {
     const [lobbyData, setLobbyData] = useState([]);
     const [groupId, setGroupId] = useState('');
-    
+
     //call once on page load
     useEffect(() => {
         const data = {
@@ -76,11 +76,10 @@ export default function Lobby() {
 
     return (
         <div>
-            <h1 style={{color: 'white'}}>Game lobby</h1>
-            <button onClick={btn1}>create_group</button>
-            <button onClick={btn2}>check_group</button>
-            <button onClick={btn3}>leave_group</button>
-
+            <h1 style={{ color: 'white' }}>Game lobby</h1>
+            <button onClick={btn1} style={{ color: 'white' }}>create_group</button>
+            <button onClick={btn2} style={{ color: 'white' }}>check_group</button>
+            <button onClick={btn3} style={{ color: 'white' }}>leave_group</button>
             <input
                 type="text"
                 id="lname"
@@ -109,7 +108,7 @@ export default function Lobby() {
                         </div>
                     ))
                 ) : (
-                    <p style={{color: 'white'}}>No groups available</p>
+                    <p style={{ color: 'white' }}>No groups available</p>
                 )}
             </div>
 

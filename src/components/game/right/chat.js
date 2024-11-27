@@ -141,6 +141,7 @@ export default function Chat() {
                         />
                         <button
                             type="submit"
+                            id="send_message"
                             className="bg-[#03254c] text-white rounded-tr-2xl rounded-br-2xl w-10 h-10 flex justify-center items-center cursor-pointer"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-send-2" width="25" height="25" viewBox="0 0 24 24" strokeWidth="1.5" stroke="#FFFFFF" fill="none" strokeLinecap="round" strokeLinejoin="round">

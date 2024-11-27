@@ -112,7 +112,7 @@ export default function Login() {
                         />
                     </div>
 
-                    <button type="submit" disabled={loading} className='login-button'>
+                    <button id="login-button" type="submit" disabled={loading} className='login-button'>
                         {loading ? (isSignUp ? "Signing Up..." : "Signing in...") : (isSignUp ? "Sign Up" : "Sign in")}
                     </button>
                 </form>
