@@ -562,7 +562,7 @@ export default function GeneralGame() {
                                                     </div>
 
                                                     {/*card val and result*/}
-                                                    <p style={{
+                                                    <div style={{
                                                         marginTop: player.user_id === 0 ? '70px' : '60px',
                                                         color: isHighlighted ? '#FBB314' : 'white',
                                                         textAlign: 'center',
@@ -631,7 +631,7 @@ export default function GeneralGame() {
                                                             </>
                                                         )}
 
-                                                    </p>
+                                                    </div>
                                                 </div>
                                             );
                                         })

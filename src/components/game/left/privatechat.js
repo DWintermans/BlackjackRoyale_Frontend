@@ -71,7 +71,6 @@ export default function PrivateChat({ userId, userName, onGoBack }) {
             try {
                 const response = await GetPrivateMessages(userId);
                 const messagesData = response.response?.data || [];
-                console.log(messagesData);
 
                 const formattedMessages = messagesData.map((message) => {
                     const position = message.message_sender === userId ? "left" : "right";

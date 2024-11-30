@@ -4,6 +4,10 @@
   @tailwind utilities;
 }
 
+.Toastify__toast-theme--light {
+  background-color: #e5e7eb !important;
+}
+
 /* custom scrollbar */
 ::-webkit-scrollbar {
   width: 20px;
