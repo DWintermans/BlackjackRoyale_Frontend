@@ -108,20 +108,20 @@ export default function Chat() {
     };
 
     return (
-        <div className="p-2.5 m-2.5 bg-[#002700] rounded-3xl flex-1 overflow-auto h-[calc(100%-3rem)] flex flex-col border border-[#F9F9F9]">
+        <div className="p-2.5 m-2.5 bg-green rounded-3xl flex-1 overflow-auto h-[calc(100%-3rem)] flex flex-col border border-offwhite">
             <div className="flex justify-between items-center pb-2.5">
                 <p className="font-bold text-xl p-1.5 m-0 text-white">
                     {groupID ? `Group ${groupID}` : 'Global Chat'}
                 </p>
                 {groupID && (
-                    <p className="mx-1 cursor-pointer py-1 px-2.5 border border-[#000000] rounded-full bg-[#FCB316] hover:bg-[#F4A300]" onClick={toggleMembersList}>
+                    <p className="font-semibold mx-1 cursor-pointer py-1 px-2.5 border border-black rounded-full bg-yellow hover:bg-hoveryellow" onClick={toggleMembersList}>
                         {members.length} member(s)
                     </p>
                 )}
             </div>
             {!showMembersList ? (
                 <>
-                    <div className="border border-[#F9F9F9] border-tl-10px border-bl-10px rounded-l-2xl flex-1 overflow-x-hidden overflow-y-auto bg-[#123312]" id="chat-box">
+                    <div className="border border-offwhite border-tl-10px border-bl-10px rounded-l-2xl flex-1 overflow-x-hidden overflow-y-auto bg-lightgreen" id="chat-box">
                         <MessageList
                             className='message-list'
                             lockable={true}
@@ -130,19 +130,19 @@ export default function Chat() {
                         />
                     </div>
 
-                    <form className="flex items-center mt-2.5 border border-[#F9F9F9] border-r-0 outline-none rounded-2xl" autoComplete="off" onSubmit={handleSendMessage}>
+                    <form className="flex items-center mt-2.5 border border-offwhite outline-none rounded-2xl" autoComplete="off" onSubmit={handleSendMessage}>
                         <input
                             type="text"
                             name="message"
                             id="message"
                             required
                             placeholder="Type a message..."
-                            className="flex-1 p-2.5 border-tl-15px border-bl-15px text-white rounded-l-2xl border-[#F9F9F9] border-r-2 bg-[#002700]"
+                            className="flex-1 p-2.5 border-tl-15px border-bl-15px text-white rounded-l-2xl border-offwhite border-r-2 bg-green"
                         />
                         <button
                             type="submit"
                             id="send_message"
-                            className="bg-[#FCB316] text-white rounded-tr-2xl rounded-br-2xl w-10 h-10 flex justify-center items-center cursor-pointer"
+                            className="bg-yellow hover:bg-hoveryellow text-white rounded-r-2xl w-[41px] h-[41px] flex justify-center items-center cursor-pointer"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-send-2" width="25" height="25" viewBox="0 0 24 24" strokeWidth="1.5" stroke="#000000" fill="none" strokeLinecap="round" strokeLinejoin="round">
                                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -156,7 +156,7 @@ export default function Chat() {
                 <div className="p-2.5">
                     <ul>
                         {members.map((member, index) => (
-                            <li key={index} className="flex justify-between items-center py-2.5 border-b border-[#F9F9F9] text-white">
+                            <li key={index} className="flex justify-between items-center py-2.5 border-b border-offwhite text-white">
                                 <span className="flex-1 text-left">{member.Name}</span>
                                 <span className="flex-1 text-center">{member.InWaitingRoom ? 'In Waiting Room' : ''}</span>
                                 <span className="flex-1 text-right">{member.IsReady ? 'Ready' : 'Not Ready'}</span>
