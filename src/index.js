@@ -4,12 +4,20 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
+import Header from "./components/layout/Header";
+import Footer from "./components/layout/Footer";
+
 import "./index.css";
 import Login from "./pages/login";
 import Game from "./pages/game";
+import HowToPlay from "./pages/how-to-play";
+import Leaderboard from "./pages/leaderboard";
+import Statistics from "./pages/statistics";
 import Index from "./pages/index";
 import NotFound from "./pages/404/";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Settings from "./pages/settings";
+import Replays from "./pages/replays";
 
 const RedirectIfLoggedIn = () => {
   const navigate = useNavigate();
@@ -26,8 +34,18 @@ const RedirectIfLoggedIn = () => {
 const LoginWrapper = () => {
   return (
     <>
-      <RedirectIfLoggedIn />  
-      <Login />              
+      <RedirectIfLoggedIn />
+      <Login />
+    </>
+  );
+};
+
+const Layout = ({ children }) => {
+  return (
+    <>
+      <Header />
+        <main>{children}</main>
+      <Footer />
     </>
   );
 };
@@ -35,21 +53,65 @@ const LoginWrapper = () => {
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Index />
+    element: < Index />
   },
   {
     path: "/login",
-    element: <LoginWrapper />
+    element: < LoginWrapper />
   },
   {
     path: "/game",
     element: (
-      <ProtectedRoute element={<Game />} />
+      < ProtectedRoute element={<Game />} />
     ),
   },
   {
-    path: "*", 
-    element: <NotFound />,
+    path: "/how-to-play",
+    element: (
+      <Layout>
+        < HowToPlay />
+      </Layout>
+    ),
+  },
+  {
+    path: "/leaderboard",
+    element: (
+      <Layout>
+        < Leaderboard />
+      </Layout>
+    ),
+  },
+  {
+    path: "statistics",
+    element: (
+      <Layout>
+        < Statistics />
+      </Layout>
+    ),
+  },
+  {
+    path: "replays",
+    element: (
+      <Layout>
+        < Replays />
+      </Layout>
+    ),
+  },
+  {
+    path: "Settings",
+    element: (
+      <Layout>
+        < Settings />
+      </Layout>
+    ),
+  },
+  {
+    path: "*",
+    element: (
+      <Layout>
+        <NotFound />
+      </Layout>
+    ),
   }
 ]);
 
