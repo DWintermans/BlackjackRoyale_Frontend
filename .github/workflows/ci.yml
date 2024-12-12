@@ -2,10 +2,10 @@ name: Lint and Prettier Check
 
 on:
   pull_request:
-    branches: 
+    branches:
       - "master"
   push:
-    branches: 
+    branches:
       - "master"
 
 jobs:
@@ -38,7 +38,7 @@ jobs:
   # push to GitHub
   fix:
     runs-on: ubuntu-latest
-    needs: lint  # Run this job only if linting passes
+    needs: lint # Run this job only if linting passes
 
     steps:
       - name: Checkout repository
