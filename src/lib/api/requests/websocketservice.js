@@ -12,13 +12,18 @@ class WebSocketService {
 
 		this.socket.onopen = () => {
 			console.log("WebSocket connection opened");
-			this.socket.send(
-				JSON.stringify({
-					category: "acknowledge",
-					action: "authorize",
-					token: localStorage.getItem("jwt"),
-				}),
-			);
+			
+			const jwtToken = localStorage.getItem("jwt");
+
+			if (jwtToken) {
+				this.socket.send(
+					JSON.stringify({
+						category: "acknowledge",
+						action: "authorize",
+						token: jwtToken,
+					})
+				);
+			} 
 		};
 
 		this.socket.onmessage = (event) => {
