@@ -1,7 +1,5 @@
-import React from 'react';
+import React from "react";
 
 export default function Replays() {
-    return (
-        <div>Replays</div>
-    );
-};
+	return <div>Replays</div>;
+}

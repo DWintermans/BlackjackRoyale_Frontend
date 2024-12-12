@@ -2,9 +2,9 @@ name: Deploy React App
 
 on:
   push:
-    branches: [ "master" ]
+    branches: ["master"]
   pull_request:
-    branches: [ "master" ]
+    branches: ["master"]
 
 jobs:
   build:
@@ -19,7 +19,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: "18"
 
       # Install dependencies with legacy peer deps
       - name: Install dependencies
@@ -35,7 +35,7 @@ jobs:
       # Debugging
       - name: Check .env contents
         run: cat .env
-        
+
       # Build the React app, ignore warnings
       - name: Build React app
         run: CI=false npm run build

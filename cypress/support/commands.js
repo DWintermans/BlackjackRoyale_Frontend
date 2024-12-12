@@ -24,11 +24,11 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-Cypress.Commands.add('login', (username, password) => {
-    cy.intercept('POST', '**/user/login').as('loginRequest');
-    cy.visit('http://localhost:3000/login');
-    cy.get('#username').type(username);
-    cy.get('#password').type(password);
-    cy.get('#login-button').click();
-    cy.wait('@loginRequest').its('response.statusCode').should('eq', 200);
+Cypress.Commands.add("login", (username, password) => {
+	cy.intercept("POST", "**/user/login").as("loginRequest");
+	cy.visit("http://localhost:3000/login");
+	cy.get("#username").type(username);
+	cy.get("#password").type(password);
+	cy.get("#login-button").click();
+	cy.wait("@loginRequest").its("response.statusCode").should("eq", 200);
 });

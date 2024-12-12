@@ -1,73 +1,75 @@
 class WebSocketService {
-    static instance = null;
-    socket = null;
-    listeners = [];
-    
-    constructor(url) {
-        if (WebSocketService.instance) {
-            return WebSocketService.instance;
-        }
+	static instance = null;
+	socket = null;
+	listeners = [];
 
-        this.socket = new WebSocket(url);
+	constructor(url) {
+		if (WebSocketService.instance) {
+			return WebSocketService.instance;
+		}
 
-        this.socket.onopen = () => {
-            console.log("WebSocket connection opened");
-            this.socket.send(JSON.stringify({
-                category: "acknowledge",
-                action: "authorize",
-                token: localStorage.getItem("jwt"),
-            }));
-        };
+		this.socket = new WebSocket(url);
 
-        this.socket.onmessage = (event) => {
-            console.log(event.data);
-            try {
-                const message = JSON.parse(event.data);
-                this.notifyListeners(message);
-            } catch (error) {
-                console.error("Error parsing message:", error);
-                console.error("Received data is not valid JSON:", event.data);
-            }
-        };
+		this.socket.onopen = () => {
+			console.log("WebSocket connection opened");
+			this.socket.send(
+				JSON.stringify({
+					category: "acknowledge",
+					action: "authorize",
+					token: localStorage.getItem("jwt"),
+				}),
+			);
+		};
 
-        this.socket.onerror = (event) => {
-            console.error("WebSocket error observed:", event);
-        };
+		this.socket.onmessage = (event) => {
+			console.log(event.data);
+			try {
+				const message = JSON.parse(event.data);
+				this.notifyListeners(message);
+			} catch (error) {
+				console.error("Error parsing message:", error);
+				console.error("Received data is not valid JSON:", event.data);
+			}
+		};
 
-        this.socket.onclose = (event) => {
-            console.log("WebSocket connection closed", event);
-        };
+		this.socket.onerror = (event) => {
+			console.error("WebSocket error observed:", event);
+		};
 
-        WebSocketService.instance = this;
-    }
+		this.socket.onclose = (event) => {
+			console.log("WebSocket connection closed", event);
+		};
 
-    sendMessage(message) {
-        if (this.socket.readyState === WebSocket.OPEN) {
-            this.socket.send(JSON.stringify(message));
-        } else {
-            console.error('WebSocket is not open.');
-            //try reconnect after 5 sec
-            setTimeout(() => {          
-                this.socket = new WebSocket(websocketURL);        
-            }, 5000);
-        }
-    }
+		WebSocketService.instance = this;
+	}
 
-    notifyListeners(message) {
-        this.listeners.forEach((listener) => listener(message));
-    }
+	sendMessage(message) {
+		if (this.socket.readyState === WebSocket.OPEN) {
+			this.socket.send(JSON.stringify(message));
+		} else {
+			console.error("WebSocket is not open.");
+			//try reconnect after 5 sec
+			setTimeout(() => {
+				this.socket = new WebSocket(websocketURL);
+			}, 5000);
+		}
+	}
 
-    addListener(callback) {
-        this.listeners.push(callback); 
-    }
+	notifyListeners(message) {
+		this.listeners.forEach((listener) => listener(message));
+	}
 
-    removeListener(callback) {
-        this.listeners = this.listeners.filter((listener) => listener !== callback); 
-    }
+	addListener(callback) {
+		this.listeners.push(callback);
+	}
 
-    close() {
-        this.socket.close();
-    }
+	removeListener(callback) {
+		this.listeners = this.listeners.filter((listener) => listener !== callback);
+	}
+
+	close() {
+		this.socket.close();
+	}
 }
 
 const websocketURL = process.env.REACT_APP_WS_URL;

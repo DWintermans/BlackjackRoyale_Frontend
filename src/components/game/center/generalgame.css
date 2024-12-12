@@ -1,194 +1,194 @@
 .board-container {
-    position: relative;
-    width: 768px;  
-    height: 597px;
-    margin: 0 auto; 
-    overflow: hidden; 
+	position: relative;
+	width: 768px;
+	height: 597px;
+	margin: 0 auto;
+	overflow: hidden;
 }
 
 .board-img-style {
-    width: auto;
-    max-width: 100%; 
-    height: auto;
-    display: block; 
+	width: auto;
+	max-width: 100%;
+	height: auto;
+	display: block;
 }
 
 .player-info {
-    color: white;
-    font-size: 14px;
+	color: white;
+	font-size: 14px;
 }
 
 .card-outline {
-    border: 3px solid #FBB314; 
-    border-radius: 5px; 
+	border: 3px solid #fbb314;
+	border-radius: 5px;
 }
 
 /*  */
 .fade-text {
-    animation: fade 1s forwards; 
+	animation: fade 1s forwards;
 }
 
 .fade-main {
-    animation: fade 3s forwards; 
+	animation: fade 3s forwards;
 }
 
 @keyframes fade {
-    0%, 100% {
-        opacity: 0;
-    }
-    50% {
-        opacity: 1;
-    }
+	0%,
+	100% {
+		opacity: 0;
+	}
+	50% {
+		opacity: 1;
+	}
 }
 
 /*  */
 
 .clickable-area {
-    position: absolute;
-    cursor: pointer;
+	position: absolute;
+	cursor: pointer;
 }
 
 .leave_group {
-    top: 12px;   
-    left: 630px;  
-    width: 75px; 
-    height: 25px; 
-    /* background-color: rgba(0, 234, 255, 0.5);  */
+	top: 12px;
+	left: 630px;
+	width: 75px;
+	height: 25px;
+	/* background-color: rgba(0, 234, 255, 0.5);  */
 }
 
 /*  */
 
 .hit {
-    top: 533px;   
-    left: 295px;  
-    width: 40px;  
-    height: 40px; 
-    /* background-color: rgba(255, 0, 0, 0.5);  */
+	top: 533px;
+	left: 295px;
+	width: 40px;
+	height: 40px;
+	/* background-color: rgba(255, 0, 0, 0.5);  */
 }
 
 .insurance {
-    top: 533px;   
-    left: 433px;  
-    width: 40px;  
-    height: 40px; 
-    /* background-color: rgba(255, 164, 247, 0.5);  */
+	top: 533px;
+	left: 433px;
+	width: 40px;
+	height: 40px;
+	/* background-color: rgba(255, 164, 247, 0.5);  */
 }
 
 /*  */
 
 .bet {
-    top: 526px;   
-    left: 501px;  
-    width: 40px;  
-    height: 40px; 
-    /* background-color: rgba(0, 0, 255, 0.5);  */
+	top: 526px;
+	left: 501px;
+	width: 40px;
+	height: 40px;
+	/* background-color: rgba(0, 0, 255, 0.5);  */
 }
 
 .stand {
-    top: 526px;   
-    left: 226px;  
-    width: 40px; 
-    height: 40px; 
-    /* background-color: rgba(0, 255, 0, 0.5);  */
+	top: 526px;
+	left: 226px;
+	width: 40px;
+	height: 40px;
+	/* background-color: rgba(0, 255, 0, 0.5);  */
 }
 
 /*  */
 
 .clear_bets {
-    top: 516px;   
-    left: 570px;  
-    width: 40px;  
-    height: 40px; 
-    /* background-color: rgba(0, 136, 0, 0.5);  */
+	top: 516px;
+	left: 570px;
+	width: 40px;
+	height: 40px;
+	/* background-color: rgba(0, 136, 0, 0.5);  */
 }
 
 .double {
-    top: 516px;   
-    left: 157px;  
-    width: 40px; 
-    height: 40px; 
-    /* background-color: rgba(241, 73, 202, 0.5);  */
+	top: 516px;
+	left: 157px;
+	width: 40px;
+	height: 40px;
+	/* background-color: rgba(241, 73, 202, 0.5);  */
 }
 
 /*  */
 
 .ready {
-    top: 498px;   
-    left: 639px;  
-    width: 40px;  
-    height: 40px; 
-    /* background-color: rgba(83, 217, 229, 0.5);  */
+	top: 498px;
+	left: 639px;
+	width: 40px;
+	height: 40px;
+	/* background-color: rgba(83, 217, 229, 0.5);  */
 }
 
 .split {
-    top: 498px;   
-    left: 89px;  
-    width: 40px; 
-    height: 40px; 
-    /* background-color: rgba(237, 226, 110, 0.5);  */
+	top: 498px;
+	left: 89px;
+	width: 40px;
+	height: 40px;
+	/* background-color: rgba(237, 226, 110, 0.5);  */
 }
 
 /*  */
 
-
 .unready {
-    top: 471px;   
-    left: 708px;  
-    width: 40px;  
-    height: 40px; 
-    /* background-color: rgba(0, 17, 255, 0.5);  */
+	top: 471px;
+	left: 708px;
+	width: 40px;
+	height: 40px;
+	/* background-color: rgba(0, 17, 255, 0.5);  */
 }
 
 .surrender {
-    top: 471px;   
-    left: 20px;  
-    width: 40px; 
-    height: 40px; 
-    /* background-color: rgba(192, 29, 29, 0.5);  */
+	top: 471px;
+	left: 20px;
+	width: 40px;
+	height: 40px;
+	/* background-color: rgba(192, 29, 29, 0.5);  */
 }
 
 /*  */
 
 .bet_10 {
-    top: 477px;   
-    left: 258px;  
-    width: 35px; 
-    height: 35px; 
-    /* background-color: rgba(203, 81, 81, 0.5);  */
+	top: 477px;
+	left: 258px;
+	width: 35px;
+	height: 35px;
+	/* background-color: rgba(203, 81, 81, 0.5);  */
 }
 
 .bet_500 {
-    top: 477px;   
-    left: 473px;  
-    width: 35px; 
-    height: 35px; 
-    /* background-color: rgba(91, 158, 28, 0.5);  */
+	top: 477px;
+	left: 473px;
+	width: 35px;
+	height: 35px;
+	/* background-color: rgba(91, 158, 28, 0.5);  */
 }
 
 /*  */
 
 .bet_50 {
-    top: 456px;   
-    left: 314px;  
-    width: 35px; 
-    height: 35px; 
-    /* background-color: rgba(81, 203, 93, 0.5);  */
+	top: 456px;
+	left: 314px;
+	width: 35px;
+	height: 35px;
+	/* background-color: rgba(81, 203, 93, 0.5);  */
 }
 
 .bet_250 {
-    top: 456px;   
-    left: 421px;  
-    width: 35px; 
-    height: 35px; 
-    /* background-color: rgba(81, 103, 203, 0.5);  */
+	top: 456px;
+	left: 421px;
+	width: 35px;
+	height: 35px;
+	/* background-color: rgba(81, 103, 203, 0.5);  */
 }
 
 /*  */
 
 .bet_100 {
-    top: 450px;   
-    left: 368px;  
-    width: 35px; 
-    height: 35px; 
-    /* background-color: rgba(81, 103, 203, 0.5);  */
+	top: 450px;
+	left: 368px;
+	width: 35px;
+	height: 35px;
+	/* background-color: rgba(81, 103, 203, 0.5);  */
 }
