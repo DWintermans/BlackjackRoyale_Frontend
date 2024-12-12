@@ -23,7 +23,7 @@ export default [
 			"react/prop-types": "off",
 			"react/jsx-uses-react": "off",
 			"prettier/prettier": "error",
-			indent: ["error", "tab"],
+			indent: ["warn", "tab"],
 		},
 	},
 	{
