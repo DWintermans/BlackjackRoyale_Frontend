@@ -11,7 +11,6 @@ import { Turn } from "./actions/turn";
 import { ResetWinnings } from "./actions/reset_winnings";
 import { Insure } from "./actions/insure";
 import { InsuranceReceived } from "./actions/insurance_received";
-
 export const handleIncomingMessage = (
 	message,
 	setGroupID,
@@ -24,6 +23,7 @@ export const handleIncomingMessage = (
 	setTurn,
 	setPlayerAction,
 	setGameFinishedMessage,
+	
 ) => {
 	switch (true) {
 		case message.hasOwnProperty("Group_ID") &&
@@ -116,5 +116,5 @@ export const handleIncomingMessage = (
 		case message.Action === "PLAYER_LEFT":
 			setPlayerAction([message.User_ID, "LEFT"]);
 			break;
-	}
+	} 
 };

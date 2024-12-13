@@ -26,10 +26,11 @@ export default function FriendRequests({ onGoBack }) {
 
 				console.log(response);
 
+				setError(response.message);
 				setFriendRequests(response.messages);
 			} catch (error) {
 				console.log(error);
-				setError("No friends found.");
+				setError("No friend requests found.");
 			}
 		};
 
@@ -99,11 +100,11 @@ export default function FriendRequests({ onGoBack }) {
 						viewBox="0 0 24 24"
 						fill="none"
 						stroke="currentColor"
-						stroke-linecap="round"
-						stroke-linejoin="round"
+						strokeLinecap="round"
+						strokeLinejoin="round"
 						width="24"
 						height="24"
-						stroke-width="2"
+						strokeWidth="2"
 					>
 						<path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"></path>
 						<path d="M16 19h6"></path>
