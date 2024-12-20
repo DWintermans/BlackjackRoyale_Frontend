@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import ReplayGame from "../../components/replay/replaygame.js"
-import ReplaySelector from "../../components/replay/replayselector.js"
-import ReplayActions from "../../components/replay/replayactions.js"
-import ReplayChat from "../../components/replay/replaychat.js"
+import ReplayGame from "../../components/replay/replaygame.js";
+import ReplaySelector from "../../components/replay/replayselector.js";
+import ReplayActions from "../../components/replay/replayactions.js";
+import ReplayChat from "../../components/replay/replaychat.js";
 import { GetGameReplay } from "../../lib/api/requests/gamereplay.js";
 
 export default function Replays() {
@@ -15,7 +15,9 @@ export default function Replays() {
 	useEffect(() => {
 		const fetchReplay = async () => {
 			try {
-				const response = await GetGameReplay("MPOGCP_ded9554e-0551-49c0-a963-de586f60aad2");
+				const response = await GetGameReplay(
+					"MPOGCP_ded9554e-0551-49c0-a963-de586f60aad2",
+				);
 
 				console.log(response);
 
@@ -27,7 +29,6 @@ export default function Replays() {
 				setReplayData(parsedMessages);
 
 				setGroupID("AHAHAH");
-
 			} catch (error) {
 				console.log(error);
 				setError("No game found.");
@@ -42,45 +43,50 @@ export default function Replays() {
 		// }
 		if (currentActionIndex < replayData.length - 1) {
 			const nextActionData = replayData[currentActionIndex + 1];
-	  
+
 			// Increment usefulActionCount only if the next action is not filtered
 			if (
-			  nextActionData &&
-			  !["GAME_STARTED", "TURN", "PLAYER_FINISHED"].includes(nextActionData.payload.Action) &&
-			  !nextActionData.payload.Group_ID
+				nextActionData &&
+				!["GAME_STARTED", "TURN", "PLAYER_FINISHED"].includes(
+					nextActionData.payload.Action,
+				) &&
+				!nextActionData.payload.Group_ID
 			) {
-			  setUsefulActionCount((prev) => prev + 1);
+				setUsefulActionCount((prev) => prev + 1);
 			}
-	  
+
 			setCurrentActionIndex(currentActionIndex + 1);
-		  }
+		}
 	};
 
 	const currentAction = replayData[currentActionIndex] || null;
 
-	//automatically go to next action while displaying 
+	//automatically go to next action while displaying
 	useEffect(() => {
 		const nextActionData = replayData[currentActionIndex + 1];
 
-		if (nextActionData &&
+		if (
+			nextActionData &&
 			(nextActionData.payload.Action === "GAME_STARTED" ||
 				nextActionData.payload.Action === "TURN" ||
-				nextActionData.payload.Action === "PLAYER_FINISHED" || 
-				nextActionData.payload.Group_ID)) {
+				nextActionData.payload.Action === "PLAYER_FINISHED" ||
+				nextActionData.payload.Group_ID)
+		) {
 			nextAction();
 		}
 	}, [currentActionIndex, currentAction]);
 
-	const filteredReplayDataCount = replayData.filter(action =>
-		!["GAME_STARTED", "TURN", "PLAYER_FINISHED"].includes(action.payload.Action) &&
-		!action.payload.Group_ID
-	  ).length;
-	  
+	const filteredReplayDataCount = replayData.filter(
+		(action) =>
+			!["GAME_STARTED", "TURN", "PLAYER_FINISHED"].includes(
+				action.payload.Action,
+			) && !action.payload.Group_ID,
+	).length;
+
 	return (
 		<div className="tailwind-wrapper">
 			<div className="flex flex-col h-screen">
 				<div className="flex flex-1 overflow-hidden text-white">
-
 					<div className="w-1/4 bg-[#001400]">
 						{groupID && (
 							<ReplayActions
@@ -101,11 +107,8 @@ export default function Replays() {
 					</div>
 
 					<div className="w-1/4 bg-[#001400]">
-						{groupID && (
-							<ReplayChat currentAction={currentAction} />
-						)}
+						{groupID && <ReplayChat currentAction={currentAction} />}
 					</div>
-
 				</div>
 			</div>
 		</div>

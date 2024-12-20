@@ -23,7 +23,6 @@ export const handleIncomingMessage = (
 	setTurn,
 	setPlayerAction,
 	setGameFinishedMessage,
-	
 ) => {
 	switch (true) {
 		case message.hasOwnProperty("Group_ID") &&
@@ -116,5 +115,5 @@ export const handleIncomingMessage = (
 		case message.Action === "PLAYER_LEFT":
 			setPlayerAction([message.User_ID, "LEFT"]);
 			break;
-	} 
+	}
 };
