@@ -75,7 +75,6 @@ export default function Login() {
 					<div className="w-1/4 "></div>
 					<div className="w-1/2">
 						<div className="bg-green p-5 m-5 rounded-3xl flex-1 overflow-auto h-[calc(100%-8rem)] flex flex-col border border-offwhite">
-							
 							<img
 								src="/images/dimmed-logo.png"
 								Alt="Logo"
@@ -88,9 +87,11 @@ export default function Login() {
 										key={option}
 										onClick={() => setActiveIndex(index)}
 										className={`font-bold cursor-pointer p-3 flex-grow transition-all 
-											${activeIndex === index
-												? "bg-yellow text-black"
-												: "bg-lightgreen text-white hover:bg-hoveryellow hover:text-black"}
+											${
+												activeIndex === index
+													? "bg-yellow text-black"
+													: "bg-lightgreen text-white hover:bg-hoveryellow hover:text-black"
+											}
 										`}
 									>
 										{option}
@@ -194,5 +195,4 @@ export default function Login() {
 			<Footer />
 		</div>
 	);
-
 }
