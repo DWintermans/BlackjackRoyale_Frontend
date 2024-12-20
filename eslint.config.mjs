@@ -22,7 +22,7 @@ export default [
 			"no-console": "warn",
 			"react/prop-types": "off",
 			"react/jsx-uses-react": "off",
-			"prettier/prettier": "error",
+			"prettier/prettier": "warn",
 			indent: ["warn", "tab"],
 		},
 	},

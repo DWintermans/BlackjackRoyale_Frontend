@@ -1,18 +1,16 @@
 class WebSocketService {
-	static instance = null;
-	socket = null;
-	listeners = [];
-
 	constructor(url) {
 		if (WebSocketService.instance) {
 			return WebSocketService.instance;
 		}
 
+		this.socket = null;
+		this.listeners = [];
 		this.socket = new WebSocket(url);
 
 		this.socket.onopen = () => {
 			console.log("WebSocket connection opened");
-			
+
 			const jwtToken = localStorage.getItem("jwt");
 
 			if (jwtToken) {
@@ -21,9 +19,9 @@ class WebSocketService {
 						category: "acknowledge",
 						action: "authorize",
 						token: jwtToken,
-					})
+					}),
 				);
-			} 
+			}
 		};
 
 		this.socket.onmessage = (event) => {
