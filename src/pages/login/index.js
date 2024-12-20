@@ -106,6 +106,7 @@ export default function Login() {
 												type="text"
 												name="username"
 												id="username"
+												data-label="username"
 												value={formData.username}
 												onChange={handleChange}
 												placeholder="Username"
@@ -116,6 +117,7 @@ export default function Login() {
 												type="password"
 												name="password"
 												id="password"
+												data-label="password"
 												value={formData.password}
 												onChange={handleChange}
 												placeholder="Password"
@@ -123,6 +125,7 @@ export default function Login() {
 											/>
 											<button
 												id="login-button"
+												data-label="login-button"
 												type="submit"
 												disabled={loading}
 												className="login-button mt-2 w-full font-semibold cursor-pointer p-3 border border-black rounded-full bg-yellow hover:bg-hoveryellow"
@@ -148,6 +151,7 @@ export default function Login() {
 												type="text"
 												name="username"
 												id="username"
+												data-label="username"
 												value={formData.username}
 												onChange={handleChange}
 												placeholder="Username"
@@ -159,6 +163,7 @@ export default function Login() {
 												type="password"
 												name="password"
 												id="password"
+												data-label="password"
 												value={formData.password}
 												onChange={handleChange}
 												placeholder="Password"
@@ -169,6 +174,7 @@ export default function Login() {
 												id="signup-button"
 												type="submit"
 												disabled={loading}
+												data-label="signup-button"
 												className="login-button mt-2 w-full font-semibold cursor-pointer p-3 border border-black rounded-full bg-yellow hover:bg-hoveryellow"
 											>
 												{loading ? "Signing Up..." : "Sign Up"}

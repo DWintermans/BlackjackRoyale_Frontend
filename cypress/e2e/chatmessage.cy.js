@@ -1,6 +1,6 @@
 describe("Global Chat Message Flow", () => {
 	beforeEach(() => {
-		cy.login("string", "string"); //custom command for logging in
+		cy.login("string", "string!1"); //custom command for logging in
 	});
 
 	it("should send a message to the global chat", () => {
@@ -8,7 +8,7 @@ describe("Global Chat Message Flow", () => {
 
 		cy.visit("http://localhost:3000/game");
 
-		cy.get('input[name="message"]').type(message);
+		cy.get("[data-label='message-box']").type(message);
 		cy.get("form").submit();
 
 		cy.window().then((win) => {

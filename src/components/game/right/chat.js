@@ -147,6 +147,7 @@ export default function Chat() {
 							type="text"
 							name="message"
 							id="message"
+							data-label="message-box"
 							required
 							placeholder="Type a message..."
 							className="flex-1 p-2.5 border-tl-15px border-bl-15px text-white rounded-l-2xl border-offwhite border-r-2 bg-green"
