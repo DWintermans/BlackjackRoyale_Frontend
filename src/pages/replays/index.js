@@ -38,9 +38,6 @@ export default function Replays() {
 	}, []);
 
 	const nextAction = () => {
-		// if (currentActionIndex < replayData.length - 1) {
-		// 	setCurrentActionIndex(currentActionIndex + 1);
-		// }
 		if (currentActionIndex < replayData.length - 1) {
 			const nextActionData = replayData[currentActionIndex + 1];
 
@@ -56,6 +53,43 @@ export default function Replays() {
 			}
 
 			setCurrentActionIndex(currentActionIndex + 1);
+		} else {
+			setCurrentActionIndex(0);
+			setUsefulActionCount(0);
+		}
+	};
+
+	const toRound = (roundNumber) => {
+		const roundActions = replayData.filter(action => action.round === roundNumber);
+
+		console.log(roundActions);
+
+		if (roundActions.length > 0) {
+			const firstActionOfRound = roundActions[0];
+
+			const firstActionIndex = replayData.findIndex(action => action === firstActionOfRound);
+
+			console.log(firstActionIndex);
+			setCurrentActionIndex(firstActionIndex + 1);
+
+			let previousUsefulActionCount = 0;
+
+			if (firstActionIndex > 0) {
+				for (let i = 0; i < firstActionIndex; i++) {
+					const action = replayData[i];
+
+					if (
+						!["GAME_STARTED", "TURN", "PLAYER_FINISHED"].includes(action.payload?.Action) &&
+						!action.payload?.Group_ID
+					) {
+						previousUsefulActionCount += 1;
+					}
+				}
+			}
+
+			setUsefulActionCount(previousUsefulActionCount + 1);
+		} else {
+			setUsefulActionCount(0);
 		}
 	};
 
@@ -90,8 +124,10 @@ export default function Replays() {
 					<div className="w-1/4 bg-[#001400]">
 						{groupID && (
 							<ReplayActions
-								currentAction={currentAction}
 								onNext={nextAction}
+								toRound={toRound}
+								replayData={replayData}
+								currentAction={currentAction}
 								usefulActionCount={usefulActionCount}
 								filteredActionsCount={filteredReplayDataCount}
 							/>
