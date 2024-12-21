@@ -59,45 +59,47 @@ export default function Replays() {
 
 	const toRound = (roundNumber) => {
 		const roundNumberAsInt = parseInt(roundNumber, 10);
-	  
+
 		let roundActions = replayData.filter(
-		  (action) => parseInt(action.round, 10) === roundNumberAsInt
+			(action) => parseInt(action.round, 10) === roundNumberAsInt,
 		);
-	  
+
 		if (roundActions.length === 0) {
-		  console.log(`${roundNumber} not found, using the first round from array.`);
-		  roundActions = [replayData[0]]; 
+			console.log(
+				`${roundNumber} not found, using the first round from array.`,
+			);
+			roundActions = [replayData[0]];
 		}
-	  
+
 		console.log(roundActions);
-	  
+
 		const firstActionOfRound = roundActions[0];
 		const firstActionIndex = replayData.findIndex(
-		  (action) => action === firstActionOfRound
+			(action) => action === firstActionOfRound,
 		);
-	  
+
 		setCurrentActionIndex(firstActionIndex + 1);
-	  
+
 		let previousUsefulActionCount = 0;
-	  
+
 		if (firstActionIndex > 0) {
-		  for (let i = 0; i < firstActionIndex; i++) {
-			const action = replayData[i];
-	  
-			if (
-			  !["GAME_STARTED", "TURN", "PLAYER_FINISHED"].includes(
-				action.payload?.Action
-			  ) &&
-			  !action.payload?.Group_ID
-			) {
-			  previousUsefulActionCount += 1;
+			for (let i = 0; i < firstActionIndex; i++) {
+				const action = replayData[i];
+
+				if (
+					!["GAME_STARTED", "TURN", "PLAYER_FINISHED"].includes(
+						action.payload?.Action,
+					) &&
+					!action.payload?.Group_ID
+				) {
+					previousUsefulActionCount += 1;
+				}
 			}
-		  }
 		}
-	  
+
 		// Update useful action count
 		setUsefulActionCount(previousUsefulActionCount + 1);
-	  };
+	};
 
 	const currentAction = replayData[currentActionIndex] || null;
 
