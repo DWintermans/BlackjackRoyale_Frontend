@@ -16,10 +16,8 @@ export default function Replays() {
 		const fetchReplay = async () => {
 			try {
 				const response = await GetGameReplay(
-					"MPOGCP_ded9554e-0551-49c0-a963-de586f60aad2",
+					"KTERGP_06388095-2f1d-43a0-95cc-e93f8058f62c",
 				);
-
-				console.log(response);
 
 				const parsedMessages = response.messages.map((msg) => ({
 					...msg,
@@ -60,44 +58,46 @@ export default function Replays() {
 	};
 
 	const toRound = (roundNumber) => {
-		const roundActions = replayData.filter(
-			(action) => action.round === roundNumber,
+		const roundNumberAsInt = parseInt(roundNumber, 10);
+	  
+		let roundActions = replayData.filter(
+		  (action) => parseInt(action.round, 10) === roundNumberAsInt
 		);
-
-		console.log(roundActions);
-
-		if (roundActions.length > 0) {
-			const firstActionOfRound = roundActions[0];
-
-			const firstActionIndex = replayData.findIndex(
-				(action) => action === firstActionOfRound,
-			);
-
-			console.log(firstActionIndex);
-			setCurrentActionIndex(firstActionIndex + 1);
-
-			let previousUsefulActionCount = 0;
-
-			if (firstActionIndex > 0) {
-				for (let i = 0; i < firstActionIndex; i++) {
-					const action = replayData[i];
-
-					if (
-						!["GAME_STARTED", "TURN", "PLAYER_FINISHED"].includes(
-							action.payload?.Action,
-						) &&
-						!action.payload?.Group_ID
-					) {
-						previousUsefulActionCount += 1;
-					}
-				}
-			}
-
-			setUsefulActionCount(previousUsefulActionCount + 1);
-		} else {
-			setUsefulActionCount(0);
+	  
+		if (roundActions.length === 0) {
+		  console.log(`${roundNumber} not found, using the first round from array.`);
+		  roundActions = [replayData[0]]; 
 		}
-	};
+	  
+		console.log(roundActions);
+	  
+		const firstActionOfRound = roundActions[0];
+		const firstActionIndex = replayData.findIndex(
+		  (action) => action === firstActionOfRound
+		);
+	  
+		setCurrentActionIndex(firstActionIndex + 1);
+	  
+		let previousUsefulActionCount = 0;
+	  
+		if (firstActionIndex > 0) {
+		  for (let i = 0; i < firstActionIndex; i++) {
+			const action = replayData[i];
+	  
+			if (
+			  !["GAME_STARTED", "TURN", "PLAYER_FINISHED"].includes(
+				action.payload?.Action
+			  ) &&
+			  !action.payload?.Group_ID
+			) {
+			  previousUsefulActionCount += 1;
+			}
+		  }
+		}
+	  
+		// Update useful action count
+		setUsefulActionCount(previousUsefulActionCount + 1);
+	  };
 
 	const currentAction = replayData[currentActionIndex] || null;
 

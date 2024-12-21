@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Footer from "../../components/layout/Footer.js";
 import Header from "../../components/layout/Header.js";
-import "./index.css";
 
 import Lobby from "../../components/game/center/lobby.js";
 import GeneralGame from "../../components/game/center/generalgame.js";

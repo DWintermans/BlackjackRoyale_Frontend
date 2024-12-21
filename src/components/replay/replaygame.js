@@ -242,30 +242,6 @@ export default function ReplayGame({ currentAction }) {
 
 						return (
 							<div key={player.user_id}>
-								{/* balance/credits */}
-								<div
-									style={{
-										position: "absolute",
-										top: "12px",
-										left: "235px",
-										color: "white",
-										fontWeight: "bold",
-									}}
-								>
-									{/* {player.credits} */}
-								</div>
-								{/* total winnings per lobby */}
-								<div
-									style={{
-										position: "absolute",
-										top: "12px",
-										left: "560px",
-										color: "white",
-										fontWeight: "bold",
-									}}
-								>
-									{player.total_winnings ?? 0}
-								</div>
 								{/* earnings per play per hand, visible below balance */}
 								<div
 									style={{
