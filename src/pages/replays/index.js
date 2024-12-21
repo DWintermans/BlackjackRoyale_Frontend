@@ -60,14 +60,18 @@ export default function Replays() {
 	};
 
 	const toRound = (roundNumber) => {
-		const roundActions = replayData.filter(action => action.round === roundNumber);
+		const roundActions = replayData.filter(
+			(action) => action.round === roundNumber,
+		);
 
 		console.log(roundActions);
 
 		if (roundActions.length > 0) {
 			const firstActionOfRound = roundActions[0];
 
-			const firstActionIndex = replayData.findIndex(action => action === firstActionOfRound);
+			const firstActionIndex = replayData.findIndex(
+				(action) => action === firstActionOfRound,
+			);
 
 			console.log(firstActionIndex);
 			setCurrentActionIndex(firstActionIndex + 1);
@@ -79,7 +83,9 @@ export default function Replays() {
 					const action = replayData[i];
 
 					if (
-						!["GAME_STARTED", "TURN", "PLAYER_FINISHED"].includes(action.payload?.Action) &&
+						!["GAME_STARTED", "TURN", "PLAYER_FINISHED"].includes(
+							action.payload?.Action,
+						) &&
 						!action.payload?.Group_ID
 					) {
 						previousUsefulActionCount += 1;
