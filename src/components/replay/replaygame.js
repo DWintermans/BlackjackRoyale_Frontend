@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { handleIncomingMessage } from "../game/center/handleincomingmessage.js";
 import "../../components/game/center/generalgame.css";
 
-export default function ReplayGame({ currentAction }) {
+export default function ReplayGame({ currentAction, triggerClear }) {
 	const [players, setPlayers] = useState([]);
 	const [groupID, setGroupID] = useState(null);
 	const [userID, setUserID] = useState(null);
@@ -13,6 +13,14 @@ export default function ReplayGame({ currentAction }) {
 	const [turn, setTurn] = useState([]);
 	const [playerAction, setPlayerAction] = useState([]);
 	const [gameFinishedMessage, setGameFinishedMessage] = useState("");
+
+	useEffect(() => {
+		if (triggerClear) {
+			setTurn([]);
+			setCardsInDeck("");
+			setPlayers([]);
+		}
+	}, [triggerClear]);
 
 	useEffect(() => {
 		const handleBeforeUnload = (event) => {
@@ -465,58 +473,58 @@ export default function ReplayGame({ currentAction }) {
 													>
 														{Array.isArray(hand.cards) && hand.cards.length > 0
 															? hand.cards.map((card, cardIndex) => {
-																	//highlight cards based on turns
-																	const isHighlightedHand =
-																		isPlayerTurn && turn[0].hand === handIndex;
+																//highlight cards based on turns
+																const isHighlightedHand =
+																	isPlayerTurn && turn[0].hand === handIndex;
 
-																	//add additional offset when player doubles down, moves card more to the left when sideways
-																	const additionalLeftOffset =
-																		cardIndex === hand.cards.length - 1 &&
+																//add additional offset when player doubles down, moves card more to the left when sideways
+																const additionalLeftOffset =
+																	cardIndex === hand.cards.length - 1 &&
 																		hand.double
-																			? 10
-																			: 0;
+																		? 10
+																		: 0;
 
-																	return (
-																		<img
-																			key={cardIndex}
-																			src={`/images/cards/${card}`}
-																			draggable="false"
-																			alt={`Card ${card}`}
-																			className={
-																				isHighlightedHand ? "card-outline" : ""
-																			}
-																			style={{
-																				maxWidth: "none",
-																				width:
-																					player.user_id === 0 ||
+																return (
+																	<img
+																		key={cardIndex}
+																		src={`/images/cards/${card}`}
+																		draggable="false"
+																		alt={`Card ${card}`}
+																		className={
+																			isHighlightedHand ? "card-outline" : ""
+																		}
+																		style={{
+																			maxWidth: "none",
+																			width:
+																				player.user_id === 0 ||
 																					isHighlightedHand
-																						? 40
-																						: 35,
-																				position: "absolute",
+																					? 40
+																					: 35,
+																			position: "absolute",
 
-																				//add more spacing between score and hand when cards are bigger (highlight makes card bigger)
-																				top:
-																					player.user_id !== 0
-																						? `${(isHighlightedHand ? -10 : 0) + cardIndex * -25}px`
-																						: "0px",
-																				left:
-																					player.user_id !== 0
-																						? `${cardIndex * 10 + additionalLeftOffset}px`
-																						: `${cardIndex * 45}px`,
-																				zIndex:
-																					handIndex * hand.cards.length +
-																					cardIndex,
+																			//add more spacing between score and hand when cards are bigger (highlight makes card bigger)
+																			top:
+																				player.user_id !== 0
+																					? `${(isHighlightedHand ? -10 : 0) + cardIndex * -25}px`
+																					: "0px",
+																			left:
+																				player.user_id !== 0
+																					? `${cardIndex * 10 + additionalLeftOffset}px`
+																					: `${cardIndex * 45}px`,
+																			zIndex:
+																				handIndex * hand.cards.length +
+																				cardIndex,
 
-																				//rotate 90deg when player plays doubble
-																				transform:
-																					cardIndex === hand.cards.length - 1 &&
+																			//rotate 90deg when player plays doubble
+																			transform:
+																				cardIndex === hand.cards.length - 1 &&
 																					hand.double
-																						? "rotate(90deg)"
-																						: "none",
-																			}}
-																		/>
-																	);
-																})
+																					? "rotate(90deg)"
+																					: "none",
+																		}}
+																	/>
+																);
+															})
 															: null}
 													</div>
 
@@ -532,7 +540,7 @@ export default function ReplayGame({ currentAction }) {
 															position: player.user_id === 0 ? "absolute" : "",
 															left:
 																player.user_id === 0 &&
-																hand.cards.length % 2 === 0
+																	hand.cards.length % 2 === 0
 																	? `${hand.cards.length * 15}px`
 																	: `${hand.cards.length * 12}px`,
 														}}

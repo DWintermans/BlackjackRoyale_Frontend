@@ -4,19 +4,33 @@ import ReplaySelector from "../../components/replay/replayselector.js";
 import ReplayActions from "../../components/replay/replayactions.js";
 import ReplayChat from "../../components/replay/replaychat.js";
 import { GetGameReplay } from "../../lib/api/requests/gamereplay.js";
+import webSocketService from "../../lib/api/requests/websocketservice.js";
 
 export default function Replays() {
 	const [groupID, setGroupID] = useState(null);
 	const [replayData, setReplayData] = useState([]);
 	const [currentActionIndex, setCurrentActionIndex] = useState(0);
-	const [usefulActionCount, setUsefulActionCount] = useState(0);
+	const [usefulActionCount, setUsefulActionCount] = useState(1);
 	const [error, setError] = useState(null);
+	const [triggerClear, setTriggerClear] = useState(false);
+
+	useEffect(() => {
+		const data = {
+			category: "group",
+			action: "leave_group",
+			token: localStorage.getItem("jwt"),
+		};
+		webSocketService.sendMessage(data);
+	}, []);
 
 	useEffect(() => {
 		const fetchReplay = async () => {
 			try {
 				const response = await GetGameReplay(
-					"KTERGP_06388095-2f1d-43a0-95cc-e93f8058f62c",
+					// "KTERGP_06388095-2f1d-43a0-95cc-e93f8058f62c",
+					// "DBPOMY_7fa2e543-f3e2-4924-96d4-794e9abcac3e",
+					// "GSQEEN_50a7760d-8d4c-4fe0-92b9-2b77a6fcd37e",
+					"MBIQBD_6ec1f54a-1a55-412f-aa6a-74f470423840",
 				);
 
 				const parsedMessages = response.messages.map((msg) => ({
@@ -44,16 +58,17 @@ export default function Replays() {
 				nextActionData &&
 				!["GAME_STARTED", "TURN", "PLAYER_FINISHED"].includes(
 					nextActionData.payload.Action,
-				) &&
-				!nextActionData.payload.Group_ID
+				) //&&
+				// !nextActionData.payload.Group_ID
 			) {
 				setUsefulActionCount((prev) => prev + 1);
 			}
 
 			setCurrentActionIndex(currentActionIndex + 1);
 		} else {
+			setTriggerClear(true);
 			setCurrentActionIndex(0);
-			setUsefulActionCount(0);
+			setUsefulActionCount(1);
 		}
 	};
 
@@ -71,14 +86,18 @@ export default function Replays() {
 			roundActions = [replayData[0]];
 		}
 
-		console.log(roundActions);
+		setTriggerClear(true);
+
+        setTimeout(() => setTriggerClear(false), 0);
+
+		// console.log(roundActions);
 
 		const firstActionOfRound = roundActions[0];
 		const firstActionIndex = replayData.findIndex(
 			(action) => action === firstActionOfRound,
 		);
 
-		setCurrentActionIndex(firstActionIndex + 1);
+		setCurrentActionIndex(firstActionIndex);
 
 		let previousUsefulActionCount = 0;
 
@@ -89,8 +108,7 @@ export default function Replays() {
 				if (
 					!["GAME_STARTED", "TURN", "PLAYER_FINISHED"].includes(
 						action.payload?.Action,
-					) &&
-					!action.payload?.Group_ID
+					)
 				) {
 					previousUsefulActionCount += 1;
 				}
@@ -111,8 +129,9 @@ export default function Replays() {
 			nextActionData &&
 			(nextActionData.payload.Action === "GAME_STARTED" ||
 				nextActionData.payload.Action === "TURN" ||
-				nextActionData.payload.Action === "PLAYER_FINISHED" ||
-				nextActionData.payload.Group_ID)
+				nextActionData.payload.Action === "PLAYER_FINISHED" //||
+				//nextActionData.payload.Group_ID
+			)
 		) {
 			nextAction();
 		}
@@ -122,7 +141,7 @@ export default function Replays() {
 		(action) =>
 			!["GAME_STARTED", "TURN", "PLAYER_FINISHED"].includes(
 				action.payload.Action,
-			) && !action.payload.Group_ID,
+			) //&& !action.payload.Group_ID,
 	).length;
 
 	return (
@@ -144,7 +163,10 @@ export default function Replays() {
 
 					<div className="w-1/2 bg-[#001400]">
 						{groupID ? (
-							<ReplayGame currentAction={currentAction} />
+							<ReplayGame
+								currentAction={currentAction}
+								triggerClear={triggerClear}
+							/>
 						) : (
 							<ReplaySelector />
 						)}

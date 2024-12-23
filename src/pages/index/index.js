@@ -1,11 +1,21 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import Footer from "../../components/layout/Footer.js";
 import Header from "../../components/layout/Header.js";
+import webSocketService from "../../lib/api/requests/websocketservice.js";
 
 export default function Index() {
 	const navigate = useNavigate();
+
+	useEffect(() => {
+		const data = {
+			category: "group",
+			action: "leave_group",
+			token: localStorage.getItem("jwt"),
+		};
+		webSocketService.sendMessage(data);
+	}, []);
 
 	return (
 		<div className="tailwind-wrapper">

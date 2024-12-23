@@ -56,9 +56,7 @@ export default function Header() {
 				<div className="flex justify-between items-center bg-black px-[30px] py-[10px] h-[80px] text-white">
 					<div
 						className="cursor-pointer"
-						onClick={() => {
-							window.location.href = "/";
-						}}
+						onClick={() => navigate("/")}
 					>
 						<img src="/images/logo.png" alt="logo" className="h-[50px]" />
 					</div>
@@ -67,9 +65,7 @@ export default function Header() {
 						<div className="flex items-center space-x-8">
 							<button
 								className="flex items-center bg-transparent text-white border-2 border-white py-2 px-3 cursor-pointer text-base rounded-full hover:bg-gray-600"
-								onClick={() => {
-									window.location.href = "/";
-								}}
+								onClick={() => navigate("/")}
 							>
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
@@ -88,6 +84,29 @@ export default function Header() {
 								</svg>
 								<span className="ml-2">Home</span>
 							</button>
+
+							<button
+								className="flex items-center bg-transparent text-white border-2 border-white py-2 px-3 cursor-pointer text-base rounded-full hover:bg-gray-600"
+								onClick={() => navigate("/game")}
+							>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									width="24"
+									height="24"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									strokeWidth="2"
+									strokeLinecap="round"
+									strokeLinejoin="round"
+								>
+									<path d="M3.604 7.197l7.138 -3.109a.96 .96 0 0 1 1.27 .527l4.924 11.902a1 1 0 0 1 -.514 1.304l-7.137 3.109a.96 .96 0 0 1 -1.271 -.527l-4.924 -11.903a1 1 0 0 1 .514 -1.304z" />
+									<path d="M15 4h1a1 1 0 0 1 1 1v3.5" />
+									<path d="M20 6c.264 .112 .52 .217 .768 .315a1 1 0 0 1 .53 1.311l-2.298 5.374" />
+								</svg>
+								<span className="ml-2">Play</span>
+							</button>
+
 
 							<button
 								className="flex items-center bg-transparent text-white border-2 border-white py-2 px-3 cursor-pointer text-base rounded-full hover:bg-gray-600"
