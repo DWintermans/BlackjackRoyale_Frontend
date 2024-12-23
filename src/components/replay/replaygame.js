@@ -2,23 +2,48 @@ import React, { useEffect, useState } from "react";
 import { handleIncomingMessage } from "../game/center/handleincomingmessage.js";
 import "../../components/game/center/generalgame.css";
 
-export default function ReplayGame({ currentAction, triggerClear }) {
+export default function ReplayGame({ currentAction, triggerClear, replayData, toSelector}) {
 	const [players, setPlayers] = useState([]);
 	const [groupID, setGroupID] = useState(null);
 	const [userID, setUserID] = useState(null);
 	const [gameMessage, setGameMessage] = useState("");
 	const [WarnOnRefresh, setWarnOnRefresh] = useState(false);
 	const [cardsInDeck, setCardsInDeck] = useState("");
-	const [playerBet, setPlayerBet] = useState(10);
+	const [playerBet, setPlayerBet] = useState(null);
 	const [turn, setTurn] = useState([]);
 	const [playerAction, setPlayerAction] = useState([]);
 	const [gameFinishedMessage, setGameFinishedMessage] = useState("");
+
+	//set user bet
+	const findTrackedUser = (replayData) => {
+		const lobbyAction = replayData.find((action) => action.type === "LOBBY");
+		if (lobbyAction) {
+			const trackedUser = lobbyAction.payload.Members.find(
+				(member) => member.Credits === 0,
+			);
+			return trackedUser?.User_ID;
+		}
+		return null;
+	};
+
+	const userId = findTrackedUser(replayData);
+
+	useEffect(() => {
+		if (!currentAction || currentAction.type !== "GAME" || !userId) return;
+	
+		const { Action, User_ID, Total_Bet_Value } = currentAction.payload;
+	
+		if (Action === "BET_PLACED" && User_ID === userId) {
+			setPlayerBet(Total_Bet_Value || 0);
+		}
+	}, [currentAction, userId]);
 
 	useEffect(() => {
 		if (triggerClear) {
 			setTurn([]);
 			setCardsInDeck("");
 			setPlayers([]);
+			setPlayerBet(null);
 		}
 	}, [triggerClear]);
 
@@ -135,7 +160,7 @@ export default function ReplayGame({ currentAction, triggerClear }) {
 	return (
 		<div className="board-container">
 			<img
-				src="/images/board.png"
+				src="/images/replayboard.png"
 				alt="board"
 				className="board-img-style"
 				draggable="false"
@@ -178,7 +203,7 @@ export default function ReplayGame({ currentAction, triggerClear }) {
 						fontWeight: "bold",
 						fontSize: "16px",
 						transform: "translateX(-50%)",
-						zIndex: "2000",
+						zIndex: top === "0px" && left === "0px" ? "-10" : "2000",
 						textAlign: "center",
 						textShadow:
 							"2px 2px 0px black, -2px -2px 0px black, 2px -2px 0px black, -2px 2px 0px black",
@@ -698,6 +723,12 @@ export default function ReplayGame({ currentAction, triggerClear }) {
 						})}
 				</div>
 			</div>
+
+			<div
+				onClick={() => toSelector(null)}
+				className="clickable-area leave_group"
+			/>
+
 		</div>
 	);
 }

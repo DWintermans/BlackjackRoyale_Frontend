@@ -154,7 +154,7 @@ export default function Friends() {
 	};
 
 	return (
-		<div className="p-2.5 m-2.5 bg-green rounded-3xl flex-1 overflow-auto h-[calc(100%-3rem)] flex flex-col border border-offwhite">
+		<div className="p-2.5 m-2.5 bg-green rounded-3xl flex-1 overflow-auto h-[calc(100%-8rem)] flex flex-col border border-offwhite">
 			{selectedUser.id ? (
 				<>
 					<PrivateChat

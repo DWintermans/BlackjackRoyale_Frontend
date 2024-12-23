@@ -288,7 +288,7 @@ export default function GeneralGame() {
 						fontWeight: "bold",
 						fontSize: "16px",
 						transform: "translateX(-50%)",
-						zIndex: "2000",
+						zIndex: top === "0px" && left === "0px" ? "-10" : "2000",
 						textAlign: "center",
 						textShadow:
 							"2px 2px 0px black, -2px -2px 0px black, 2px -2px 0px black, -2px 2px 0px black",

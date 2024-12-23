@@ -110,7 +110,7 @@ export default function Chat() {
 	};
 
 	return (
-		<div className="p-2.5 m-2.5 bg-green rounded-3xl flex-1 overflow-auto h-[calc(100%-3rem)] flex flex-col border border-offwhite">
+		<div className="p-2.5 m-2.5 bg-green rounded-3xl flex-1 overflow-auto h-[calc(100%-8rem)] flex flex-col border border-offwhite">
 			<div className="flex justify-between items-center pb-2.5">
 				<p className="font-bold text-xl p-1.5 m-0 text-white">
 					{groupID ? `Group ${groupID}` : "Global Chat"}

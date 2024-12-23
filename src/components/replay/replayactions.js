@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 export default function ReplayActions({
 	onNext,
 	toRound,
+	toSelector,
 	replayData,
 	currentAction,
 	usefulActionCount,
@@ -156,73 +157,100 @@ export default function ReplayActions({
 				</p>
 			</div>
 
-			<div className="pb-2">
-				<button
-					onClick={toggleAutoPlay}
-					className={`font-semibold mx-1 cursor-pointer py-1 px-2.5 border border-black rounded-full bg-yellow hover:bg-hoveryellow ${isAutoPlay ? "bg-hoveryellow" : ""}`}
-				>
-					{isAutoPlay ? (
-						<>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="black"
-								strokeLinecap="round"
-								strokeLinejoin="round"
-								width={24}
-								height={24}
-								strokeWidth={2}
-							>
-								<path d="M6 5m0 1a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1z"></path>
-								<path d="M14 5m0 1a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1z"></path>
-							</svg>
-						</>
-					) : (
-						<>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								width={24}
-								height={24}
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="black"
-								strokeWidth={2}
-								strokeLinecap="round"
-								strokeLinejoin="round"
-							>
-								<path d="M7 4v16l13 -8z" />
-							</svg>
-						</>
-					)}
-				</button>
-
-				<button
-					onClick={() => {
-						onNext();
-						setIsAutoPlay(false);
-					}}
-					className="font-semibold mx-1 cursor-pointer py-1 px-2.5 border border-black rounded-full bg-yellow hover:bg-hoveryellow"
-				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="black"
-						strokeLinecap="round"
-						strokeLinejoin="round"
-						width={24}
-						height={24}
-						strokeWidth={2}
+			<div className="pb-2 flex items-center justify-between">
+				<div className="flex space-x-1">
+					<button
+						onClick={toggleAutoPlay}
+						className={`font-semibold mx-1 cursor-pointer py-1 px-2.5 border border-black rounded-full bg-yellow hover:bg-hoveryellow ${isAutoPlay ? "bg-hoveryellow" : ""}`}
 					>
-						<path d="M3 5v14l8 -7z"></path>
-						<path d="M14 5v14l8 -7z"></path>
-					</svg>
-				</button>
+						{isAutoPlay ? (
+							<>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="black"
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									width={24}
+									height={24}
+									strokeWidth={2}
+								>
+									<path d="M6 5m0 1a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1z"></path>
+									<path d="M14 5m0 1a1 1 0 0 1 1 -1h2a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-2a1 1 0 0 1 -1 -1z"></path>
+								</svg>
+							</>
+						) : (
+							<>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									width={24}
+									height={24}
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="black"
+									strokeWidth={2}
+									strokeLinecap="round"
+									strokeLinejoin="round"
+								>
+									<path d="M7 4v16l13 -8z" />
+								</svg>
+							</>
+						)}
+					</button>
 
+					<button
+						onClick={() => {
+							onNext();
+							setIsAutoPlay(false);
+						}}
+						className="font-semibold mx-1 cursor-pointer py-1 px-2.5 border border-black rounded-full bg-yellow hover:bg-hoveryellow"
+					>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="black"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+							width={24}
+							height={24}
+							strokeWidth={2}
+						>
+							<path d="M3 5v14l8 -7z"></path>
+							<path d="M14 5v14l8 -7z"></path>
+						</svg>
+					</button>
+
+					<button
+						onClick={() => {
+							toRound(parseInt(expandedRound, 10) + 1);
+							setIsAutoPlay(false);
+						}}
+						className={
+							"font-semibold mx-1 cursor-pointer py-1 px-2.5 border border-black rounded-full bg-yellow hover:bg-hoveryellow"
+						}
+					>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="black"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+							width="24"
+							height="24"
+							strokeWidth="2"
+						>
+							<path d="M4 5v14l12 -7z"></path>
+							<path d="M20 5l0 14"></path>
+						</svg>
+					</button>
+				</div>
+				
 				<button
 					onClick={() => {
-						toRound(expandedRound + 1);
+						toSelector(null);
 						setIsAutoPlay(false);
 					}}
 					className={
@@ -231,18 +259,18 @@ export default function ReplayActions({
 				>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
+						width="24"
+						height="24"
 						viewBox="0 0 24 24"
 						fill="none"
 						stroke="black"
+						strokeWidth="2"
 						strokeLinecap="round"
 						strokeLinejoin="round"
-						width="24"
-						height="24"
-						strokeWidth="2"
 					>
-						<path d="M4 5v14l12 -7z"></path>
-						<path d="M20 5l0 14"></path>
+						<path d="M9 11l-4 4l4 4m-4 -4h11a4 4 0 0 0 0 -8h-1" />
 					</svg>
+
 				</button>
 			</div>
 
@@ -253,11 +281,10 @@ export default function ReplayActions({
 					return (
 						<div key={round} className="mt-2">
 							<div
-								className={`cursor-pointer ${
-									expandedRound == round
-										? "bg-yellow text-black"
-										: "bg-lightgreen"
-								} rounded-2xl border border-offwhite p-2 mb-1 flex justify-between`}
+								className={`cursor-pointer ${expandedRound == round
+									? "bg-yellow text-black"
+									: "bg-lightgreen"
+									} rounded-2xl border border-offwhite p-2 mb-1 flex justify-between`}
 								onClick={() => {
 									setExpandedRound(round);
 									toRound(round);
@@ -288,11 +315,10 @@ export default function ReplayActions({
 												return (
 													<tr
 														key={index}
-														className={`${
-															isActive && usefulActionCount !== 0
-																? "bg-yellow text-black font-semibold"
-																: ""
-														}`}
+														className={`${isActive && usefulActionCount !== 0
+															? "bg-yellow text-black font-semibold"
+															: ""
+															}`}
 													>
 														<td className="w-1/4 text-left p-1">
 															{action.type || "N/A"}
@@ -302,8 +328,8 @@ export default function ReplayActions({
 																? truncateText(action.payload?.SenderName)
 																: getUsername(action.payload?.User_ID)
 																	? truncateText(
-																			getUsername(action.payload?.User_ID),
-																		)
+																		getUsername(action.payload?.User_ID),
+																	)
 																	: "N/A"}
 														</td>
 														<td className="w-1/4 p-1">

@@ -61,7 +61,11 @@ const router = createBrowserRouter([
 	},
 	{
 		path: "/game",
-		element: <ProtectedRoute element={<Game />} />,
+		element: (
+			<Layout>
+				<ProtectedRoute element={<Game />} />
+			</Layout>
+		),
 	},
 	{
 		path: "/how-to-play",

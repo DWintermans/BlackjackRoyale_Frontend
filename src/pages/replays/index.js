@@ -23,31 +23,31 @@ export default function Replays() {
 		webSocketService.sendMessage(data);
 	}, []);
 
-	useEffect(() => {
-		const fetchReplay = async () => {
-			try {
-				const response = await GetGameReplay(
-					// "KTERGP_06388095-2f1d-43a0-95cc-e93f8058f62c",
-					// "DBPOMY_7fa2e543-f3e2-4924-96d4-794e9abcac3e",
-					// "GSQEEN_50a7760d-8d4c-4fe0-92b9-2b77a6fcd37e",
-					"MBIQBD_6ec1f54a-1a55-412f-aa6a-74f470423840",
-				);
+	const toGame = async (gameID) => {
+		try {
+			const response = await GetGameReplay(gameID);
 
-				const parsedMessages = response.messages.map((msg) => ({
-					...msg,
-					payload: JSON.parse(msg.payload),
-				}));
+			const parsedMessages = response.messages.map((msg) => ({
+				...msg,
+				payload: JSON.parse(msg.payload),
+			}));
 
-				setReplayData(parsedMessages);
+			setReplayData(parsedMessages);
 
-				setGroupID("AHAHAH");
-			} catch (error) {
-				console.log(error);
-				setError("No game found.");
-			}
-		};
-		fetchReplay();
-	}, []);
+			setGroupID(gameID);
+		} catch (error) {
+			console.log(error);
+			setError("No game found.");
+			setGroupID(null);
+		}
+	};
+
+	const toSelector = () => {
+		setGroupID(null);
+		setTriggerClear(true);
+		setCurrentActionIndex(0);
+		setUsefulActionCount(1);
+	}
 
 	const nextAction = () => {
 		if (currentActionIndex < replayData.length - 1) {
@@ -152,6 +152,7 @@ export default function Replays() {
 							<ReplayActions
 								onNext={nextAction}
 								toRound={toRound}
+								toSelector={toSelector}
 								replayData={replayData}
 								currentAction={currentAction}
 								usefulActionCount={usefulActionCount}
@@ -165,9 +166,13 @@ export default function Replays() {
 							<ReplayGame
 								currentAction={currentAction}
 								triggerClear={triggerClear}
+								replayData={replayData}
+								toSelector={toSelector}
 							/>
 						) : (
-							<ReplaySelector />
+							<ReplaySelector
+								toGame={toGame}
+							/>
 						)}
 					</div>
 
