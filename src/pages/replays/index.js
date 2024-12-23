@@ -88,7 +88,7 @@ export default function Replays() {
 
 		setTriggerClear(true);
 
-        setTimeout(() => setTriggerClear(false), 0);
+		setTimeout(() => setTriggerClear(false), 0);
 
 		// console.log(roundActions);
 
@@ -129,9 +129,8 @@ export default function Replays() {
 			nextActionData &&
 			(nextActionData.payload.Action === "GAME_STARTED" ||
 				nextActionData.payload.Action === "TURN" ||
-				nextActionData.payload.Action === "PLAYER_FINISHED" //||
-				//nextActionData.payload.Group_ID
-			)
+				nextActionData.payload.Action === "PLAYER_FINISHED") //||
+			//nextActionData.payload.Group_ID
 		) {
 			nextAction();
 		}
@@ -141,7 +140,7 @@ export default function Replays() {
 		(action) =>
 			!["GAME_STARTED", "TURN", "PLAYER_FINISHED"].includes(
 				action.payload.Action,
-			) //&& !action.payload.Group_ID,
+			), //&& !action.payload.Group_ID,
 	).length;
 
 	return (

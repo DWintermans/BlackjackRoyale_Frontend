@@ -54,10 +54,7 @@ export default function Header() {
 		<>
 			<div className="tailwind-wrapper">
 				<div className="flex justify-between items-center bg-black px-[30px] py-[10px] h-[80px] text-white">
-					<div
-						className="cursor-pointer"
-						onClick={() => navigate("/")}
-					>
+					<div className="cursor-pointer" onClick={() => navigate("/")}>
 						<img src="/images/logo.png" alt="logo" className="h-[50px]" />
 					</div>
 
@@ -106,7 +103,6 @@ export default function Header() {
 								</svg>
 								<span className="ml-2">Play</span>
 							</button>
-
 
 							<button
 								className="flex items-center bg-transparent text-white border-2 border-white py-2 px-3 cursor-pointer text-base rounded-full hover:bg-gray-600"

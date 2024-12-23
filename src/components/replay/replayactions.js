@@ -14,10 +14,9 @@ export default function ReplayActions({
 	const [autoPlayInterval, setAutoPlayInterval] = useState(null);
 
 	useEffect(() => {
-		const isFilteredOut =
-			["GAME_STARTED", "TURN", "PLAYER_FINISHED"].includes(
-				currentAction?.payload?.Action,
-			) //|| currentAction?.payload?.Group_ID;
+		const isFilteredOut = ["GAME_STARTED", "TURN", "PLAYER_FINISHED"].includes(
+			currentAction?.payload?.Action,
+		); //|| currentAction?.payload?.Group_ID;
 
 		if (!isFilteredOut) {
 			setHighlightedAction(currentAction);
@@ -39,7 +38,7 @@ export default function ReplayActions({
 		(action) =>
 			!["GAME_STARTED", "TURN", "PLAYER_FINISHED"].includes(
 				action.payload?.Action,
-			) //&& !action.payload?.Group_ID,
+			), //&& !action.payload?.Group_ID,
 	);
 
 	const getUsername = (userID) => {
@@ -91,7 +90,7 @@ export default function ReplayActions({
 		const lobbyAction = replayData.find((action) => action.type === "LOBBY");
 		if (lobbyAction) {
 			const trackedUser = lobbyAction.payload.Members.find(
-				(member) => member.Credits === 0
+				(member) => member.Credits === 0,
 			);
 			return trackedUser?.User_ID;
 		}
@@ -103,7 +102,9 @@ export default function ReplayActions({
 		replayData.forEach((action) => {
 			if (
 				action.type === "GAME" &&
-				(action.payload?.Action === "GAME_FINISHED" || action.payload?.Action === "INSURANCE_PAID" || action.payload?.Action === "INSURE") &&
+				(action.payload?.Action === "GAME_FINISHED" ||
+					action.payload?.Action === "INSURANCE_PAID" ||
+					action.payload?.Action === "INSURE") &&
 				action.payload?.User_ID === userId
 			) {
 				const bet = action.payload?.Bet || 0;
@@ -125,11 +126,11 @@ export default function ReplayActions({
 				}
 
 				if (action.payload?.Action === "INSURANCE_PAID") {
-					positiveChange = bet
+					positiveChange = bet;
 				}
 
 				if (action.payload?.Action === "INSURE") {
-					negativeChange = bet
+					negativeChange = bet;
 				}
 
 				if (!creditsByRound[action.round]) {
@@ -246,78 +247,84 @@ export default function ReplayActions({
 			</div>
 
 			<div className="custom-scrollbar flex-1 overflow-y-scroll">
-				{
-					Object.keys(groupedByRounds).map((round) => {
-						const creditsChange = creditsChangeByRound[round];
+				{Object.keys(groupedByRounds).map((round) => {
+					const creditsChange = creditsChangeByRound[round];
 
-						return (
-							<div key={round} className="mt-2">
-								<div
-									className={`cursor-pointer ${expandedRound == round
+					return (
+						<div key={round} className="mt-2">
+							<div
+								className={`cursor-pointer ${
+									expandedRound == round
 										? "bg-yellow text-black"
 										: "bg-lightgreen"
-										} rounded-2xl border border-offwhite p-2 mb-1 flex justify-between`}
-									onClick={() => {
-										setExpandedRound(round);
-										toRound(round);
-										setIsAutoPlay(false);
-									}}
-								>
-									<strong>Round {round}</strong>
-									<span className="ml-auto font-bold">
-										(+{creditsChange?.positive || 0}) (-{creditsChange?.negative || 0})
-									</span>
-								</div>
+								} rounded-2xl border border-offwhite p-2 mb-1 flex justify-between`}
+								onClick={() => {
+									setExpandedRound(round);
+									toRound(round);
+									setIsAutoPlay(false);
+								}}
+							>
+								<strong>Round {round}</strong>
+								<span className="ml-auto font-bold">
+									(+{creditsChange?.positive || 0}) (-
+									{creditsChange?.negative || 0})
+								</span>
+							</div>
 
-								{expandedRound == round && (
-									<div className="overflow-hidden rounded-lg border border-offwhite">
-										<table className="w-full table-fixed border-collapse border border-offwhite">
-											<thead>
-												<tr className="bg-lightgreen border border-offwhite">
-													<th className="w-1/4 text-left p-1">Type</th>
-													<th className="w-1/4 p-1">Username</th>
-													<th className="w-1/4 p-1">Action</th>
-													<th className="w-1/4 text-right p-1">Hand</th>
-												</tr>
-											</thead>
-											<tbody>
-												{groupedByRounds[round].map((action, index) => {
-													const isActive = highlightedAction === action;
-													return (
-														<tr
-															key={index}
-															className={`${isActive && usefulActionCount !== 0
+							{expandedRound == round && (
+								<div className="overflow-hidden rounded-lg border border-offwhite">
+									<table className="w-full table-fixed border-collapse border border-offwhite">
+										<thead>
+											<tr className="bg-lightgreen border border-offwhite">
+												<th className="w-1/4 text-left p-1">Type</th>
+												<th className="w-1/4 p-1">Username</th>
+												<th className="w-1/4 p-1">Action</th>
+												<th className="w-1/4 text-right p-1">Hand</th>
+											</tr>
+										</thead>
+										<tbody>
+											{groupedByRounds[round].map((action, index) => {
+												const isActive = highlightedAction === action;
+												return (
+													<tr
+														key={index}
+														className={`${
+															isActive && usefulActionCount !== 0
 																? "bg-yellow text-black font-semibold"
 																: ""
-																}`}
-														>
-															<td className="w-1/4 text-left p-1">{action.type || "N/A"}</td>
-															<td className="w-1/4 p-1">
-																{action.payload?.SenderName
-																	? truncateText(action.payload?.SenderName)
-																	: getUsername(action.payload?.User_ID)
-																		? truncateText(getUsername(action.payload?.User_ID))
-																		: "N/A"}
-															</td>
-															<td className="w-1/4 p-1">
-																{action.type === "MESSAGE"
-																	? "SEND"
-																	: action.payload?.Action || "N/A"}
-															</td>
-															<td className="w-1/4 text-right p-1">{action.payload?.Hand ?? "-"}</td>
-														</tr>
-													);
-												})}
-											</tbody>
-										</table>
-									</div>
-								)}
-							</div>
-						);
-					})
-				}
+														}`}
+													>
+														<td className="w-1/4 text-left p-1">
+															{action.type || "N/A"}
+														</td>
+														<td className="w-1/4 p-1">
+															{action.payload?.SenderName
+																? truncateText(action.payload?.SenderName)
+																: getUsername(action.payload?.User_ID)
+																	? truncateText(
+																			getUsername(action.payload?.User_ID),
+																		)
+																	: "N/A"}
+														</td>
+														<td className="w-1/4 p-1">
+															{action.type === "MESSAGE"
+																? "SEND"
+																: action.payload?.Action || "N/A"}
+														</td>
+														<td className="w-1/4 text-right p-1">
+															{action.payload?.Hand ?? "-"}
+														</td>
+													</tr>
+												);
+											})}
+										</tbody>
+									</table>
+								</div>
+							)}
+						</div>
+					);
+				})}
 			</div>
-
 		</div>
 	);
 }

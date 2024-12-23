@@ -23,7 +23,7 @@ export default function ReplayChat({ currentAction }) {
 
 	//add message to messagelist
 	const addMessage = (text, position, username, date, round) => {
-		console.log(round)
+		console.log(round);
 		const newMessage = {
 			position: position,
 			type: "text",
@@ -43,7 +43,11 @@ export default function ReplayChat({ currentAction }) {
 	};
 
 	useEffect(() => {
-		if (!currentAction || (currentAction.type !== "LOBBY" && currentAction.type !== "MESSAGE")) return;
+		if (
+			!currentAction ||
+			(currentAction.type !== "LOBBY" && currentAction.type !== "MESSAGE")
+		)
+			return;
 		const message = currentAction.payload;
 
 		if (
@@ -56,16 +60,15 @@ export default function ReplayChat({ currentAction }) {
 				setGroupID(message.Group_ID);
 
 				setMessages((prevMessages) =>
-					prevMessages.filter((msg) => msg.round <= currentAction.round)
+					prevMessages.filter((msg) => msg.round <= currentAction.round),
 				);
 
 				if (currentAction) {
 					const trackedUser = currentAction.payload.Members.find(
-						(member) => member.Credits === 0
+						(member) => member.Credits === 0,
 					);
 					setTrackedUser(trackedUser?.User_ID);
 				}
-
 			} else {
 				setMembers([]);
 				setGroupID(null);
@@ -73,7 +76,13 @@ export default function ReplayChat({ currentAction }) {
 			}
 		} else if (currentAction.type === "MESSAGE") {
 			const position = message.Sender === trackedUser ? "right" : "left";
-			addMessage(message.Message, position, message.SenderName, message.Datetime, currentAction.round);
+			addMessage(
+				message.Message,
+				position,
+				message.SenderName,
+				message.Datetime,
+				currentAction.round,
+			);
 		}
 	}, [currentAction]);
 
@@ -118,9 +127,7 @@ export default function ReplayChat({ currentAction }) {
 								<span className="flex-1 text-center">
 									{member.InWaitingRoom ? "In Waiting Room" : ""}
 								</span>
-								<span className="flex-1 text-right">
-									Ready
-								</span>
+								<span className="flex-1 text-right">Ready</span>
 							</li>
 						))}
 					</ul>
@@ -129,4 +136,3 @@ export default function ReplayChat({ currentAction }) {
 		</div>
 	);
 }
-
