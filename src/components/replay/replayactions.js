@@ -247,7 +247,7 @@ export default function ReplayActions({
 						</svg>
 					</button>
 				</div>
-				
+
 				<button
 					onClick={() => {
 						toSelector(null);
@@ -270,7 +270,6 @@ export default function ReplayActions({
 					>
 						<path d="M9 11l-4 4l4 4m-4 -4h11a4 4 0 0 0 0 -8h-1" />
 					</svg>
-
 				</button>
 			</div>
 
@@ -281,10 +280,11 @@ export default function ReplayActions({
 					return (
 						<div key={round} className="mt-2">
 							<div
-								className={`cursor-pointer ${expandedRound == round
-									? "bg-yellow text-black"
-									: "bg-lightgreen"
-									} rounded-2xl border border-offwhite p-2 mb-1 flex justify-between`}
+								className={`cursor-pointer ${
+									expandedRound == round
+										? "bg-yellow text-black"
+										: "bg-lightgreen"
+								} rounded-2xl border border-offwhite p-2 mb-1 flex justify-between`}
 								onClick={() => {
 									setExpandedRound(round);
 									toRound(round);
@@ -315,10 +315,11 @@ export default function ReplayActions({
 												return (
 													<tr
 														key={index}
-														className={`${isActive && usefulActionCount !== 0
-															? "bg-yellow text-black font-semibold"
-															: ""
-															}`}
+														className={`${
+															isActive && usefulActionCount !== 0
+																? "bg-yellow text-black font-semibold"
+																: ""
+														}`}
 													>
 														<td className="w-1/4 text-left p-1">
 															{action.type || "N/A"}
@@ -328,8 +329,8 @@ export default function ReplayActions({
 																? truncateText(action.payload?.SenderName)
 																: getUsername(action.payload?.User_ID)
 																	? truncateText(
-																		getUsername(action.payload?.User_ID),
-																	)
+																			getUsername(action.payload?.User_ID),
+																		)
 																	: "N/A"}
 														</td>
 														<td className="w-1/4 p-1">

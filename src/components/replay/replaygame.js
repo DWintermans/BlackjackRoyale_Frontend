@@ -2,7 +2,12 @@ import React, { useEffect, useState } from "react";
 import { handleIncomingMessage } from "../game/center/handleincomingmessage.js";
 import "../../components/game/center/generalgame.css";
 
-export default function ReplayGame({ currentAction, triggerClear, replayData, toSelector}) {
+export default function ReplayGame({
+	currentAction,
+	triggerClear,
+	replayData,
+	toSelector,
+}) {
 	const [players, setPlayers] = useState([]);
 	const [groupID, setGroupID] = useState(null);
 	const [userID, setUserID] = useState(null);
@@ -30,9 +35,9 @@ export default function ReplayGame({ currentAction, triggerClear, replayData, to
 
 	useEffect(() => {
 		if (!currentAction || currentAction.type !== "GAME" || !userId) return;
-	
+
 		const { Action, User_ID, Total_Bet_Value } = currentAction.payload;
-	
+
 		if (Action === "BET_PLACED" && User_ID === userId) {
 			setPlayerBet(Total_Bet_Value || 0);
 		}
@@ -728,7 +733,6 @@ export default function ReplayGame({ currentAction, triggerClear, replayData, to
 				onClick={() => toSelector(null)}
 				className="clickable-area leave_group"
 			/>
-
 		</div>
 	);
 }

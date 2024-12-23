@@ -10,8 +10,6 @@ export default function ReplaySelector({ toGame }) {
 				const response = await GetGameReplayList();
 				setReplayList(response.messages);
 				console.log(response);
-
-
 			} catch (error) {
 				console.log(error);
 				// setError("No gamereplays found.");
@@ -50,15 +48,28 @@ export default function ReplaySelector({ toGame }) {
 									onClick={() => toGame(replay.group_id)}
 								>
 									<div className="flex bg-lightgreen border-b-2 text-center border-r-2">
-										<div className="flex-1 px-3 py-2">{replay.group_id.substring(0, 6)}</div>
+										<div className="flex-1 px-3 py-2">
+											{replay.group_id.substring(0, 6)}
+										</div>
 										<div className="flex-1 px-5 py-2">{replay.round}</div>
 										<div className="flex-1 px-5 py-2">{replay.wins}</div>
 										<div className="flex-1 px-5 py-2">{replay.losses}</div>
-										<div className="flex-1 px-5 py-2">+{replay.earnings_amt}</div>
+										<div className="flex-1 px-5 py-2">
+											+{replay.earnings_amt}
+										</div>
 										<div className="flex-1 px-5 py-2">-{replay.losses_amt}</div>
 										<div className="flex-1 px-5 py-2 text-right">
-											{new Date(replay.datetime).toLocaleString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' })} &nbsp;
-											{new Date(replay.datetime).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+											{new Date(replay.datetime).toLocaleString("en-GB", {
+												hour: "2-digit",
+												minute: "2-digit",
+												second: "2-digit",
+											})}{" "}
+											&nbsp;
+											{new Date(replay.datetime).toLocaleDateString("en-GB", {
+												day: "2-digit",
+												month: "2-digit",
+												year: "numeric",
+											})}
 										</div>
 									</div>
 								</div>
@@ -71,7 +82,6 @@ export default function ReplaySelector({ toGame }) {
 					</div>
 				</div>
 			</div>
-			
 		</div>
 	);
 }

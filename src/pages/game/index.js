@@ -36,7 +36,6 @@ export default function Game() {
 	return (
 		<div className="tailwind-wrapper">
 			<div className="flex flex-col h-screen">
-
 				<div className="flex flex-1 overflow-hidden">
 					<div className="w-1/4 bg-[#001400]">
 						<Friends />
@@ -52,7 +51,6 @@ export default function Game() {
 						</div>
 					}
 				</div>
-
 			</div>
 		</div>
 	);

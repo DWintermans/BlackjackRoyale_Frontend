@@ -47,7 +47,7 @@ export default function Replays() {
 		setTriggerClear(true);
 		setCurrentActionIndex(0);
 		setUsefulActionCount(1);
-	}
+	};
 
 	const nextAction = () => {
 		if (currentActionIndex < replayData.length - 1) {
@@ -170,9 +170,7 @@ export default function Replays() {
 								toSelector={toSelector}
 							/>
 						) : (
-							<ReplaySelector
-								toGame={toGame}
-							/>
+							<ReplaySelector toGame={toGame} />
 						)}
 					</div>
 
