@@ -6,12 +6,12 @@ export async function UpdatePassword(current, newpw, repeatnewpw) {
 		method: "PUT",
 		headers: {
 			"Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+			Authorization: `Bearer ${token}`,
 		},
 		body: JSON.stringify({
-			old_password: current,         
-            new_password: newpw,           
-            repeat_new_password: repeatnewpw, 
+			old_password: current,
+			new_password: newpw,
+			repeat_new_password: repeatnewpw,
 		}),
 	});
 

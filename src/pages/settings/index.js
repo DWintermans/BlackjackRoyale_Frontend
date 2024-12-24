@@ -70,7 +70,11 @@ export default function Settings() {
 		}
 
 		try {
-			const response = await UpdatePassword(currentPassword, newPassword, confirmPassword);
+			const response = await UpdatePassword(
+				currentPassword,
+				newPassword,
+				confirmPassword,
+			);
 			toast.update(loadingToast, {
 				render: response.message,
 				type: "success",
@@ -127,7 +131,10 @@ export default function Settings() {
 									<span className="ml-2">Update Username</span>
 								</h1>
 								<form className="pt-2" onSubmit={handleUsernameSubmit}>
-									<label htmlFor="username" className="block text-sm font-semibold pb-2">
+									<label
+										htmlFor="username"
+										className="block text-sm font-semibold pb-2"
+									>
 										Username:
 									</label>
 									<input
@@ -143,7 +150,6 @@ export default function Settings() {
 										type="submit"
 										disabled={usernameLoading}
 										className="font-semibold mx-1 cursor-pointer mt-2 py-1.5 px-5 text-black border border-black rounded-full bg-yellow hover:bg-hoveryellow"
-
 									>
 										{usernameLoading ? "Updating..." : "Update Username"}
 									</button>
@@ -173,7 +179,10 @@ export default function Settings() {
 									<span className="ml-2">Update Password</span>
 								</h1>
 								<form className="pt-2" onSubmit={handlePasswordSubmit}>
-									<label htmlFor="current-password" className="block text-sm font-semibold pb-2">
+									<label
+										htmlFor="current-password"
+										className="block text-sm font-semibold pb-2"
+									>
 										Current Password:
 									</label>
 									<input
@@ -185,7 +194,10 @@ export default function Settings() {
 										onChange={(e) => setCurrentPassword(e.target.value)}
 									/>
 
-									<label htmlFor="new-password" className="block text-sm font-semibold pt-4 pb-2">
+									<label
+										htmlFor="new-password"
+										className="block text-sm font-semibold pt-4 pb-2"
+									>
 										New Password:
 									</label>
 									<input
@@ -197,7 +209,10 @@ export default function Settings() {
 										onChange={(e) => setNewPassword(e.target.value)}
 									/>
 
-									<label htmlFor="confirm-password" className="block text-sm font-semibold pt-4 pb-2">
+									<label
+										htmlFor="confirm-password"
+										className="block text-sm font-semibold pt-4 pb-2"
+									>
 										Confirm New Password:
 									</label>
 									<input

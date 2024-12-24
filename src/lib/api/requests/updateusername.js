@@ -6,10 +6,10 @@ export async function UpdateUsername(username) {
 		method: "PUT",
 		headers: {
 			"Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+			Authorization: `Bearer ${token}`,
 		},
 		body: JSON.stringify({
-			username: username
+			username: username,
 		}),
 	});
 

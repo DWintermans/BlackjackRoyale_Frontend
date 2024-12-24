@@ -62,9 +62,7 @@ export default function ReplaySelector({ toGame }) {
 										/>
 									</path>
 								</svg>
-								<p className="text-white mt-4">
-									Loading replays...
-								</p>
+								<p className="text-white mt-4">Loading replays...</p>
 							</div>
 						) : replayList && replayList.length > 0 ? (
 							replayList.map((replay) => (
@@ -77,13 +75,21 @@ export default function ReplaySelector({ toGame }) {
 										<div className="w-1/6 px-3 py-2 text-left">
 											{replay.group_id.substring(0, 6)}
 										</div>
-										<div className="w-1/6 px-5 py-2 text-center">{replay.round}</div>
-										<div className="w-1/6 px-5 py-2 text-center">{replay.wins}</div>
-										<div className="w-1/6 px-5 py-2 text-center">{replay.losses}</div>
+										<div className="w-1/6 px-5 py-2 text-center">
+											{replay.round}
+										</div>
+										<div className="w-1/6 px-5 py-2 text-center">
+											{replay.wins}
+										</div>
+										<div className="w-1/6 px-5 py-2 text-center">
+											{replay.losses}
+										</div>
 										<div className="w-1/6 px-5 py-2 text-center">
 											+{replay.earnings_amt}
 										</div>
-										<div className="w-1/6 px-5 py-2 text-center">-{replay.losses_amt}</div>
+										<div className="w-1/6 px-5 py-2 text-center">
+											-{replay.losses_amt}
+										</div>
 										<div className="w-1/6 px-5 py-2 pr-3 text-right text-xs">
 											{new Date(replay.datetime).toLocaleString("en-GB", {
 												hour: "2-digit",

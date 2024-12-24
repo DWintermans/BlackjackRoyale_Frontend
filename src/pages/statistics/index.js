@@ -18,10 +18,7 @@ export default function Statistics() {
 					<div className="w-1/4"></div>
 					<div className="w-1/2">
 						<div className="p-2.5 m-2.5 bg-green rounded-l-3xl flex-1 overflow-auto h-[calc(100%-8rem)] flex flex-col border border-offwhite">
-							
-							
 							<div className="grid grid-cols-4 gap-4 w-full text-white text-center">
-
 								<div className="col-span-4 text-center text-xl font-bold text-white p-1.5 pb-0">
 									Overall Statistics
 								</div>
@@ -53,13 +50,12 @@ export default function Statistics() {
 									<div className="text-4xl font-bold">24h</div>
 								</div>
 
-
 								<div className="col-span-4 text-center text-xl font-bold text-white p-1.5 pb-0">
 									Blackjack Statistics
 								</div>
 
 								<hr className="col-span-4 border-offwhite" />
-								
+
 								<div className="aspect-square flex flex-col items-center justify-between border border-offwhite rounded-2xl bg-lightgreen py-4">
 									<div className="text-sm font-medium">Blackjack Achieved</div>
 									<div className="text-4xl font-bold">15</div>
@@ -103,28 +99,30 @@ export default function Statistics() {
 								<hr className="col-span-4 border-offwhite" />
 
 								<div className="aspect-square flex flex-col items-center justify-center border border-offwhite rounded-2xl bg-lightgreen">
-									<div className="text-sm font-medium">Longest Winning Streak</div>
+									<div className="text-sm font-medium">
+										Longest Winning Streak
+									</div>
 									<div className="text-4xl font-bold">12</div>
 								</div>
 								<div className="aspect-square flex flex-col items-center justify-center border border-offwhite rounded-2xl bg-lightgreen">
-									<div className="text-sm font-medium">Longest Losing Streak</div>
+									<div className="text-sm font-medium">
+										Longest Losing Streak
+									</div>
 									<div className="text-4xl font-bold">8</div>
 								</div>
 								<div className="aspect-square flex flex-col items-center justify-center border border-offwhite rounded-2xl bg-lightgreen">
-									<div className="text-sm font-medium">Highest Single <br /> Game Win</div>
+									<div className="text-sm font-medium">
+										Highest Single <br /> Game Win
+									</div>
 									<div className="text-4xl font-bold">$500</div>
 								</div>
 								<div className="aspect-square flex flex-col items-center justify-center border border-offwhite rounded-2xl bg-lightgreen">
-									<div className="text-sm font-medium">Highest Single <br /> Game Loss</div>
+									<div className="text-sm font-medium">
+										Highest Single <br /> Game Loss
+									</div>
 									<div className="text-4xl font-bold">$300</div>
 								</div>
 							</div>
-
-
-
-
-
-
 						</div>
 					</div>
 					<div className="w-1/4"></div>
