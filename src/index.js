@@ -87,7 +87,7 @@ const router = createBrowserRouter([
 		path: "statistics",
 		element: (
 			<Layout>
-				<Statistics />
+				<ProtectedRoute element={<Statistics />} />
 			</Layout>
 		),
 	},
@@ -95,7 +95,7 @@ const router = createBrowserRouter([
 		path: "replays",
 		element: (
 			<Layout>
-				<Replays />
+				<ProtectedRoute element={<Replays />} />
 			</Layout>
 		),
 	},
@@ -103,7 +103,7 @@ const router = createBrowserRouter([
 		path: "Settings",
 		element: (
 			<Layout>
-				<Settings />
+				<ProtectedRoute element={<Settings />} />
 			</Layout>
 		),
 	},
