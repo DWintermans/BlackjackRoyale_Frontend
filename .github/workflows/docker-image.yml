@@ -22,6 +22,7 @@ jobs:
           repository: DWintermans/BlackjackRoyale
           token: ${{ secrets.GITHUB_TOKEN }}
           ref: main
+          path: backend 
           
       - name: Checkout docker folder
         uses: actions/checkout@v3
