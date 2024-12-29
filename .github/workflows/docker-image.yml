@@ -19,8 +19,7 @@ jobs:
         with:
           repository: DWintermans/BlackjackRoyale
           token: ${{ secrets.GITHUB_TOKEN }}
-          path: backend  
-
+          
       - name: Checkout docker folder
         uses: actions/checkout@v3
         with:
