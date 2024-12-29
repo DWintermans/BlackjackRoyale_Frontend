@@ -2,11 +2,9 @@ name: Run E2E Tests Docker
 
 on:
   push:
-    branches:
-      - main
+    branches: ["master"]
   pull_request:
-    branches:
-      - main
+    branches: ["master"]
 
 jobs:
   e2e:
