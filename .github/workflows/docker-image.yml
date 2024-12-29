@@ -30,7 +30,6 @@ jobs:
         with:
           repository: DWintermans/BlackjackRoyale_Docker
           ref: main
-          path: docker
           
       - name: Set up Docker
         uses: docker/setup-buildx-action@v2
