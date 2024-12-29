@@ -25,10 +25,17 @@
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
 Cypress.Commands.add("login", (username, password) => {
-	cy.intercept("POST", "**/user/login").as("loginRequest");
-	cy.visit("http://localhost:3000/login");
-	cy.get("[data-label='username']").type("string");
-	cy.get("[data-label='password']").type("string!1");
-	cy.get("[data-label='login-button']").click();
-	cy.wait("@loginRequest").its("response.statusCode").should("eq", 201);
+	cy.intercept("POST", "**/user/register").as("registerRequest");
+
+	cy.visit("/login");
+
+	cy.contains("Sign Up").click();
+	cy.get("[data-label='username']").type(username);
+	cy.get("[data-label='password']").type(password);
+	cy.get("[data-label='signup-button']").click();
+
+	cy.wait("@registerRequest").its("response.statusCode").should("eq", 201);
+
+	cy.url().should("include", "/game");
+	cy.contains("Global Chat").should("be.visible");
 });

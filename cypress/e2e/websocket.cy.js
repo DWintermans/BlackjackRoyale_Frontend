@@ -1,6 +1,6 @@
 describe("WebSocket Test (using Authorization endpoint)", () => {
 	it("should send an authorization message and handle the response", () => {
-		cy.visit("http://localhost:3000");
+		cy.visit("/");
 
 		cy.window().then((win) => {
 			return new Cypress.Promise((resolve, reject) => {
