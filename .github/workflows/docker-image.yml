@@ -13,17 +13,21 @@ jobs:
     steps:
       - name: Checkout frontend code
         uses: actions/checkout@v3
+        with:
+          ref: master
 
       - name: Checkout backend code
         uses: actions/checkout@v3
         with:
           repository: DWintermans/BlackjackRoyale
           token: ${{ secrets.GITHUB_TOKEN }}
+          ref: main
           
       - name: Checkout docker folder
         uses: actions/checkout@v3
         with:
           repository: DWintermans/BlackjackRoyale_Docker
+          ref: main
           
       - name: Set up Docker
         uses: docker/setup-buildx-action@v2
