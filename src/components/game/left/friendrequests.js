@@ -156,7 +156,7 @@ export default function FriendRequests({ onGoBack }) {
 			</div>
 
 			{isModalOpen ? (
-				<AddFriend onClose={toggleModal} goBack={goBack}/>
+				<AddFriend onClose={toggleModal} goBack={goBack} />
 			) : (
 				<div className="custom-scrollbar border border-offwhite border-tl-10px border-bl-10px rounded-l-2xl flex-1 overflow-y-scroll bg-lightgreen">
 					{friendRequests && friendRequests.length > 0 ? (
