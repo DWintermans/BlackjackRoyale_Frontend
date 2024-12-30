@@ -8,6 +8,7 @@ import "react-chat-elements/dist/main.css";
 import "./friends.css";
 import avatar from "../../../assets/avatar.png";
 import FriendRequests from "./friendrequests.js";
+import AddFriend from "../../modal/addfriend.js";
 
 export default function Friends() {
 	const [messageList, setMessageList] = useState([]);
@@ -153,6 +154,16 @@ export default function Friends() {
 		setMessageList((prevList) => [updatedFriend, ...prevList]);
 	};
 
+	const [isModalOpen, setIsModalOpen] = useState(false);
+
+	const toggleModal = () => {
+		setIsModalOpen((prev) => !prev);
+	};
+
+	const goBack = (newPendingFriend) => {
+		return null;
+	};
+
 	return (
 		<div className="p-2.5 m-2.5 bg-green rounded-3xl flex-1 overflow-auto h-[calc(100%-8rem)] flex flex-col border border-offwhite">
 			{selectedUser.id ? (
@@ -171,11 +182,10 @@ export default function Friends() {
 								key={option}
 								onClick={() => setActiveIndex(index)}
 								className={`font-bold cursor-pointer py-1.5 px-2.5 flex-grow transition-all 
-                                    ${
-																			activeIndex === index
-																				? "bg-yellow text-black"
-																				: "bg-lightgreen text-white hover:bg-hoveryellow hover:text-black"
-																		} 
+                                    ${activeIndex === index
+										? "bg-yellow text-black"
+										: "bg-lightgreen text-white hover:bg-hoveryellow hover:text-black"
+									} 
                                 `}
 							>
 								{option}
@@ -195,73 +205,101 @@ export default function Friends() {
 												placeholder="Search..."
 												value={searchQuery}
 												onChange={handleSearchChange}
+												onClick={() => setIsModalOpen(false)}
 											/>
 
-											<div className="ml-4 cursor-pointer p-1.5 border border-black rounded-2xl bg-yellow hover:bg-hoveryellow">
-												<svg
-													xmlns="http://www.w3.org/2000/svg"
-													viewBox="0 0 24 24"
-													fill="none"
-													stroke="currentColor"
-													strokeLinecap="round"
-													strokeLinejoin="round"
-													width="24"
-													height="24"
-													strokeWidth="2"
-												>
-													<path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"></path>
-													<path d="M16 19h6"></path>
-													<path d="M19 16v6"></path>
-													<path d="M6 21v-2a4 4 0 0 1 4 -4h4"></path>
-												</svg>{" "}
+											<div
+												className="ml-4 cursor-pointer p-1.5 border border-black rounded-2xl bg-yellow hover:bg-hoveryellow"
+												onClick={toggleModal}
+											>
+												{isModalOpen ? (
+													<svg
+														xmlns="http://www.w3.org/2000/svg"
+														width="24"
+														height="24"
+														viewBox="0 0 24 24"
+														fill="none"
+														stroke="currentColor"
+														strokeWidth="2"
+														strokeLinecap="round"
+														strokeLinejoin="round"
+													>
+														<path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+														<path d="M6 21v-2a4 4 0 0 1 4 -4h3.5" />
+														<path d="M22 22l-5 -5" />
+														<path d="M17 22l5 -5" />
+													</svg>
+												) : (
+													<svg
+														xmlns="http://www.w3.org/2000/svg"
+														viewBox="0 0 24 24"
+														fill="none"
+														stroke="currentColor"
+														strokeLinecap="round"
+														strokeLinejoin="round"
+														width="24"
+														height="24"
+														strokeWidth="2"
+													>
+														<path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"></path>
+														<path d="M16 19h6"></path>
+														<path d="M19 16v6"></path>
+														<path d="M6 21v-2a4 4 0 0 1 4 -4h4"></path>
+													</svg>
+												)}
 											</div>
 										</div>
-										<div className="custom-scrollbar border border-offwhite border-tl-10px border-bl-10px rounded-l-2xl flex-1 overflow-y-scroll bg-lightgreen">
-											{messageList && messageList.length > 0 ? (
-												filteredMessages.length > 0 ? (
-													<ChatList
-														className="chat-list ml-2 mb-2 mt-2"
-														dataSource={filteredMessages}
-														onClick={(message) =>
-															onFriendSelect(message.id, message.title)
-														}
-													/>
+										{isModalOpen ? (
+											< AddFriend onClose={toggleModal} goBack={goBack} />
+										) : (
+											<div className="custom-scrollbar border border-offwhite border-tl-10px border-bl-10px rounded-l-2xl flex-1 overflow-y-scroll bg-lightgreen">
+												{messageList && messageList.length > 0 ? (
+													filteredMessages.length > 0 ? (
+														<ChatList
+															className="chat-list ml-2 mb-2 mt-2"
+															dataSource={filteredMessages}
+															onClick={(message) =>
+																onFriendSelect(message.id, message.title)
+															}
+														/>
+													) : (
+														<div className="flex items-center justify-center text-center p-5 flex-col">
+															<p className="text-white mt-4">No results found.</p>
+														</div>
+													)
 												) : (
 													<div className="flex items-center justify-center text-center p-5 flex-col">
-														<p className="text-white mt-4">No results found.</p>
+														{error ? (
+															<p className="text-white mt-4">{error}</p>
+														) : (
+															<>
+																<svg
+																	fill="#FCB316FF"
+																	width="50"
+																	height="50"
+																	viewBox="0 0 24 24"
+																	xmlns="http://www.w3.org/2000/svg"
+																>
+																	<path d="M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z">
+																		<animateTransform
+																			attributeName="transform"
+																			type="rotate"
+																			dur="0.75s"
+																			values="0 12 12;360 12 12"
+																			repeatCount="indefinite"
+																		/>
+																	</path>
+																</svg>
+																<p className="text-white mt-4">
+																	Loading messages...
+																</p>
+															</>
+														)}
 													</div>
-												)
-											) : (
-												<div className="flex items-center justify-center text-center p-5 flex-col">
-													{error ? (
-														<p className="text-white mt-4">{error}</p>
-													) : (
-														<>
-															<svg
-																fill="#FCB316FF"
-																width="50"
-																height="50"
-																viewBox="0 0 24 24"
-																xmlns="http://www.w3.org/2000/svg"
-															>
-																<path d="M12,4a8,8,0,0,1,7.89,6.7A1.53,1.53,0,0,0,21.38,12h0a1.5,1.5,0,0,0,1.48-1.75,11,11,0,0,0-21.72,0A1.5,1.5,0,0,0,2.62,12h0a1.53,1.53,0,0,0,1.49-1.3A8,8,0,0,1,12,4Z">
-																	<animateTransform
-																		attributeName="transform"
-																		type="rotate"
-																		dur="0.75s"
-																		values="0 12 12;360 12 12"
-																		repeatCount="indefinite"
-																	/>
-																</path>
-															</svg>
-															<p className="text-white mt-4">
-																Loading messages...
-															</p>
-														</>
-													)}
-												</div>
-											)}
-										</div>
+												)}
+											</div>
+										)}
+
 									</>
 								);
 							case 1: //requests

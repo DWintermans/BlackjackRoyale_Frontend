@@ -3,14 +3,14 @@ import { searchUser } from "../../lib/api/requests/searchuser.js";
 import { CreateFriendRequest } from "../../lib/api/requests/createfriendrequest.js";
 import { toast } from "react-toastify";
 
-export default function AddFriend({ onClose }) {
+export default function AddFriend({ onClose, goBack }) {
 	const [searchTerm, setSearchTerm] = useState("");
 	const [searchResult, setSearchResult] = useState([]);
 	const [typingTimeout, setTypingTimeout] = useState(null);
 	const [error, setError] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 
-	const createFriendRequest = async (friend_id) => {
+	const createFriendRequest = async (friend_id, user_name) => {
 		try {
 			let response = await CreateFriendRequest(friend_id);
 
@@ -27,6 +27,14 @@ export default function AddFriend({ onClose }) {
 						: result,
 				),
 			);
+
+			const newPendingFriend = {
+				user_id: friend_id,
+				user_name: user_name,
+				can_answer: false,
+			};
+
+			goBack(newPendingFriend);
 		} catch (error) {
 			console.log(error);
 
@@ -182,7 +190,7 @@ export default function AddFriend({ onClose }) {
 								) : (
 									<button
 										className="font-semibold mx-1 cursor-pointer py-1 px-2.5 border text-black border-black rounded-full bg-yellow hover:bg-hoveryellow"
-										onClick={() => createFriendRequest(result.user_id)}
+										onClick={() => createFriendRequest(result.user_id, result.user_name)}
 									>
 										Add friend
 									</button>

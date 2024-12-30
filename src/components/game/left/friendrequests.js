@@ -91,6 +91,16 @@ export default function FriendRequests({ onGoBack }) {
 		setIsModalOpen((prev) => !prev);
 	};
 
+	const goBack = (newPendingFriend) => {
+		setFriendRequests((prevRequests) => {
+			if (!prevRequests || prevRequests.length === 0) {
+				return [newPendingFriend];
+			}
+
+			return [newPendingFriend, ...prevRequests];
+		});
+	};
+
 	return (
 		<>
 			<div className="w-full mb-2 flex justify-between">
@@ -146,7 +156,7 @@ export default function FriendRequests({ onGoBack }) {
 			</div>
 
 			{isModalOpen ? (
-				<AddFriend onClose={toggleModal} />
+				<AddFriend onClose={toggleModal} goBack={goBack}/>
 			) : (
 				<div className="custom-scrollbar border border-offwhite border-tl-10px border-bl-10px rounded-l-2xl flex-1 overflow-y-scroll bg-lightgreen">
 					{friendRequests && friendRequests.length > 0 ? (
