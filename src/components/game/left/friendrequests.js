@@ -15,9 +15,9 @@ export default function FriendRequests({ onGoBack }) {
 
 	const filteredRequests = Array.isArray(friendRequests)
 		? friendRequests.filter((request) => {
-			const name = request.user_name || "";
-			return name.toLowerCase().includes(searchQuery.toLowerCase());
-		})
+				const name = request.user_name || "";
+				return name.toLowerCase().includes(searchQuery.toLowerCase());
+			})
 		: [];
 
 	useEffect(() => {
@@ -52,9 +52,9 @@ export default function FriendRequests({ onGoBack }) {
 				prevRequests.map((request) =>
 					request.user_id === friendid
 						? {
-							...request,
-							status: status.charAt(0).toUpperCase() + status.slice(1),
-						}
+								...request,
+								status: status.charAt(0).toUpperCase() + status.slice(1),
+							}
 						: request,
 				),
 			);
@@ -103,7 +103,8 @@ export default function FriendRequests({ onGoBack }) {
 					onClick={() => setIsModalOpen(false)}
 				/>
 
-				<div className="ml-4 cursor-pointer p-1.5 border border-black rounded-2xl bg-yellow hover:bg-hoveryellow"
+				<div
+					className="ml-4 cursor-pointer p-1.5 border border-black rounded-2xl bg-yellow hover:bg-hoveryellow"
 					onClick={toggleModal}
 				>
 					{isModalOpen ? (
@@ -162,7 +163,8 @@ export default function FriendRequests({ onGoBack }) {
 											</p>
 										</div>
 										{request.can_answer ? (
-											request.status === undefined || request.status === null ? (
+											request.status === undefined ||
+											request.status === null ? (
 												<div className="space-x-2 flex">
 													<div
 														onClick={() =>
@@ -213,7 +215,9 @@ export default function FriendRequests({ onGoBack }) {
 												</div>
 											)
 										) : (
-											<div className=" text-white font-bold italic">Pending</div>
+											<div className=" text-white font-bold italic">
+												Pending
+											</div>
 										)}
 									</div>
 								))}
