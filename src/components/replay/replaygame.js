@@ -744,9 +744,8 @@ export default function ReplayGame({
 				onClick={() => toggleRulesModal()}
 				className="clickable-area rules"
 			/>
-			
+
 			<div>{isRulesVisible && <Rules onClose={toggleRulesModal} />}</div>
-			
 		</div>
 	);
 }
