@@ -182,10 +182,11 @@ export default function Friends() {
 								key={option}
 								onClick={() => setActiveIndex(index)}
 								className={`font-bold cursor-pointer py-1.5 px-2.5 flex-grow transition-all 
-                                    ${activeIndex === index
-										? "bg-yellow text-black"
-										: "bg-lightgreen text-white hover:bg-hoveryellow hover:text-black"
-									} 
+                                    ${
+																			activeIndex === index
+																				? "bg-yellow text-black"
+																				: "bg-lightgreen text-white hover:bg-hoveryellow hover:text-black"
+																		} 
                                 `}
 							>
 								{option}
@@ -250,7 +251,7 @@ export default function Friends() {
 											</div>
 										</div>
 										{isModalOpen ? (
-											< AddFriend onClose={toggleModal} goBack={goBack} />
+											<AddFriend onClose={toggleModal} goBack={goBack} />
 										) : (
 											<div className="custom-scrollbar border border-offwhite border-tl-10px border-bl-10px rounded-l-2xl flex-1 overflow-y-scroll bg-lightgreen">
 												{messageList && messageList.length > 0 ? (
@@ -264,7 +265,9 @@ export default function Friends() {
 														/>
 													) : (
 														<div className="flex items-center justify-center text-center p-5 flex-col">
-															<p className="text-white mt-4">No results found.</p>
+															<p className="text-white mt-4">
+																No results found.
+															</p>
 														</div>
 													)
 												) : (
@@ -299,7 +302,6 @@ export default function Friends() {
 												)}
 											</div>
 										)}
-
 									</>
 								);
 							case 1: //requests

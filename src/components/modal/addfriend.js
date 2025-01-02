@@ -190,7 +190,9 @@ export default function AddFriend({ onClose, goBack }) {
 								) : (
 									<button
 										className="font-semibold mx-1 cursor-pointer py-1 px-2.5 border text-black border-black rounded-full bg-yellow hover:bg-hoveryellow"
-										onClick={() => createFriendRequest(result.user_id, result.user_name)}
+										onClick={() =>
+											createFriendRequest(result.user_id, result.user_name)
+										}
 									>
 										Add friend
 									</button>
