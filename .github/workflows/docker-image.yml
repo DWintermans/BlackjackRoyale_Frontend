@@ -47,11 +47,16 @@ jobs:
           cd docker
           docker-compose -f docker-compose.yml up -d --build  
 
-      - name: Wait for services to be ready
+      - name: Wait for all services to become healthy
         run: |
-          docker-compose exec -T api wait-for-it.sh api:8080 --timeout=30 
-          docker-compose exec -T websocket wait-for-it.sh websocket:5000 --timeout=30  
-          docker-compose exec -T db wait-for-it.sh db:3306 --timeout=30  
+          echo "Waiting for all services to become healthy..."
+          timeout 120s bash -c '
+          while ! (docker-compose ps | grep -q "healthy"); do
+            echo "Services not healthy yet, waiting..."
+            sleep 5
+          done
+          echo "All services are healthy!"
+          '
 
       - name: Run Cypress E2E tests
         run: |
