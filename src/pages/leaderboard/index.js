@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import webSocketService from "../../lib/api/requests/websocketservice";
 import { GetLeaderboard } from "../../lib/api/requests/leaderboard";
+import { useNavigate } from "react-router-dom";
 
 export default function Leaderboard() {
+	const navigate = useNavigate();
 	const [leaderboard, setLeaderboard] = useState([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState(null);
@@ -42,6 +44,30 @@ export default function Leaderboard() {
 					<div className="w-1/4"></div>
 					<div className="w-1/2">
 						<div className="p-2.5 m-2.5 bg-green rounded-3xl flex-1 overflow-auto h-[calc(100%-8rem)] flex flex-col border border-offwhite">
+							<div class="flex items-center pb-2.5">
+								<button
+									class="p-2 border-black bg-yellow hover:bg-hoveryellow rounded-full mr-5"
+									onClick={() => navigate(-1)}
+								>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="#000000"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										width="24"
+										height="24"
+										stroke-width="2"
+									>
+										<path d="M15 6l-6 6l6 6"></path>
+									</svg>
+								</button>
+								<p class="font-bold text-xl p-1.5 m-0 text-white">
+									Leaderboard
+								</p>
+							</div>
+
 							{isLoading ? (
 								<div className="flex items-center justify-center text-center p-5 flex-col">
 									<svg
@@ -68,13 +94,7 @@ export default function Leaderboard() {
 									<p>{error}</p>
 								</div>
 							) : (
-								<div className="w-full text-white text-center">
-									<div className="text-center text-xl font-bold text-white p-1.5 pb-4">
-										Leaderboard
-									</div>
-
-									<hr className="border-offwhite mb-4" />
-
+								<div className="w-full text-white text-center p-4">
 									{leaderboard && leaderboard.length > 0 ? (
 										<div class="overflow-x-auto">
 											<table class="table-auto w-full border-collapse border border-offwhite">

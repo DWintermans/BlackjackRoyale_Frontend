@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { handleIncomingMessage } from "../game/center/handleincomingmessage.js";
 import "../../components/game/center/generalgame.css";
+import Rules from "../modal/rules.js";
 
 export default function ReplayGame({
 	currentAction,
@@ -18,6 +19,11 @@ export default function ReplayGame({
 	const [turn, setTurn] = useState([]);
 	const [playerAction, setPlayerAction] = useState([]);
 	const [gameFinishedMessage, setGameFinishedMessage] = useState("");
+	const [isRulesVisible, setIsRulesVisible] = useState(false);
+
+	const toggleRulesModal = (e) => {
+		setIsRulesVisible(!isRulesVisible);
+	};
 
 	//set user bet
 	const findTrackedUser = (replayData) => {
@@ -733,6 +739,14 @@ export default function ReplayGame({
 				onClick={() => toSelector(null)}
 				className="clickable-area leave_group"
 			/>
+
+			<div
+				onClick={() => toggleRulesModal()}
+				className="clickable-area rules"
+			/>
+			
+			<div>{isRulesVisible && <Rules onClose={toggleRulesModal} />}</div>
+			
 		</div>
 	);
 }

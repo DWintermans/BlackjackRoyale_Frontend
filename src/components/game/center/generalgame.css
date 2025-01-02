@@ -57,6 +57,13 @@
 	/* background-color: rgba(0, 234, 255, 0.5);  */
 }
 
+.rules {
+	top: 12px;
+	left: 55px;
+	width: 75px;
+	height: 25px;
+	/* background-color: rgba(0, 234, 255, 0.5);  */
+}
 /*  */
 
 .hit {
