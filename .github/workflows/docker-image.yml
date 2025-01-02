@@ -43,11 +43,12 @@ jobs:
           docker-compose --version
           
       - name: Build and start services
+        working-directory: ./docker
         run: |
-          cd docker
           docker-compose -f docker-compose.yml up -d --build  
 
       - name: Wait for all services to become healthy
+        working-directory: ./docker
         run: |
           echo "Waiting for all services to become healthy..."
           timeout 120s bash -c '
@@ -59,11 +60,11 @@ jobs:
           '
 
       - name: Run Cypress E2E tests
+        working-directory: ./docker
         run: |
-          cd docker
           docker-compose exec -T cypress cypress run --config-file /cypress/e2e/cypress.config.js 
 
       - name: Tear down services
+        working-directory: ./docker
         run: |
-          cd docker
           docker-compose down  
