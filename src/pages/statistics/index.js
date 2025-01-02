@@ -16,7 +16,6 @@ export default function Statistics() {
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState(null);
 
-
 	useEffect(() => {
 		const fetchStats = async () => {
 			try {
@@ -66,7 +65,6 @@ export default function Statistics() {
 					<div className="w-1/4"></div>
 					<div className="w-1/2">
 						<div className="p-2.5 m-2.5 bg-green rounded-l-3xl flex-1 overflow-auto h-[calc(100%-8rem)] flex flex-col border border-offwhite">
-
 							{isLoading ? (
 								<div className="flex items-center justify-center text-center p-5 flex-col">
 									<svg
@@ -86,7 +84,9 @@ export default function Statistics() {
 											/>
 										</path>
 									</svg>
-									<p className="text-white mt-4">Loading personal statistics...</p>
+									<p className="text-white mt-4">
+										Loading personal statistics...
+									</p>
 								</div>
 							) : error ? (
 								<div className="text-center text-white mt-4">
@@ -102,31 +102,45 @@ export default function Statistics() {
 
 									<div className="aspect-square flex flex-col items-center justify-center border border-offwhite rounded-2xl bg-lightgreen">
 										<div className="text-sm font-medium">Balance</div>
-										<div className="text-4xl font-bold">${statisticsList.balance}</div>
+										<div className="text-4xl font-bold">
+											${statisticsList.balance}
+										</div>
 									</div>
 									<div className="aspect-square flex flex-col items-center justify-center border border-offwhite rounded-2xl bg-lightgreen">
 										<div className="text-sm font-medium">Games Played</div>
-										<div className="text-4xl font-bold">{statisticsList.games_played}</div>
+										<div className="text-4xl font-bold">
+											{statisticsList.games_played}
+										</div>
 									</div>
 									<div className="aspect-square flex flex-col items-center justify-center border border-offwhite rounded-2xl bg-lightgreen">
 										<div className="text-sm font-medium">Total Game Wins</div>
-										<div className="text-4xl font-bold">{statisticsList.total_game_wins}</div>
+										<div className="text-4xl font-bold">
+											{statisticsList.total_game_wins}
+										</div>
 									</div>
 									<div className="aspect-square flex flex-col items-center justify-center border border-offwhite rounded-2xl bg-lightgreen">
 										<div className="text-sm font-medium">Total Game Losses</div>
-										<div className="text-4xl font-bold">{statisticsList.total_game_losses}</div>
+										<div className="text-4xl font-bold">
+											{statisticsList.total_game_losses}
+										</div>
 									</div>
 									<div className="aspect-square flex flex-col items-center justify-center border border-offwhite rounded-2xl bg-lightgreen">
 										<div className="text-sm font-medium">Total Earnings</div>
-										<div className="text-4xl font-bold">${statisticsList.total_earnings}</div>
+										<div className="text-4xl font-bold">
+											${statisticsList.total_earnings}
+										</div>
 									</div>
 									<div className="aspect-square flex flex-col items-center justify-center border border-offwhite rounded-2xl bg-lightgreen">
 										<div className="text-sm font-medium">Total Losses</div>
-										<div className="text-4xl font-bold">${statisticsList.total_losses}</div>
+										<div className="text-4xl font-bold">
+											${statisticsList.total_losses}
+										</div>
 									</div>
 									<div className="aspect-square flex flex-col items-center justify-center border border-offwhite rounded-2xl bg-lightgreen">
 										<div className="text-sm font-medium">Playtime</div>
-										<div className="text-4xl font-bold">{formatPlaytime(statisticsList.playtime)}</div>
+										<div className="text-4xl font-bold">
+											{formatPlaytime(statisticsList.playtime)}
+										</div>
 									</div>
 
 									<div className="col-span-4 text-center text-xl font-bold text-white p-1.5 pb-0">
@@ -136,38 +150,56 @@ export default function Statistics() {
 									<hr className="col-span-4 border-offwhite" />
 
 									<div className="aspect-square flex flex-col items-center justify-between border border-offwhite rounded-2xl bg-lightgreen py-4">
-										<div className="text-sm font-medium">Blackjack Achieved</div>
-										<div className="text-4xl font-bold">{statisticsList.blackjack_achieved}</div>
+										<div className="text-sm font-medium">
+											Blackjack Achieved
+										</div>
+										<div className="text-4xl font-bold">
+											{statisticsList.blackjack_achieved}
+										</div>
 										<div className="text-sm font-medium">Times</div>
 									</div>
 									<div className="aspect-square flex flex-col items-center justify-between border border-offwhite rounded-2xl bg-lightgreen py-4">
 										<div className="text-sm font-medium">Tied</div>
-										<div className="text-4xl font-bold">{statisticsList.tied}</div>
+										<div className="text-4xl font-bold">
+											{statisticsList.tied}
+										</div>
 										<div className="text-sm font-medium">Times</div>
 									</div>
 									<div className="aspect-square flex flex-col items-center justify-between border border-offwhite rounded-2xl bg-lightgreen py-4">
 										<div className="text-sm font-medium">Surrendered</div>
-										<div className="text-4xl font-bold">{statisticsList.surrendered}</div>
+										<div className="text-4xl font-bold">
+											{statisticsList.surrendered}
+										</div>
 										<div className="text-sm font-medium">Times</div>
 									</div>
 									<div className="aspect-square flex flex-col items-center justify-between border border-offwhite rounded-2xl bg-lightgreen py-4">
 										<div className="text-sm font-medium">Split</div>
-										<div className="text-4xl font-bold">{statisticsList.split}</div>
+										<div className="text-4xl font-bold">
+											{statisticsList.split}
+										</div>
 										<div className="text-sm font-medium">Times</div>
 									</div>
 									<div className="aspect-square flex flex-col items-center justify-between border border-offwhite rounded-2xl bg-lightgreen py-4">
 										<div className="text-sm font-medium">Doubled Down</div>
-										<div className="text-4xl font-bold">{statisticsList.doubled}</div>
+										<div className="text-4xl font-bold">
+											{statisticsList.doubled}
+										</div>
 										<div className="text-sm font-medium">Times</div>
 									</div>
 									<div className="aspect-square flex flex-col items-center justify-between border border-offwhite rounded-2xl bg-lightgreen py-4">
 										<div className="text-sm font-medium">Used Insurance</div>
-										<div className="text-4xl font-bold">{statisticsList.used_insurance}</div>
+										<div className="text-4xl font-bold">
+											{statisticsList.used_insurance}
+										</div>
 										<div className="text-sm font-medium">Times</div>
 									</div>
 									<div className="aspect-square flex flex-col items-center justify-between border border-offwhite rounded-2xl bg-lightgreen py-4">
-										<div className="text-sm font-medium">Received Insurance</div>
-										<div className="text-4xl font-bold">{statisticsList.received_insurance}</div>
+										<div className="text-sm font-medium">
+											Received Insurance
+										</div>
+										<div className="text-4xl font-bold">
+											{statisticsList.received_insurance}
+										</div>
 										<div className="text-sm font-medium">Times</div>
 									</div>
 
@@ -181,25 +213,33 @@ export default function Statistics() {
 										<div className="text-sm font-medium">
 											Longest Winning Streak
 										</div>
-										<div className="text-4xl font-bold">{statisticsList.longest_winning_streak}</div>
+										<div className="text-4xl font-bold">
+											{statisticsList.longest_winning_streak}
+										</div>
 									</div>
 									<div className="aspect-square flex flex-col items-center justify-center border border-offwhite rounded-2xl bg-lightgreen">
 										<div className="text-sm font-medium">
 											Longest Losing Streak
 										</div>
-										<div className="text-4xl font-bold">{statisticsList.longest_losing_streak}</div>
+										<div className="text-4xl font-bold">
+											{statisticsList.longest_losing_streak}
+										</div>
 									</div>
 									<div className="aspect-square flex flex-col items-center justify-center border border-offwhite rounded-2xl bg-lightgreen">
 										<div className="text-sm font-medium">
 											Highest Single <br /> Game Win
 										</div>
-										<div className="text-4xl font-bold">${statisticsList.highest_game_win}</div>
+										<div className="text-4xl font-bold">
+											${statisticsList.highest_game_win}
+										</div>
 									</div>
 									<div className="aspect-square flex flex-col items-center justify-center border border-offwhite rounded-2xl bg-lightgreen">
 										<div className="text-sm font-medium">
 											Highest Single <br /> Game Loss
 										</div>
-										<div className="text-4xl font-bold">${statisticsList.highest_game_loss}</div>
+										<div className="text-4xl font-bold">
+											${statisticsList.highest_game_loss}
+										</div>
 									</div>
 								</div>
 							)}

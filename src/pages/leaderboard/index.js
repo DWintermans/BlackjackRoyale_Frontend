@@ -82,15 +82,15 @@ export default function Leaderboard() {
 													<tr class="bg-lightgreen">
 														<th class="px-4 py-2 border">Nr.</th>
 														<th class="px-4 py-2 border">Username</th>
-														<th class="px-4 py-2 border">Earnings/Losses Ratio</th>
+														<th class="px-4 py-2 border">
+															Earnings/Losses Ratio
+														</th>
 													</tr>
 												</thead>
 												<tbody>
 													{leaderboard.map((entry, index) => (
 														<tr key={index}>
-															<td className="px-4 py-2 border">
-																{index + 1}
-															</td>
+															<td className="px-4 py-2 border">{index + 1}</td>
 															<td className="px-4 py-2 border">
 																{entry.user_name}
 															</td>
@@ -103,9 +103,7 @@ export default function Leaderboard() {
 											</table>
 										</div>
 									) : (
-										<div className="text-center">
-											No data available.
-										</div>
+										<div className="text-center">No data available.</div>
 									)}
 								</div>
 							)}
