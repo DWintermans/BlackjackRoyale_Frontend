@@ -62,7 +62,7 @@ jobs:
       - name: Run Cypress E2E tests
         working-directory: ./docker
         run: |
-          docker-compose exec -T cypress cypress run --config-file /cypress/e2e/cypress.config.js 
+          docker-compose exec -T cypress cypress run --config-file /frontend/cypress/e2e/cypress.config.js 
 
       - name: Tear down services
         working-directory: ./docker
